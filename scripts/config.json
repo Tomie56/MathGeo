@@ -1,0 +1,163 @@
+{
+    "global": {
+        "output_root": "./results",
+        "main_seed": 40251029,
+        "thread_num": 128
+    },
+    "template": {
+        "n": 500,
+        "points_limit": 15,
+        "lines_limit": 20,
+        "output_dir": "./results/json/base",
+        "output_filename": "base_templates.jsonl",
+        "base": {
+            "types": ["polygon", "circle"],
+            "type_weights": {
+                "polygon": 0.8,
+                "circle": 0.2
+            },   
+            "polygon": {
+                "n_choices": [3, 4, 5, 6, 8],
+                "side_range": [1, 10],
+                "rotation_choices_type": "pi_over_2n"
+            },
+            "circle": {
+                "radius_range": [1, 10],
+                "start_angle": 0
+            }
+        },
+        "derivation": {
+            "round_range": [1, 2],
+            "rules": {
+                "concentric": {"scale_choices": [0.5, 2], "prob": 0.2},
+                "translation": {"directions": ["perpendicular", "up", "down", "left", "right"], "prob": 0.35},
+                "circum_inscribe": {"n_choices": [3, 4, 6], "prob": 0.2},
+                "vertex_on_center": {"n_choices": [3, 4, 6], "param_choices": ["radius", "side"], "prob": 0.25}
+            }
+        }
+    },
+    "builder": {
+        "output_dir": "./results/json/enhanced",
+        "output_filename": "enhanced_geometries.jsonl",
+        "num_enhancements": 4,
+        "rounds_distribution": {
+            "0": 1,
+            "1": 3
+        },
+        "min_operations_per_round": 1,
+        "max_operations_per_round": 1,
+        "allowed_operation_types": [
+            "connect_points", 
+            "connect_midpoints", 
+            "draw_perpendicular",
+            "draw_diameter"
+        ],
+        "operation_probs": {
+            "draw_diameter": 0.1,
+            "connect_points": 0.4,
+            "connect_midpoints": 0.3,
+            "draw_perpendicular": 0.2
+        },
+        "operation_constraints": {
+            "connect_points": {
+                "entity_types": ["polygon", "composite"],
+                "allow_isolated": false 
+            },
+            "connect_midpoints": {
+                "entity_types": ["polygon", "composite"], 
+                "mode_probs": {"two_midpoints": 0.5, "vertex_and_midpoint": 0.5}, 
+                "allow_endpoint": false
+            },
+            "draw_perpendicular": {
+                "entity_types": ["polygon", "composite"]
+            },
+            "draw_diameter": {
+                "entity_types": ["circle"], 
+                "directions": ["horizontal", "vertical"] 
+            }
+        }
+    },
+    "drawer": {
+        "output_dir": "./results/images/raw",
+        "canvas_size": [1600, 1200],
+        "margin": 50,
+        "line_color": "#000000",
+        "line_width": 3
+    },
+    "region_extractor": {
+        "thresh": 200,
+        "binarize_mode": "fixed",
+        "fill_holes": true,
+        "arc_detect": true, 
+        "curvature_threshold": 0.005
+    },
+    "shader": {
+        "enabled": false,
+        "n_regions": [1, 2], 
+        "x_attempts": 4,
+        "min_pixel_area": 100, 
+        "shadow_types": ["hatch", "solid", "crosshatch"],
+        "hatch_spacing": 5,
+        "crosshatch_spacing": 6,
+        "adjacent_threshold": 5.0,
+        "intensity_range": [0.3, 0.7],
+        "point_tolerance": 10.0,
+        "line_tolerance": 10.0,
+        "arc_tolerance": 10.0
+    },
+    "gt": {
+        "simplify_level": "full",
+        "include_units": false
+    },
+    "annotator": {
+        "enabled": true, 
+        "point": {
+            "enabled": true, 
+            "radius": 5,
+            "color": [0, 0, 255], 
+            "text": {
+                "enabled": true,
+                "size": 18,
+                "color": [0, 0, 0],
+                "offset": 14,
+                "edge_margin": 15, 
+                "min_pixel_dist": 1,
+                "scale": 1,
+                "thickness": 2,
+                "font": "cv2.FONT_HERSHEY_SIMPLEX"
+            }
+        },
+        "line": {
+            "enabled": false, 
+            "color": [0, 255, 0], 
+            "width": 2, 
+            "text_offset": 12, 
+            "text": {
+                "enabled": true,
+                "size": 12,
+                "color": [0, 0, 0],
+                "offset": 12,
+                "edge_margin": 5, 
+                "min_pixel_dist": 3, 
+                "scale": 0.5,
+                "thickness": 2,
+                "font": "cv2.FONT_HERSHEY_SIMPLEX"
+            }
+        },
+        "perpendicular": {
+            "enabled": false,
+            "color": [255, 0, 0],
+            "width": 2, 
+            "symbol_size": 30 
+        }
+    },
+    "qa": {
+        "question_types": ["length", "angle"],
+        "type_weights": {
+            "length": 0.7,
+            "angle": 0.2
+        },   
+        "num_questions_per_group": 4,
+        "output_dir": "./results/json/qa"
+    }
+}

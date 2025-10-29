@@ -1,0 +1,7 @@
+{
+    "qa_v1": {
+        "root": "/mnt/afs/jingjinhao/project/GeoChain/MathGeo",
+        "annotation": "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/qa/qa_v1.jsonl",
+        "length": 96
+    }
+}
