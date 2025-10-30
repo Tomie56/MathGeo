@@ -7,7 +7,7 @@ from sympy import simplify, acos, pi, sqrt, cos
 logger = logging.getLogger('QAGenerator')
 
 class QAGenerator:
-    """几何问题生成器，支持难度等级计算+优先新产生元素（表达式复杂度按长度计算）"""
+    """几何问题生成器，支持基于level的元素选择和综合难度计算"""
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
@@ -34,52 +34,93 @@ class QAGenerator:
             "What is the area of the figure?",
             "Calculate the area of the shape."
         ]
-        # 表达式长度阈值（可按需调整）
-        self.EXPR_COMPLEX_THRESHOLD = 15  # 超过20字符视为复杂表达式
+        
+        # 表达式复杂度分段阈值（支持后续修改）
+        self.EXPR_COMPLEX_THRESHOLD1 = 15  # 简单表达式阈值
+        self.EXPR_COMPLEX_THRESHOLD2 = 30  # 中等表达式阈值
+        self.EXPR_COMPLEX_THRESHOLD3 = 100  # 中等表达式阈值
+        
+        # 复杂度权重分配（支持后续修改）
+        self.GRAPH_WEIGHT = 0.2    # 图复杂度权重
+        self.QUESTION_WEIGHT = 0.5  # 问题复杂度权重
+        self.ANSWER_WEIGHT = 0.3   # 答案复杂度权重
 
-    # ------------------------------ 核心辅助方法（修改表达式复杂度计算） ------------------------------
-    def _is_newly_generated_edge(self, edge_id: str) -> bool:
-        """判断线段是否为增强操作新产生的（基于ID前缀）"""
-        new_edge_prefixes = ['ConnP', 'MidL', 'VMidL', 'PerpL', 'ExtL', 'DiamL']
-        return any(edge_id.startswith(prefix) for prefix in new_edge_prefixes)
+    # ------------------------------ 核心辅助方法（基于level的复杂度计算） ------------------------------
+    def _get_element_level(self, element: Dict[str, Any], element_type: str) -> int:
+        """获取元素的level值，默认为1"""
+        if element_type == 'point':
+            return element.get('level', 1)
+        elif element_type in ['line', 'edge']:
+            return element.get('level', 1)
+        return 1
 
-    def _calculate_graph_complexity(self, geo_data: Dict[str, Any]) -> int:
-        """计算图的复杂度（1-3分）：基于实体数和点数"""
+    def _calculate_graph_complexity(self, geo_data: Dict[str, Any]) -> float:
+        """计算图的复杂度：基于点、边的数量和平均level"""
         entities_count = len(geo_data.get('entities', []))
-        points_count = len(geo_data.get('points', []))
+        points = geo_data.get('points', [])
+        lines = geo_data.get('lines', [])
+        arcs = geo_data.get('arcs', [])
         
-        if entities_count <= 3 and points_count <= 5:
-            return 1  # 简单
-        elif 4 <= entities_count <= 6 and 6 <= points_count <= 10:
-            return 2  # 中等
+        # 基础复杂度：元素数量
+        points_count = len(points)
+        edges_count = len(lines) + len(arcs)
+        count_complexity = points_count * 0.5 + edges_count * 0.5
+        
+        # 等级复杂度：平均level值
+        if points_count > 0:
+            avg_point_level = sum(self._get_element_level(p, 'point') for p in points) / points_count
         else:
-            return 3  # 复杂
-
-    def _calculate_question_complexity(self, qt_type: str, **kwargs) -> int:
-        """计算问题本身的复杂度（1-3分）：新元素+表达式长度"""
-        complexity = 1  # 基础分
+            avg_point_level = 1
+            
+        if edges_count > 0:
+            avg_edge_level = (sum(self._get_element_level(l, 'line') for l in lines) + 
+                             sum(self._get_element_level(a, 'edge') for a in arcs)) / edges_count
+        else:
+            avg_edge_level = 1
+            
+        level_complexity = avg_point_level * 0.3 + avg_edge_level * 0.7
         
-        # 1. 新产生元素加分（核心权重）
+        # 综合图复杂度
+        return count_complexity * 0.6 + level_complexity * 4.0  # 缩放因子使量级合理
+
+    def _calculate_question_complexity(self, qt_type: str, **kwargs) -> float:
+        """计算问题本身的复杂度：基于涉及元素的level"""
         if qt_type == 'length':
-            if kwargs.get('is_new_edge', False):
-                complexity += 1  # 新边+1分
+            # 长度问题：基于边的level
+            edge_level = kwargs.get('edge_level', 1)
+            return edge_level * 2.0  # 边level直接影响问题复杂度
+            
         elif qt_type == 'angle':
-            new_edge_count = sum([kwargs.get('is_new_edge1', False), kwargs.get('is_new_edge2', False)])
-            complexity += new_edge_count  # 每条新边+1分（最多+2分）
-        
-        # 2. 表达式长度加分（超过阈值视为复杂）
-        if kwargs.get('expr_length', 0) > self.EXPR_COMPLEX_THRESHOLD:
-            complexity += 1  # 长表达式+1分
-        
-        return min(complexity, 3)  # 限制最大3分
+            # 角度问题：基于点和两条边的平均level
+            point_level = kwargs.get('point_level', 1)
+            edge1_level = kwargs.get('edge1_level', 1)
+            edge2_level = kwargs.get('edge2_level', 1)
+            avg_level = (point_level + edge1_level + edge2_level) / 3.0
+            return avg_level * 2.0  # 平均level影响问题复杂度
+            
+        elif qt_type == 'area':
+            # 面积问题：基于图形复杂度（默认中等）
+            return 3.0
+        return 1.0
 
-    def _merge_complexity_levels(self, graph_level: int, question_level: int) -> int:
-        """合并图复杂度和问题复杂度，得到最终难度等级（1-5分）"""
-        total = graph_level * 0.4 + question_level * 0.6  # 图占40%，问题占60%
-        level = int(round(total * 2 - 1))  # 线性映射到1-5分
-        return max(1, min(level, 5))  # 边界限制
+    def _calculate_answer_complexity(self, expr_length: int) -> float:
+        """计算答案的复杂度：基于表达式长度的分段计算"""
+        if expr_length <= self.EXPR_COMPLEX_THRESHOLD1:
+            return 5.0  # 简单
+        elif expr_length <= self.EXPR_COMPLEX_THRESHOLD2:
+            return 10.0  # 中等
+        elif expr_length <= self.EXPR_COMPLEX_THRESHOLD3:
+            return 20.0  # 较复杂
+        else:
+            return 50.0  # 复杂
 
-    # ------------------------------ 原有辅助方法（保持不变） ------------------------------
+    def _calculate_overall_difficulty(self, graph_complex: float, question_complex: float, answer_complex: float) -> float:
+        """计算总体难度：加权求和"""
+        return (graph_complex * self.GRAPH_WEIGHT +
+                question_complex * self.QUESTION_WEIGHT +
+                answer_complex * self.ANSWER_WEIGHT)
+
+    # ------------------------------ 原有辅助方法（保持或修改） ------------------------------
     def _get_edge_name(self, edge_type: str, edge_data: Dict[str, Any]) -> str:
         if edge_type == 'line':
             start = edge_data['start_point_id']
@@ -126,29 +167,31 @@ class QAGenerator:
         pi_free = simplify(simplified / pi)
         return pi_free.is_Rational
 
-    # ------------------------------ 优化：元素选择逻辑（优先新产生元素） ------------------------------
+    # ------------------------------ 优化：元素选择逻辑（优先高level元素） ------------------------------
     def _select_edge(self, geo_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """优先选择新产生的、有长度的边"""
+        """优先选择level值高的边"""
         edges = []
-        # 处理线段（含是否新边标记）
+        # 处理线段（包含level信息）
         if 'lines' in geo_data:
             for line in geo_data['lines']:
                 edge_name = self._get_edge_name('line', line)
+                edge_level = self._get_element_level(line, 'line')
                 edges.append({
                     'type': 'line',
                     'data': line,
                     'name': edge_name,
-                    'is_new': self._is_newly_generated_edge(line['id'])
+                    'level': edge_level
                 })
-        # 处理圆弧（暂不考虑新产生）
+        # 处理圆弧
         if 'arcs' in geo_data:
             for arc in geo_data['arcs']:
                 edge_name = self._get_edge_name('arc', arc)
+                edge_level = self._get_element_level(arc, 'edge')
                 edges.append({
                     'type': 'arc',
                     'data': arc,
                     'name': edge_name,
-                    'is_new': False
+                    'level': edge_level
                 })
         
         if not edges:
@@ -161,25 +204,24 @@ class QAGenerator:
             logger.warning("未找到有长度信息的边")
             return None
         
-        # 优先选择新产生的边（有描述更佳）
-        new_edges = [e for e in edges_with_length if e['is_new']]
-        if new_edges:
-            new_edges_with_desc = [e for e in new_edges if 'description' in e['data']]
-            return random.choice(new_edges_with_desc) if new_edges_with_desc else random.choice(new_edges)
+        # 按level降序排序，优先选择高level边
+        edges_with_length.sort(key=lambda x: -x['level'])
         
-        # 无新边时选择原始边
-        edges_with_desc = [e for e in edges_with_length if 'description' in e['data']]
-        return random.choice(edges_with_desc) if edges_with_desc else random.choice(edges_with_length)
+        # 从高level边中随机选择（增加一点随机性）
+        # 前30%的高level边有更高概率被选中
+        top_percent = int(len(edges_with_length) * 0.3) or 1
+        top_candidates = edges_with_length[:top_percent]
+        return random.choice(top_candidates)
 
     def _select_angle_edges(self, geo_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """优先选择包含新产生边的角度组合"""
+        """优先选择包含高level点和边的角度组合"""
         points = geo_data.get('points', [])
         lines = geo_data.get('lines', [])
         line_map = {
             line['id']: {
                 'data': line,
                 'name': self._get_edge_name('line', line),
-                'is_new': self._is_newly_generated_edge(line['id'])
+                'level': self._get_element_level(line, 'line')
             } for line in lines
         }
         
@@ -187,6 +229,7 @@ class QAGenerator:
         
         for point in points:
             point_id = point['id']
+            point_level = self._get_element_level(point, 'point')
             related_edges = point.get('related_edges', [])
             line_edges = [e for e in related_edges if not e.startswith('Arc') and e in line_map]
             if len(line_edges) < 2:
@@ -218,21 +261,24 @@ class QAGenerator:
                     angle_rad = simplify(acos(cos_theta))
                     
                     if self._is_valid_angle(angle_rad):
-                        # 记录组合信息（含是否新边、表达式长度）
+                        # 计算角度组合的综合level（点level + 两边level的平均）
+                        combo_level = point_level * 0.4 + (edge1['level'] + edge2['level']) * 0.3
                         angle_str = str(angle_rad)
                         valid_combinations.append({
                             'vertex_id': point_id,
+                            'vertex_level': point_level,
                             'edge1_id': edge1_id,
                             'edge1_name': edge1['name'],
-                            'is_new_edge1': edge1['is_new'],
+                            'edge1_level': edge1['level'],
                             'edge2_id': edge2_id,
                             'edge2_name': edge2['name'],
-                            'is_new_edge2': edge2['is_new'],
+                            'edge2_level': edge2['level'],
                             'vertex1': vertex1,
                             'vertex2': vertex2,
                             'angle_rad': angle_rad,
                             'angle_str': angle_str,
-                            'expr_length': len(angle_str)  # 计算角度表达式长度
+                            'expr_length': len(angle_str),
+                            'combo_level': combo_level  # 用于排序的综合level
                         })
                 except Exception as e:
                     edge1_name = line_map.get(edge1_id, {}).get('name', edge1_id)
@@ -244,14 +290,15 @@ class QAGenerator:
             logger.debug("未找到符合条件的角度")
             return None
         
-        # 优先选择含新边的组合（排序：两条新边 > 一条新边 > 无新边）
-        def sort_key(comb):
-            return -(comb['is_new_edge1'] + comb['is_new_edge2'])
-        valid_combinations.sort(key=sort_key)
+        # 按综合level降序排序，优先选择高level组合
+        valid_combinations.sort(key=lambda x: -x['combo_level'])
         
-        return valid_combinations[0]
+        # 从高level组合中随机选择
+        top_percent = int(len(valid_combinations) * 0.3) or 1
+        top_candidates = valid_combinations[:top_percent]
+        return random.choice(top_candidates)
 
-    # ------------------------------ 优化：问题生成（按长度计算表达式复杂度） ------------------------------
+    # ------------------------------ 优化：问题生成（计算综合难度） ------------------------------
     def _generate_length_question(self, geo_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         selected = self._select_edge(geo_data)
         if not selected:
@@ -260,30 +307,32 @@ class QAGenerator:
         edge_type = selected['type']
         edge_data = selected['data']
         edge_name = selected['name']
-        is_new_edge = selected['is_new']
+        edge_level = selected['level']
         
         if 'length' not in edge_data:
             logger.warning(f"{edge_name} 没有长度信息，跳过")
             return None
         
         length_info = edge_data['length']
-        # 计算长度表达式长度（用原始expr字符串）
+        # 计算长度表达式长度
         expr_str = length_info['expr']
         expr_length = len(expr_str)
         
         # 生成描述
-        qt_description = f"{edge_type.capitalize()} {edge_name} (New: {is_new_edge}, Expr Length: {expr_length})"
+        qt_description = f"{edge_type.capitalize()} {edge_name} (Level: {edge_level}, Expr Length: {expr_length})"
         if 'description' in edge_data:
             qt_description += f" (Desc: {edge_data['description']})"
         
-        # 计算难度等级
-        graph_level = self._calculate_graph_complexity(geo_data)
-        question_level = self._calculate_question_complexity(
+        # 计算各部分复杂度
+        graph_complex = self._calculate_graph_complexity(geo_data)
+        question_complex = self._calculate_question_complexity(
             qt_type='length',
-            is_new_edge=is_new_edge,
-            expr_length=expr_length
+            edge_level=edge_level
         )
-        level = self._merge_complexity_levels(graph_level, question_level)
+        answer_complex = self._calculate_answer_complexity(expr_length)
+        
+        # 计算总体难度
+        diff = self._calculate_overall_difficulty(graph_complex, question_complex, answer_complex)
         
         question = random.choice(self.length_templates).format(edge_name=edge_name)
         
@@ -294,7 +343,10 @@ class QAGenerator:
             "description": geo_data.get('description', ''),
             "raw_path": geo_data.get('raw_path', ''),
             "annotated_raw_path": geo_data.get('annotated_raw_path', ''),
-            "level": level,  # 新增难度等级
+            "graph_complexity": graph_complex,
+            "question_complexity": question_complex,
+            "answer_complexity": answer_complex,
+            "diff": diff  # 综合难度值
         }
 
     def _generate_angle_question(self, geo_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -305,10 +357,11 @@ class QAGenerator:
         
         # 解析角度数据
         vertex_id = angle_data['vertex_id']
+        vertex_level = angle_data['vertex_level']
         edge1_name = angle_data['edge1_name']
+        edge1_level = angle_data['edge1_level']
         edge2_name = angle_data['edge2_name']
-        is_new_edge1 = angle_data['is_new_edge1']
-        is_new_edge2 = angle_data['is_new_edge2']
+        edge2_level = angle_data['edge2_level']
         vertex1 = angle_data['vertex1']
         vertex2 = angle_data['vertex2']
         angle_rad = angle_data['angle_rad']
@@ -323,21 +376,24 @@ class QAGenerator:
         }
         
         # 生成描述
-        new_edge_note = f" (New edges: 1={is_new_edge1}, 2={is_new_edge2})"
+        level_note = f" (Levels: Point={vertex_level}, Edge1={edge1_level}, Edge2={edge2_level})"
         expr_note = f" (Expr Length: {expr_length})"
         qt_description = (
-            f"Angle {angle_name} by {edge1_name} & {edge2_name} at {vertex_id}{new_edge_note}{expr_note}"
+            f"Angle {angle_name} by {edge1_name} & {edge2_name} at {vertex_id}{level_note}{expr_note}"
         )
         
-        # 计算难度等级
-        graph_level = self._calculate_graph_complexity(geo_data)
-        question_level = self._calculate_question_complexity(
+        # 计算各部分复杂度
+        graph_complex = self._calculate_graph_complexity(geo_data)
+        question_complex = self._calculate_question_complexity(
             qt_type='angle',
-            is_new_edge1=is_new_edge1,
-            is_new_edge2=is_new_edge2,
-            expr_length=expr_length
+            point_level=vertex_level,
+            edge1_level=edge1_level,
+            edge2_level=edge2_level
         )
-        level = self._merge_complexity_levels(graph_level, question_level)
+        answer_complex = self._calculate_answer_complexity(expr_length)
+        
+        # 计算总体难度
+        diff = self._calculate_overall_difficulty(graph_complex, question_complex, answer_complex)
         
         return {
             "question": random.choice(self.angle_templates).format(
@@ -348,32 +404,43 @@ class QAGenerator:
             "description": geo_data.get('description', ''),
             "raw_path": geo_data.get('raw_path', ''),
             "annotated_raw_path": geo_data.get('annotated_raw_path', ''),
-            "level": level,  # 新增难度等级
-            "expr_length": expr_length  # 可选：输出表达式长度，便于调试
+            "graph_complexity": graph_complex,
+            "question_complexity": question_complex,
+            "answer_complexity": answer_complex,
+            "diff": diff  # 综合难度值
         }
 
     def _generate_area_question(self, geo_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """面积问题（占位，默认难度3分）"""
-        graph_level = self._calculate_graph_complexity(geo_data)
-        # 面积表达式默认按中等长度计算
-        question_level = self._calculate_question_complexity(qt_type='area', expr_length=15)
-        level = self._merge_complexity_levels(graph_level, question_level)
+        """面积问题（基于图复杂度计算）"""
+        # 面积表达式默认中等长度
+        expr_length = 15
+        
+        # 计算各部分复杂度
+        graph_complex = self._calculate_graph_complexity(geo_data)
+        question_complex = self._calculate_question_complexity(qt_type='area')
+        answer_complex = self._calculate_answer_complexity(expr_length)
+        
+        # 计算总体难度
+        diff = self._calculate_overall_difficulty(graph_complex, question_complex, answer_complex)
+        
         return {
             "question": random.choice(self.area_templates),
             "gt": {"expr": "placeholder", "latex": "placeholder", "is_standard_radian": False},
-            "qt_description": "Area calculation (placeholder)",
+            "qt_description": "Area calculation",
             "description": geo_data.get('description', ''),
             "raw_path": geo_data.get('raw_path', ''),
             "annotated_raw_path": geo_data.get('annotated_raw_path', ''),
-            "level": level,
-            "expr_length": 15  # 占位长度
+            "graph_complexity": graph_complex,
+            "question_complexity": question_complex,
+            "answer_complexity": answer_complex,
+            "diff": diff  # 综合难度值
         }
 
     # ------------------------------ 生成入口（保持权重逻辑不变） ------------------------------
     def generate(self, geo_data: Dict[str, Any], num_questions: int, question_types: List[str], type_weights: Dict[str, float] = None) -> List[Dict[str, Any]]:
         qa_pairs = []
         generated_keys = set()  # 存储已生成问题的唯一标识（用于去重）
-        MAX_RETRY = 3  # 单类型问题生成的最大重试次数（避免重复时无限循环）
+        MAX_RETRY = 3  # 单类型问题生成的最大重试次数
 
         valid_types = [qt for qt in question_types if qt in ['length', 'area', 'angle']]
         if not valid_types:
@@ -398,10 +465,10 @@ class QAGenerator:
                 normalized_weights = [w / total_weight for w in weights]
                 target_types = random.choices(weighted_types, weights=normalized_weights, k=num_questions)
         
-        # 生成问题（核心：去重逻辑）
+        # 生成问题
         for qt in target_types:
             retry = 0
-            while retry < MAX_RETRY:  # 重复时重试，最多MAX_RETRY次
+            while retry < MAX_RETRY:
                 try:
                     # 生成对应类型的问题
                     if qt == 'length':
@@ -419,17 +486,14 @@ class QAGenerator:
                         logger.debug(f"第{retry}次重试生成{qt}类型问题（生成失败）")
                         continue
 
-                    # 提取问题的唯一标识（关键逻辑：定义“相同问题”的判断标准）
+                    # 提取问题的唯一标识
                     if qt == 'length':
-                        # 长度问题：唯一标识为线段/圆弧的ID（避免重复问同一线段长度）
-                        edge_id = qa['gt'].get('edge_id') or qa['qt_description'].split()[1]  # 从描述中提取边名
+                        edge_id = qa['gt'].get('edge_id') or qa['qt_description'].split()[1]
                         unique_key = f"length_{edge_id}"
                     elif qt == 'angle':
-                        # 角度问题：唯一标识为顶点+两条边的组合（避免重复问同一角度）
-                        angle_name = qa['question'].split('angle ')[1].split()[0]  # 从问题中提取角度名（如A-B-C）
+                        angle_name = qa['question'].split('angle ')[1].split()[0]
                         unique_key = f"angle_{angle_name}"
                     elif qt == 'area':
-                        # 面积问题：同一图形只问一次
                         unique_key = "area"
 
                     # 检查是否重复
@@ -438,18 +502,17 @@ class QAGenerator:
                         logger.debug(f"第{retry}次重试生成{qt}类型问题（重复：{unique_key}）")
                         continue
 
-                    # 不重复则添加到结果
+                    # 添加到结果
                     qa_pairs.append(qa)
                     generated_keys.add(unique_key)
-                    logger.debug(f"生成{qt}类型问题（唯一标识：{unique_key}）")
-                    break  # 跳出重试循环
+                    logger.debug(f"生成{qt}类型问题（唯一标识：{unique_key}，难度：{qa['diff']:.2f}）")
+                    break
 
                 except Exception as e:
                     retry += 1
                     logger.error(f"第{retry}次重试生成{qt}类型问题失败: {str(e)}")
                     continue
 
-            # 超过最大重试次数仍失败/重复，则放弃该类型问题
             if retry >= MAX_RETRY:
                 logger.debug(f"生成{qt}类型问题超过最大重试次数（{MAX_RETRY}次），跳过")
 

@@ -236,14 +236,16 @@ class GeometryAnnotator:
         candidates = []
 
         priority_dirs = [
-            ("正右", 1, 0), ("正左", -1, 0),
-            ("正上", 0, -1), ("正下", 0, 1)
+            ("正右", 1, 0), ("正左", -2, 0),
+            ("正下", 0, -2), ("正上", 0, 1),
+            ("右下", 1, -2), ("左下", -2, -2),
+            ("右上", 1, 1), ("左上", -2, 1)
         ]
 
         offset_levels = [
-            base_offset - 6, base_offset - 4,
-            base_offset + 0, base_offset + 4,
-            base_offset + 8
+            base_offset - 8, base_offset - 4, base_offset - 2,
+            base_offset + 0, base_offset + 2,
+            base_offset + 4
         ]
         offset_levels = [o for o in offset_levels if o >= 3] 
         

@@ -13,19 +13,30 @@ logger = logging.getLogger('builder')
 
 class RandomGeometryBuilder:
     def __init__(self, base_json: Dict, base_id: str = "", max_points: int = 500, max_lines: int = 300):
-        """初始化builder，加载基础图形数据"""
+        """初始化builder，加载基础图形数据并添加level属性"""
         self.data = base_json.copy()
         self.x, self.y = symbols('x y')
+        self.max_points = max_points 
+        self.max_lines = max_lines 
         
-        # 新增：点和线段数量上限（可配置）
-        self.max_points = max_points  # 最大点数量
-        self.max_lines = max_lines    # 最大线段数量
         self.max_expr_length = 50
         
-        # 基础数据结构与索引
+        # 初始化并补全level属性（默认基础元素level=1）
         self.points = self.data["points"]
+        for p in self.points:
+            if "level" not in p:
+                p["level"] = 1
+        
         self.lines = self.data["lines"]
-        self.arcs = self.data.get("arcs", []) 
+        for l in self.lines:
+            if "level" not in l:
+                l["level"] = 1
+        
+        self.arcs = self.data.get("arcs", [])
+        for a in self.arcs:
+            if "level" not in a:
+                a["level"] = 1
+        
         self.entities = self.data["entities"]
         
         self.point_id_map = {p["id"]: p for p in self.points}
@@ -33,7 +44,6 @@ class RandomGeometryBuilder:
         self.arc_id_map = {a["id"]: a for a in self.arcs}
         self.entity_id_map = {e["id"]: e for e in self.entities}
         
-        # 操作计数器（生成唯一ID）
         self.operation_counter = 0
         self.entity_vertices_cache = self._cache_entity_vertices()
         self.entity_lines_cache = self._cache_entity_lines()
@@ -43,26 +53,22 @@ class RandomGeometryBuilder:
         self.line_pairs: Set[Tuple[str, str]] = self._build_line_pairs()
         
         self.enhancement_history = []
-        self.MAX_RETRIES = 4  # 重试次数
+        
+        self.MAX_RETRIES = 4
         self.base_id = base_id
         self.only_circles = self._is_only_circles()
 
-        # 检查初始数量是否已超标
         if len(self.points) >= self.max_points:
             raise ValueError(f"初始点数量({len(self.points)})超过上限({self.max_points})")
         if len(self.lines) >= self.max_lines:
             raise ValueError(f"初始线段数量({len(self.lines)})超过上限({self.max_lines})")
 
-    # ------------------------------ 基础工具方法（增量缓存） ------------------------------
+    # ------------------------------ 基础工具方法 ------------------------------
     
     def _is_only_circles(self) -> bool:
-        """判断基础图形是否仅包含圆形实体（无其他线段/多边形等）"""
         if len(self.entities) == 0:
             return False
         all_circles = all(e["type"] == "circle" for e in self.entities)
-        has_non_circle_lines = len(self.lines) > 0 and not all(
-            line.get("type") in ["diameter", "circle_related"] for line in self.lines
-        )
         return all_circles
 
     def _cache_entity_vertices(self) -> Dict[str, List[str]]:
@@ -87,13 +93,10 @@ class RandomGeometryBuilder:
         return cache
 
     def _cache_on_segment_points(self) -> List[str]:
-        """初始化线上点缓存（仅首次调用）"""
         on_segment = set()
-        # 1. 添加所有线段的端点
         for line in self.lines:
             on_segment.add(line["start_point_id"])
             on_segment.add(line["end_point_id"])
-        # 2. 添加所有线段上的非端点
         for pid in self.point_id_map:
             if pid in on_segment:
                 continue
@@ -104,11 +107,10 @@ class RandomGeometryBuilder:
                 e_x, e_y = self.get_point_coords(e_id)
                 if self._point_on_segment(px, py, s_x, s_y, e_x, e_y):
                     on_segment.add(pid)
-                    break  # 找到即停止
+                    break
         return list(on_segment)
 
     def _build_line_pairs(self) -> Set[Tuple[str, str]]:
-        """构建线段点对哈希表（存储有序对），O(1)判断两点是否已连接"""
         pairs = set()
         for line in self.lines:
             p1, p2 = line["start_point_id"], line["end_point_id"]
@@ -118,18 +120,15 @@ class RandomGeometryBuilder:
         return pairs
     
     def _is_expr_too_long(self, pid: str) -> bool:
-        """检查点的x/y坐标表达式是否超过长度上限"""
         p = self.point_id_map[pid]
         x_expr = p["x"]["expr"]
         y_expr = p["y"]["expr"]
-        # 检查x或y表达式长度是否超标
         return len(x_expr) > self.max_expr_length or len(y_expr) > self.max_expr_length
 
     def _is_point_on_any_segment(self, pid: str) -> bool:
         return pid in self.on_segment_points_cache
     
     def _is_point_on_other_edge(self, point_id: str, exclude_line_id: str) -> bool:
-        """检查点是否在除exclude_line_id之外的任何线段上"""
         if point_id not in self.point_id_map:
             return False
             
@@ -153,15 +152,14 @@ class RandomGeometryBuilder:
         return uid
 
     def _parse_expr(self, expr_str: str) -> sp.Expr:
-        return sp.sympify(expr_str)  # 延迟化简，仅解析
+        return sp.sympify(expr_str)
 
     def _serialize_expr(self, expr: sp.Expr) -> str:
-        """仅对复杂表达式化简，简单表达式直接转换"""
         if expr.has(sp.sin, sp.cos, sp.sqrt, sp.tan):
             expr = simplify(expr)
         return str(expr)
 
-    # ------------------------------ 点和线段操作（增量更新+数量控制） ------------------------------
+    # ------------------------------ 点和线段操作（含level维护） ------------------------------
     def get_point_coords(self, pid: str) -> Tuple[sp.Expr, sp.Expr]:
         p = self.point_id_map[pid]
         return self._parse_expr(p["x"]["expr"]), self._parse_expr(p["y"]["expr"])
@@ -172,17 +170,17 @@ class RandomGeometryBuilder:
                      prefix: str = "P",
                      point_type: Optional[str] = None,
                      related_vertex: Optional[str] = None,
-                     related_edge: Optional[str] = None) -> str:
-        # 新增：检查点数量是否超过上限
+                     related_edge: Optional[str] = None,
+                     level: int = 1) -> str:  # 新增level参数
+        
         if len(self.points) >= self.max_points:
             raise OverflowError(f"点数量超过上限({self.max_points})，放弃本轮生成")
         
-        x_simplified = x_expr  # 延迟化简
+        x_simplified = x_expr
         y_simplified = y_expr
         x_str = self._serialize_expr(x_simplified)
         y_str = self._serialize_expr(y_simplified)
         
-        # 快速查重（用符号等式判断，避免全量化简）
         for p in self.points:
             existing_x = self._parse_expr(p["x"]["expr"])
             existing_y = self._parse_expr(p["y"]["expr"])
@@ -197,13 +195,17 @@ class RandomGeometryBuilder:
                     p["related_vertex"] = related_vertex
                 if related_edge and "related_edge" not in p:
                     p["related_edge"] = related_edge
+                # 重合点取最高level
+                if p["level"] < level:
+                    p["level"] = level
                 return p["id"]
         
         pid = self._get_unique_id(prefix)
         new_point = {
             "id": pid,
             "x": {"expr": x_str, "latex": sp.latex(x_simplified)},
-            "y": {"expr": y_str, "latex": sp.latex(y_simplified)}
+            "y": {"expr": y_str, "latex": sp.latex(y_simplified)},
+            "level": level  # 存储level
         }
         if point_type:
             new_point["type"] = point_type
@@ -216,7 +218,6 @@ class RandomGeometryBuilder:
         self.point_id_map[pid] = new_point
         self.all_points_cache.add(pid)
         
-        # 增量更新线上点缓存：仅检查新点是否在任何线段上
         px, py = x_simplified, y_simplified
         for line in self.lines:
             s_id, e_id = line["start_point_id"], line["end_point_id"]
@@ -226,7 +227,6 @@ class RandomGeometryBuilder:
                 self.on_segment_points_cache.add(pid)
                 break
         
-        # 增量更新实体顶点缓存
         for eid in self.entity_vertices_cache:
             self.entity_vertices_cache[eid].append(pid)
         
@@ -237,12 +237,12 @@ class RandomGeometryBuilder:
                     end_pid: str, 
                     prefix: str = "L", 
                     line_type: Optional[str] = None,
-                    description: Optional[str] = None) -> str:
-        # 新增：检查线段数量是否超过上限
+                    description: Optional[str] = None,
+                    level: int = 1) -> str:  # 新增level参数
+        
         if len(self.lines) >= self.max_lines:
             raise OverflowError(f"线段数量超过上限({self.max_lines})，放弃本轮生成")
         
-        # 用哈希表快速判断线段是否已存在
         p1, p2 = start_pid, end_pid
         if p1 > p2:
             p1, p2 = p2, p1
@@ -254,6 +254,9 @@ class RandomGeometryBuilder:
                         line["type"] = line_type
                     if description and "description" not in line:
                         line["description"] = description
+                    # 重合线取最高level
+                    if line["level"] < level:
+                        line["level"] = level
                     return line["id"]
         
         lid = self._get_unique_id(prefix)
@@ -261,20 +264,19 @@ class RandomGeometryBuilder:
             "id": lid,
             "type": line_type if line_type else "line",
             "start_point_id": start_pid,
-            "end_point_id": end_pid
+            "end_point_id": end_pid,
+            "level": level  # 存储level
         }
         if description:
             new_line["description"] = description
         
-        self.lines.append(new_line)
         self.line_id_map[lid] = new_line
-        self.line_pairs.add((p1, p2))  # 更新线段哈希表
+        self.lines.append(new_line)
+        self.line_pairs.add((p1, p2))
         
-        # 增量更新线上点缓存：添加线段端点
         self.on_segment_points_cache.add(start_pid)
         self.on_segment_points_cache.add(end_pid)
         
-        # 增量更新实体线段缓存
         for eid in self.entity_lines_cache:
             self.entity_lines_cache[eid].append(lid)
         
@@ -295,14 +297,11 @@ class RandomGeometryBuilder:
                             count: int = 2, 
                             distinct: bool = True, 
                             filter_isolated: bool = True) -> List[str]:
-        """选择点，确保返回不重复的点，仅支持过滤孤立点（不允许孤立点补充）"""
-        # 1. 获取候选点
         if entity_id:
             candidates = self.entity_vertices_cache[entity_id]
         else:
             candidates = list(self.all_points_cache)
         
-        # 2. 过滤孤立点（严格过滤，不允许fallback）
         if filter_isolated:
             candidates = [pid for pid in candidates if self._is_point_on_any_segment(pid)]
 
@@ -310,11 +309,9 @@ class RandomGeometryBuilder:
         if not candidates:
             raise ValueError(f"无符合条件的点（已过滤表达式过长的点，上限{self.max_expr_length}字符）")
         
-        # 3. 检查数量是否足够（不足则直接失败）
         if count > len(candidates):
             raise ValueError(f"线上点数量不足（需要{count}，现有{len(candidates)}）")
         
-        # 4. 随机选择（使用sample确保不重复）
         return random.sample(candidates, count)
 
     def _randomly_select_lines(self, entity_id: str = None, count: int = 2, distinct: bool = True) -> List[str]:
@@ -352,7 +349,7 @@ class RandomGeometryBuilder:
             raise ValueError("无包含有效圆心和半径的圆形实体")
         return random.choice(valid_circles)
 
-    # ------------------------------ 操作可行性与选择（动态抽样） ------------------------------
+    # ------------------------------ 操作可行性与选择 ------------------------------
     def _is_operation_feasible(self, op_type: str, constraints: Dict) -> bool:
         try:
             if op_type == "connect_points":
@@ -369,7 +366,6 @@ class RandomGeometryBuilder:
                 return len(self.line_id_map) >= 1 and len(on_segment_points) >= 1
             
             elif op_type == "draw_diameter":
-                # 适配约束：仅从配置指定的实体类型中选择（默认["circle"]）
                 target_entity_types = constraints.get("entity_types", ["circle"])
                 circle_entities = [e for e in self.entities if e["type"] in target_entity_types]
                 if not circle_entities:
@@ -379,10 +375,8 @@ class RandomGeometryBuilder:
                     for comp_id in entity["components"]:
                         if comp_id in self.arc_id_map:
                             circle = self.arc_id_map[comp_id]
-                            # 确保圆心存在且有效
                             if ("center_id" in circle and "radius" in circle and 
                                 circle["center_id"] in self.point_id_map):
-                                # 兼容radius字段可能的存储格式（expr或直接值）
                                 radius_expr = circle["radius"]["expr"] if isinstance(circle["radius"], dict) else circle["radius"]
                                 if radius_expr:
                                     return True
@@ -397,11 +391,8 @@ class RandomGeometryBuilder:
     def _select_feasible_operation_type(self, operation_probs: Dict[str, float], constraints: Dict) -> str:
         adjusted_probs = operation_probs.copy()
         
-        # 优化1：扩大draw_diameter优先级提升场景（不仅限于仅圆形图形）
-        # 只要存在可行的圆形实体，就提高draw_diameter概率（确保能被选中）
         draw_diameter_feasible = self._is_operation_feasible("draw_diameter", constraints.get("draw_diameter", {}))
         if draw_diameter_feasible and "draw_diameter" in adjusted_probs:
-            # 调整概率：draw_diameter占比0.4，其余操作按原比例分配剩余0.6
             diameter_prob = 0.4
             other_total = sum(p for k, p in adjusted_probs.items() if k != "draw_diameter")
             if other_total > 0:
@@ -411,14 +402,12 @@ class RandomGeometryBuilder:
                         adjusted_probs[k] *= scale
                 adjusted_probs["draw_diameter"] = diameter_prob
             else:
-                # 仅draw_diameter可行时，概率设为1.0
                 adjusted_probs["draw_diameter"] = 1.0
             logger.debug(f"检测到可行的圆形实体，提高draw_diameter操作优先级（概率：{diameter_prob}）")
 
         feasible_types = []
         feasible_probs = []
         
-        # 优化2：去掉失败惩罚系数（删除recent_failures相关逻辑）
         for op_type, prob in adjusted_probs.items():
             op_constraints = constraints.get(op_type, {})
             if self._is_operation_feasible(op_type, op_constraints):
@@ -428,12 +417,11 @@ class RandomGeometryBuilder:
         if not feasible_types:
             raise ValueError("无可行的操作类型")
         
-        # 归一化概率
         total = sum(feasible_probs)
         feasible_probs = [p / total for p in feasible_probs]
         return random.choices(feasible_types, weights=feasible_probs, k=1)[0]
 
-    # ------------------------------ 操作生成（严格过滤孤立点） ------------------------------
+    # ------------------------------ 操作生成 ------------------------------
     def _generate_random_operation(self, op_type: str, op_constraints: Dict) -> Dict:
         if op_type == "connect_points":
             constraints = op_constraints.get("connect_points", {})
@@ -448,7 +436,6 @@ class RandomGeometryBuilder:
                         filter_isolated=not allow_isolated
                     )
                     
-                    # 严格检查两点间是否已有线段（双向检查，确保无重复）
                     a, b = (p1_id, p2_id) if p1_id < p2_id else (p2_id, p1_id)
                     if (a, b) not in self.line_pairs and (b, a) not in self.line_pairs:
                         logger.debug(f"connect_points重试{retry}次成功：连接点{p1_id}和{p2_id}")
@@ -582,30 +569,22 @@ class RandomGeometryBuilder:
             constraints = op_constraints.get("draw_perpendicular", {})
             target_entity_types = constraints.get("entity_types", ["polygon", "composite"])
             
-            # 辅助函数：判断点是否在直线（含延长线）上
             def is_point_on_line(px, py, s_x, s_y, e_x, e_y):
-                # 向量叉积为0则共线（点在直线上）
                 cross = (e_x - s_x) * (py - s_y) - (e_y - s_y) * (px - s_x)
                 return sp.simplify(cross) == 0
             
-            # 辅助函数：计算垂足坐标
             def calculate_foot_of_perpendicular(px, py, s_x, s_y, e_x, e_y):
-                # 线段向量
                 se_x = e_x - s_x
                 se_y = e_y - s_y
-                # 点到起点向量
                 sp_x = px - s_x
                 sp_y = py - s_y
-                # 投影参数 t = (sp · se) / |se|²
                 dot_product = sp_x * se_x + sp_y * se_y
                 se_sq = se_x**2 + se_y**2
                 t = dot_product / se_sq
-                # 垂足坐标
                 foot_x = s_x + t * se_x
                 foot_y = s_y + t * se_y
                 return sp.simplify(foot_x), sp.simplify(foot_y)
             
-            # 辅助函数：检查是否存在与目标坐标重合的点
             def find_matching_point(target_x, target_y):
                 for pid, p in self.point_id_map.items():
                     px = self._parse_expr(p["x"]["expr"])
@@ -627,24 +606,19 @@ class RandomGeometryBuilder:
                         filter_isolated=True
                     )[0]
                     
-                    # 获取点和线段坐标
                     px, py = self.get_point_coords(point_id)
                     s, e = line["start_point_id"], line["end_point_id"]
                     s_x, s_y = self.get_point_coords(s)
                     e_x, e_y = self.get_point_coords(e)
                     
-                    # 校验1：点是否在直线（含延长线）上（在则作垂线无意义）
                     if is_point_on_line(px, py, s_x, s_y, e_x, e_y):
                         logger.debug(f"draw_perpendicular重试{retry}次失败：点{point_id}在直线{line_id}（含延长线）上")
                         continue
                     
-                    # 计算垂足
                     foot_x, foot_y = calculate_foot_of_perpendicular(px, py, s_x, s_y, e_x, e_y)
                     
-                    # 校验2：垂足是否已存在
                     foot_pid = find_matching_point(foot_x, foot_y)
                     if foot_pid:
-                        # 校验3：垂足与点之间是否已有线段
                         a, b = (point_id, foot_pid) if point_id < foot_pid else (foot_pid, point_id)
                         if (a, b) in self.line_pairs or (b, a) in self.line_pairs:
                             logger.debug(f"draw_perpendicular重试{retry}次失败：垂足{foot_pid}与点{point_id}已存在线段")
@@ -655,7 +629,7 @@ class RandomGeometryBuilder:
                         "type": op_type,
                         "line_id": line_id,
                         "point_id": point_id,
-                        "foot_coords": (foot_x, foot_y)  # 附加垂足坐标供后续使用
+                        "foot_coords": (foot_x, foot_y)
                     }
                 except Exception as e:
                     logger.debug(f"draw_perpendicular重试{retry}次失败：{str(e)}")
@@ -663,7 +637,6 @@ class RandomGeometryBuilder:
             raise ValueError(f"超过最大重试次数（{self.MAX_RETRIES}次），未找到合适的垂线参数")
         
         elif op_type == "draw_diameter":
-            # 保持原有逻辑
             constraints = op_constraints.get("draw_diameter", {})
             target_entity_types = constraints.get("entity_types", ["circle"])
             directions = constraints.get("directions", ["horizontal", "vertical"])
@@ -690,11 +663,10 @@ class RandomGeometryBuilder:
         else:
             raise ValueError(f"不支持的操作类型: {op_type}")
 
-    # ------------------------------ 交点检测与几何计算（全符号） ------------------------------
+    # ------------------------------ 交点检测与几何计算（含level处理） ------------------------------
     def _point_on_segment(self, px: sp.Expr, py: sp.Expr, 
                         x1: sp.Expr, y1: sp.Expr, 
                         x2: sp.Expr, y2: sp.Expr) -> bool:
-        """检查点(px, py)是否在线段(x1,y1)-(x2,y2)上"""
         collinear = (px - x1) * (y2 - y1) - (py - y1) * (x2 - x1)
         collinear_simplified = sp.simplify(collinear)
         if not sp.Eq(collinear_simplified, 0):
@@ -713,24 +685,42 @@ class RandomGeometryBuilder:
         
         return bool(simplified) if isinstance(simplified, bool) else False
 
-    def _line_arc_intersection(self, line_id: str, arc_id: str) -> List[Tuple[sp.Expr, sp.Expr]]:
-        """计算线段与圆弧的交点"""
+    def _line_arc_intersection(self, line_id: str, arc_id: str) -> List[Tuple[sp.Expr, sp.Expr, int]]:
+        """计算线段与圆弧的交点，返回(坐标x, 坐标y, 交点level)"""
         arc = self.arc_id_map[arc_id]
+        # 检查圆弧必要参数
         if "center_id" not in arc or "radius_expr" not in arc:
             return []
         
         center_id = arc["center_id"]
+        # 验证圆心存在
+        if center_id not in self.point_id_map:
+            logger.warning(f"圆弧{arc_id}的圆心{center_id}不存在")
+            return []
+            
         cx, cy = self.get_point_coords(center_id)
         radius = self._parse_expr(arc["radius_expr"])
+        arc_level = arc["level"]
         
+        # 验证线段存在
+        if line_id not in self.line_id_map:
+            logger.warning(f"线段{line_id}不存在")
+            return []
+            
         s, e = self.line_id_map[line_id]["start_point_id"], self.line_id_map[line_id]["end_point_id"]
         x1, y1 = self.get_point_coords(s)
         x2, y2 = self.get_point_coords(e)
+        line_level = self.line_id_map[line_id]["level"]
         
-        t = sp.Symbol('t')
+        # 交点level为两者最大值
+        intersection_level = max(line_level, arc_level)
+        
+        # 参数化线段方程
+        t = sp.Symbol('t', real=True)  
         x = x1 + t * (x2 - x1)
         y = y1 + t * (y2 - y1)
         
+        # 圆方程
         circle_eq = (x - cx)**2 + (y - cy)** 2 - radius**2
         circle_eq = sp.simplify(circle_eq)
         
@@ -738,37 +728,77 @@ class RandomGeometryBuilder:
         intersections = []
         
         for sol in solutions:
+            # 处理不同形式的解
             if isinstance(sol, dict):
+                sol = sol.get(t, None)
+            if sol is None:
                 continue
-            t_val = sp.simplify(sol)
-            if sp.im(t_val) != 0:
-                continue
-            t_val = sp.re(t_val)
-            
-            if sp.simplify(t_val >= 0) and sp.simplify(t_val <= 1):
+                
+            try:
+                t_val = sp.simplify(sol)
+                # 过滤复数解
+                if sp.im(t_val) != 0:
+                    continue
+                t_val = sp.re(t_val)
+                
+                # 检查t是否在线段范围内[0,1]
+                t_valid = sp.And(sp.Ge(t_val, 0), sp.Le(t_val, 1))
+                if not sp.simplify(t_valid):
+                    continue
+                
+                # 计算交点坐标
                 ix = sp.simplify(x.subs(t, t_val))
                 iy = sp.simplify(y.subs(t, t_val))
                 
+                # 检查是否在圆弧角度范围内
+                angle_check_passed = True
                 if "start_angle" in arc and "end_angle" in arc:
-                    start_angle = self._parse_expr(arc["start_angle"])
-                    end_angle = self._parse_expr(arc["end_angle"])
-                    dx = ix - cx
-                    dy = iy - cy
-                    angle = sp.atan2(dy, dx)
-                    if sp.simplify(start_angle <= end_angle):
-                        in_angle_range = (angle >= start_angle) & (angle <= end_angle)
-                    else:
-                        in_angle_range = (angle >= start_angle) | (angle <= end_angle)
-                    if not sp.simplify(in_angle_range):
-                        continue
+                    try:
+                        start_angle = self._parse_expr(arc["start_angle"])
+                        end_angle = self._parse_expr(arc["end_angle"])
+                        dx = ix - cx
+                        dy = iy - cy
+                        
+                        # 计算交点相对于圆心的角度
+                        angle = sp.atan2(dy, dx)
+                        # 标准化角度到[0, 2π)范围
+                        angle = sp.simplify(angle % (2 * sp.pi))
+                        start_angle = sp.simplify(start_angle % (2 * sp.pi))
+                        end_angle = sp.simplify(end_angle % (2 * sp.pi))
+                        
+                        # 检查角度是否在圆弧范围内
+                        if sp.simplify(start_angle <= end_angle):
+                            in_angle_range = sp.And(angle >= start_angle, angle <= end_angle)
+                        else:
+                            in_angle_range = sp.Or(angle >= start_angle, angle <= end_angle)
+                            
+                        angle_check_passed = sp.simplify(in_angle_range)
+                    except Exception as e:
+                        logger.warning(f"角度范围计算失败: {str(e)}")
+                        angle_check_passed = False
                 
-                intersections.append((ix, iy))
+                if angle_check_passed:
+                    is_new_point = True
+                    for endpoint in [s, e]:
+                        ex, ey = self.get_point_coords(endpoint)
+                        if sp.simplify(ix - ex) == 0 and sp.simplify(iy - ey) == 0:
+                            is_new_point = False
+                            break
+                            
+                    if is_new_point:
+                        intersections.append((ix, iy, intersection_level))
+            
+            except Exception as e:
+                logger.warning(f"处理交点解时出错: {str(e)}")
+                continue
         
         return intersections
+
 
     def detect_new_intersections(self, new_line_id: str) -> List[str]:
         new_ips = []
         new_line = self.line_id_map[new_line_id]
+        new_line_level = new_line["level"]
         s_new, e_new = new_line["start_point_id"], new_line["end_point_id"]
         x1_new, y1_new = self.get_point_coords(s_new)
         x2_new, y2_new = self.get_point_coords(e_new)
@@ -783,6 +813,7 @@ class RandomGeometryBuilder:
             if line_id == new_line_id:
                 continue
             line = self.line_id_map[line_id]
+            line_level = line["level"]
             s, e = line["start_point_id"], line["end_point_id"]
             x1, y1 = self.get_point_coords(s)
             x2, y2 = self.get_point_coords(e)
@@ -792,15 +823,21 @@ class RandomGeometryBuilder:
                 continue
             
             intersections = self._line_intersection(new_line_id, line_id)
-            for x, y in intersections:
+            for x, y, level in intersections:
                 x_simplified = sp.simplify(x)
                 y_simplified = sp.simplify(y)
-                pid = self.add_new_point(x_simplified, y_simplified, prefix="I", point_type="intersection")
+                pid = self.add_new_point(
+                    x_simplified, y_simplified, 
+                    prefix="I", 
+                    point_type="intersection",
+                    level=level  # 使用计算的交点level
+                )
                 new_ips.append(pid)
         
         # 检测与现有圆弧的交点
         for arc_id in self.arc_id_map:
             arc = self.arc_id_map[arc_id]
+            arc_level = arc["level"]
             if "center_id" in arc and "radius_expr" in arc:
                 cx, cy = self.get_point_coords(arc["center_id"])
                 r = self._parse_expr(arc["radius_expr"])
@@ -814,28 +851,49 @@ class RandomGeometryBuilder:
                     continue
             
             intersections = self._line_arc_intersection(new_line_id, arc_id)
-            for x, y in intersections:
+            for x, y, level in intersections:
                 x_simplified = sp.simplify(x)
                 y_simplified = sp.simplify(y)
-                pid = self.add_new_point(x_simplified, y_simplified, prefix="I", point_type="arc_intersection")
+                pid = self.add_new_point(
+                    x_simplified, y_simplified, 
+                    prefix="I", 
+                    point_type="arc_intersection",
+                    level=level  # 使用计算的交点level
+                )
                 new_ips.append(pid)
         
         return new_ips
 
-    def _line_intersection(self, line1_id: str, line2_id: str) -> List[Tuple[sp.Expr, sp.Expr]]:
+    def _line_intersection(self, line1_id: str, line2_id: str) -> List[Tuple[sp.Expr, sp.Expr, int]]:
+        """计算两线段交点，返回(坐标x, 坐标y, 交点level)"""
         s1, e1 = self.line_id_map[line1_id]["start_point_id"], self.line_id_map[line1_id]["end_point_id"]
         x1, y1 = self.get_point_coords(s1)
         x2, y2 = self.get_point_coords(e1)
+        line1_level = self.line_id_map[line1_id]["level"]
         
         s2, e2 = self.line_id_map[line2_id]["start_point_id"], self.line_id_map[line2_id]["end_point_id"]
         x3, y3 = self.get_point_coords(s2)
         x4, y4 = self.get_point_coords(e2)
+        line2_level = self.line_id_map[line2_id]["level"]
+        
+        # 交点level为两者最大值
+        intersection_level = max(line1_level, line2_level)
         
         def points_equal(p1: Tuple[sp.Expr, sp.Expr], p2: Tuple[sp.Expr, sp.Expr]) -> bool:
             return sp.Eq(p1[0], p2[0]) and sp.Eq(p1[1], p2[1])
         
         if (points_equal((x1, y1), (x3, y3)) or points_equal((x1, y1), (x4, y4)) or
             points_equal((x2, y2), (x3, y3)) or points_equal((x2, y2), (x4, y4))):
+            return []
+        
+        dx1 = x2 - x1
+        dy1 = y2 - y1
+        dx2 = x4 - x3
+        dy2 = y4 - y3
+        
+        cross_product = sp.simplify(dx1 * dy2 - dx2 * dy1)
+        if sp.Eq(cross_product, 0):
+            logger.debug(f"线段{line1_id}与{line2_id}平行或重合，无交点")
             return []
         
         t, s = symbols('t s')
@@ -857,15 +915,22 @@ class RandomGeometryBuilder:
             if t_valid and s_valid:
                 x = simplify(x1 + t_val*(x2 - x1))
                 y = simplify(y1 + t_val*(y2 - y1))
-                intersections.append((x, y))
+                intersections.append((x, y, intersection_level))
         
         return intersections
 
-    def _calculate_foot_of_perpendicular(self, point_id: str, line_id: str) -> Tuple[sp.Expr, sp.Expr, bool]:
+    def _calculate_foot_of_perpendicular(self, point_id: str, line_id: str) -> Tuple[sp.Expr, sp.Expr, bool, int]:
+        """计算垂足，返回(坐标x, 坐标y, 是否在线段上, 垂足level)"""
         px, py = self.get_point_coords(point_id)
+        point_level = self.point_id_map[point_id]["level"]
+        
         s, e = self.line_id_map[line_id]["start_point_id"], self.line_id_map[line_id]["end_point_id"]
         x1, y1 = self.get_point_coords(s)
         x2, y2 = self.get_point_coords(e)
+        line_level = self.line_id_map[line_id]["level"]
+        
+        # 垂足level = 点level + 线level
+        foot_level = point_level + line_level
         
         dx = x2 - x1
         dy = y2 - y1
@@ -873,23 +938,34 @@ class RandomGeometryBuilder:
         py_vec = py - y1
         
         if sp.Eq(dx**2 + dy**2, 0):
-            return (x1, y1, True)
+            return (x1, y1, True, foot_level)
         
         t = (px_vec * dx + py_vec * dy) / (dx**2 + dy**2)
         foot_x = x1 + t * dx
         foot_y = y1 + t * dy
         on_segment = Ge(t, 0) and Le(t, 1)
-        return (foot_x, foot_y, bool(on_segment))
+        return (foot_x, foot_y, bool(on_segment), foot_level)
 
-    # ------------------------------ 操作执行（全符号计算） ------------------------------
+    # ------------------------------ 操作执行（含level计算） ------------------------------
     def execute_operation(self, op: Dict) -> Dict:
         op_type = op["type"]
         result = {"operation": op_type, "details": op, "new_elements": []}
         
         if op_type == "connect_points":
             p1_id, p2_id = op["point_ids"]
+            p1_level = self.point_id_map[p1_id]["level"]
+            p2_level = self.point_id_map[p2_id]["level"]
+            # 新线level = 两点level和
+            line_level = p1_level + p2_level
+            
             desc = f"Connect points {p1_id} and {p2_id} (both on segments)"
-            line_id = self.add_new_line(p1_id, p2_id, prefix="ConnP", line_type="connection", description=desc)
+            line_id = self.add_new_line(
+                p1_id, p2_id, 
+                prefix="ConnP", 
+                line_type="connection", 
+                description=desc,
+                level=line_level  # 设置新线level
+            )
             new_ips = self.detect_new_intersections(line_id)
             result["new_elements"].append(("line", line_id))
             result["new_elements"].extend([("point", pid) for pid in new_ips])
@@ -900,22 +976,46 @@ class RandomGeometryBuilder:
             
             if mode == "two_midpoints":
                 line1_id, line2_id = op["line_ids"]
+                line1_level = self.line_id_map[line1_id]["level"]
+                line2_level = self.line_id_map[line2_id]["level"]
+                
+                # 中点level = 对应边的level
                 s1, e1 = self.line_id_map[line1_id]["start_point_id"], self.line_id_map[line1_id]["end_point_id"]
                 x1, y1 = self.get_point_coords(s1)
                 x2, y2 = self.get_point_coords(e1)
                 mid1_x = (x1 + x2) / 2
                 mid1_y = (y1 + y2) / 2
-                mid1_id = self.add_new_point(mid1_x, mid1_y, prefix="M", point_type="midpoint", related_edge=line1_id)
+                mid1_id = self.add_new_point(
+                    mid1_x, mid1_y, 
+                    prefix="M", 
+                    point_type="midpoint", 
+                    related_edge=line1_id,
+                    level=line1_level  # 中点level=边level
+                )
                 
                 s2, e2 = self.line_id_map[line2_id]["start_point_id"], self.line_id_map[line2_id]["end_point_id"]
                 x3, y3 = self.get_point_coords(s2)
                 x4, y4 = self.get_point_coords(e2)
                 mid2_x = (x3 + x4) / 2
                 mid2_y = (y3 + y4) / 2
-                mid2_id = self.add_new_point(mid2_x, mid2_y, prefix="M", point_type="midpoint", related_edge=line2_id)
+                mid2_id = self.add_new_point(
+                    mid2_x, mid2_y, 
+                    prefix="M", 
+                    point_type="midpoint", 
+                    related_edge=line2_id,
+                    level=line2_level  # 中点level=边level
+                )
                 
+                # 新线level = 两中点level和
+                line_level = self.point_id_map[mid1_id]["level"] + self.point_id_map[mid2_id]["level"]
                 desc = f"Connect midpoints {mid1_id} (of line {line1_id}) and {mid2_id} (of line {line2_id})"
-                line_id = self.add_new_line(mid1_id, mid2_id, prefix="MidL", line_type="midline", description=desc)
+                line_id = self.add_new_line(
+                    mid1_id, mid2_id, 
+                    prefix="MidL", 
+                    line_type="midline", 
+                    description=desc,
+                    level=line_level  # 设置新线level
+                )
                 new_ips = self.detect_new_intersections(line_id)
                 result["new_elements"].extend([("point", mid1_id), ("point", mid2_id)])
                 result["new_elements"].append(("line", line_id))
@@ -925,16 +1025,33 @@ class RandomGeometryBuilder:
             else:  # mode == "vertex_and_midpoint"
                 line_id = op["line_id"]
                 vertex_id = op["vertex_id"]
+                line_level = self.line_id_map[line_id]["level"]
+                vertex_level = self.point_id_map[vertex_id]["level"]
                 
+                # 中点level = 边的level
                 s, e = self.line_id_map[line_id]["start_point_id"], self.line_id_map[line_id]["end_point_id"]
                 x1, y1 = self.get_point_coords(s)
                 x2, y2 = self.get_point_coords(e)
                 mid_x = (x1 + x2) / 2
                 mid_y = (y1 + y2) / 2
-                mid_id = self.add_new_point(mid_x, mid_y, prefix="M", point_type="midpoint", related_edge=line_id)
+                mid_id = self.add_new_point(
+                    mid_x, mid_y, 
+                    prefix="M", 
+                    point_type="midpoint", 
+                    related_edge=line_id,
+                    level=line_level  # 中点level=边level
+                )
                 
+                # 新线level = 顶点level + 中点level
+                line_level = vertex_level + self.point_id_map[mid_id]["level"]
                 desc = f"Connect vertex {vertex_id} with midpoint {mid_id} (of line {line_id})"
-                line_id = self.add_new_line(vertex_id, mid_id, prefix="VMidL", line_type="vertex_midline", description=desc)
+                line_id = self.add_new_line(
+                    vertex_id, mid_id, 
+                    prefix="VMidL", 
+                    line_type="vertex_midline", 
+                    description=desc,
+                    level=line_level  # 设置新线level
+                )
                 new_ips = self.detect_new_intersections(line_id)
                 result["new_elements"].append(("point", mid_id))
                 result["new_elements"].append(("line", line_id))
@@ -946,29 +1063,40 @@ class RandomGeometryBuilder:
             start_point_id = op["point_id"]
             allow_on_segment = op.get("allow_on_segment", False)
             
-            foot_x, foot_y, on_segment = self._calculate_foot_of_perpendicular(start_point_id, target_line_id)
+            # 计算垂足及level（点level + 底边level）
+            foot_x, foot_y, on_segment, foot_level = self._calculate_foot_of_perpendicular(start_point_id, target_line_id)
+            target_line_level = self.line_id_map[target_line_id]["level"]
+            start_point_level = self.point_id_map[start_point_id]["level"]
             
+            # 垂足level已在计算方法中确定
             foot_id = self.add_new_point(
                 foot_x, foot_y, 
                 prefix="F",
                 point_type="perpendicular_foot",
                 related_vertex=start_point_id,
-                related_edge=target_line_id
+                related_edge=target_line_id,
+                level=foot_level  # 设置垂足level
             )
             
             new_elements = [("point", foot_id)]
+            # 垂线level = 点level + 底边level
+            perp_line_level = start_point_level + target_line_level
+            
             if not on_segment:
                 s, e = self.line_id_map[target_line_id]["start_point_id"], self.line_id_map[target_line_id]["end_point_id"]
                 s_dist = (foot_x - self.get_point_coords(s)[0])**2 + (foot_y - self.get_point_coords(s)[1])** 2
                 e_dist = (foot_x - self.get_point_coords(e)[0])**2 + (foot_y - self.get_point_coords(e)[1])** 2
                 extend_from_id = s if s_dist < e_dist else e
                 
+                # 延长线level = 底边level + 垂足level
+                extend_line_level = target_line_level + foot_level
                 extend_desc = f"Extend line {target_line_id} to perpendicular foot {foot_id}"
                 extend_line_id = self.add_new_line(
                     extend_from_id, foot_id,
                     prefix="ExtL",
                     line_type="extension",
-                    description=extend_desc
+                    description=extend_desc,
+                    level=extend_line_level  # 设置延长线level
                 )
                 new_elements.append(("line", extend_line_id))
                 desc = f"Draw perpendicular from point {start_point_id} to line {target_line_id} (foot {foot_id} on extension)"
@@ -979,7 +1107,8 @@ class RandomGeometryBuilder:
                 start_point_id, foot_id, 
                 prefix="PerpL", 
                 line_type="perpendicular",
-                description=desc
+                description=desc,
+                level=perp_line_level  # 设置垂线level
             )
             new_elements.append(("line", perp_line_id))
             
@@ -998,6 +1127,11 @@ class RandomGeometryBuilder:
             direction = op["direction"]
             center_x, center_y = self.get_point_coords(center_id)
             radius = self._parse_expr(radius_expr)
+            circle_level = self.arc_id_map[circle_id]["level"]
+            center_level = self.point_id_map[center_id]["level"]
+            
+            # 直径端点level = 圆心level + 圆level
+            end_level = center_level + circle_level
             
             if direction == "horizontal":
                 end1_x = center_x + radius
@@ -1010,15 +1144,28 @@ class RandomGeometryBuilder:
                 end2_x = center_x
                 end2_y = center_y - radius
             
-            end1_id = self.add_new_point(end1_x, end1_y, prefix="Diam", point_type="diameter_end")
-            end2_id = self.add_new_point(end2_x, end2_y, prefix="Diam", point_type="diameter_end")
+            end1_id = self.add_new_point(
+                end1_x, end1_y, 
+                prefix="Diam", 
+                point_type="diameter_end",
+                level=end_level  # 端点level
+            )
+            end2_id = self.add_new_point(
+                end2_x, end2_y, 
+                prefix="Diam", 
+                point_type="diameter_end",
+                level=end_level  # 端点level
+            )
             
+            # 直径线level = 两端点level和
+            diam_line_level = self.point_id_map[end1_id]["level"] + self.point_id_map[end2_id]["level"]
             desc = f"Draw {direction} diameter of circle {circle_id} with endpoints {end1_id} and {end2_id}"
             diam_line_id = self.add_new_line(
                 end1_id, end2_id, 
                 prefix="DiamL", 
                 line_type="diameter",
-                description=desc
+                description=desc,
+                level=diam_line_level  # 直径线level
             )
             
             new_ips = self.detect_new_intersections(diam_line_id)
@@ -1031,29 +1178,20 @@ class RandomGeometryBuilder:
     
     # ------------------------------ 增强图形生成 ------------------------------
     def generate_enhancements(self, config: Dict) -> List[Dict]:
-        """
-        生成增强图形（严格遵循 rounds_distribution，如{"0":1,"1":3} → 4个独立图形）
-        直接调用 run_rounds 处理完整分布，避免重复解析
-        """
-        # 校验核心配置
         if "rounds_distribution" not in config:
             raise ValueError("config 必须包含 rounds_distribution 配置")
         
-        # 计算总增强数量（sum(分布值)）
         rounds_dist = {int(k): int(v) for k, v in config["rounds_distribution"].items()}
         num_enhancements = sum(rounds_dist.values())
         
-        # 构造 run_rounds 所需完整配置（一次性传入完整分布）
         run_config = {
             **config,
-            "num_enhancements": num_enhancements,  # 总结果数=分布总和
+            "num_enhancements": num_enhancements,
             "single_enhance_timeout": config.get("single_enhance_timeout", 30)
         }
         
-        # 调用 run_rounds 生成所有增强结果（4个：1个0轮+3个1轮）
         all_results = self.run_rounds(run_config)
         
-        # 整理结果：提取 final_geometry 并补充标识
         enhancements = []
         for result in all_results:
             if not isinstance(result, dict) or "final_geometry" not in result:
@@ -1061,12 +1199,11 @@ class RandomGeometryBuilder:
                 continue
             
             final_geo = result["final_geometry"]
-            # 补充核心标识（与全流程一致）
-            final_geo["is_base"] = (result["execution_summary"] == [])  # 0轮为基础图形
+            final_geo["is_base"] = (result["execution_summary"] == [])
             final_geo["timeout_occurred"] = result.get("timeout_occurred", False)
             final_geo["completed_rounds"] = len(result.get("execution_summary", []))
-            final_geo["base_id"] = self.base_id  # 关联原始基础图形ID
-            final_geo["enhance_id"] = f"{self.base_id}_enhance_{result['enhance_idx']:03d}"  # 唯一标识
+            final_geo["base_id"] = self.base_id
+            final_geo["enhance_id"] = f"{self.base_id}_enhance_{result['enhance_idx']:03d}"
             
             enhancements.append(final_geo)
         
@@ -1074,14 +1211,12 @@ class RandomGeometryBuilder:
         return enhancements
 
     def run_rounds(self, config: Dict) -> List[Dict]:
-        """生成所有增强结果（确保操作产生的新元素被写入self.data）"""
         rounds_distribution = config["rounds_distribution"]
         min_ops_per_round = config["min_operations_per_round"]
         max_ops_per_round = config["max_operations_per_round"]
         num_enhancements = config["num_enhancements"]
         single_enhance_timeout = config.get("single_enhance_timeout", 30)
 
-        # 解析轮数分布为列表
         try:
             rounds_list = []
             for round_key, count in rounds_distribution.items():
@@ -1094,23 +1229,18 @@ class RandomGeometryBuilder:
             raise ValueError(f"轮数分布总和（{len(rounds_list)}）与 num_enhancements（{num_enhancements}）不匹配")
 
         all_enhance_results = []
-        # 深拷贝原始数据（确保每次增强从原始状态开始）
         original_data = json.loads(json.dumps(self.data))
         original_desc = original_data.get("description", "无原始描述")
         base_seed = config.get("seed", 42)
 
         for enh_idx, num_rounds in enumerate(rounds_list):
-            # 每个增强结果独立种子（避免重复）
             enh_seed = base_seed + enh_idx * 100
             random.seed(enh_seed)
             
-            # 关键修复1：重置为原始数据后，重新绑定 self.points/self.lines/self.arcs 引用
             self.data = json.loads(json.dumps(original_data))
-            # 重新绑定到新 self.data 的列表（必须做！否则新增元素写不到 self.data 里）
             self.points = self.data["points"]
             self.lines = self.data["lines"]
             self.arcs = self.data.get("arcs", [])
-            # 重新初始化缓存和索引（确保新增元素能被正确识别）
             self.point_id_map = {p["id"]: p for p in self.points}
             self.line_id_map = {l["id"]: l for l in self.lines}
             self.arc_id_map = {a["id"]: a for a in self.arcs}
@@ -1142,14 +1272,12 @@ class RandomGeometryBuilder:
                 })
                 continue
 
-            # 确保有可行操作
             try:
                 self._select_feasible_operation_type(config["operation_probs"], config["operation_constraints"])
             except ValueError as e:
                 logger.warning(f"增强结果{enh_idx + 1}无可行操作，跳过")
                 continue
 
-            # 执行轮数操作
             for round_idx in range(num_rounds):
                 if time.time() - start_time > single_enhance_timeout:
                     timeout_occurred = True
@@ -1166,27 +1294,20 @@ class RandomGeometryBuilder:
                         timeout_occurred = True
                         break
 
-                    # 操作重试机制
                     for op_retry in range(self.MAX_RETRIES):
                         try:
-                            # 1. 选择操作类型
                             op_type = self._select_feasible_operation_type(
                                 config["operation_probs"], config["operation_constraints"]
                             )
-                            # 2. 生成操作参数
                             op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
-                            # 3. 执行操作（add_new_line/add_new_point 会直接修改 self.lines/self.points）
                             op_result = self.execute_operation(op)
 
-                            # 关键修复2：读取正确的 new_elements 键（而非不存在的 new_lines 等）
-                            # 无需手动追加，因为 self.lines 是 self.data["lines"] 的引用，add_new_line 已修改
                             logger.debug(f"操作{op_type}成功，新增元素：{op_result['new_elements']}")
 
-                            # 记录操作历史
                             round_result["operations"].append(op_result)
                             round_desc.append(f"  第 {op_idx + 1} 步: {op_result['description']}")
                             self.enhancement_history.append(op_result)
-                            break  # 操作成功，退出重试
+                            break
                         except OverflowError as e:
                             logger.warning(f"操作触发数量上限：{str(e)}，终止本轮")
                             timeout_occurred = True
@@ -1207,7 +1328,6 @@ class RandomGeometryBuilder:
                 round_results.append(round_result)
                 enhancement_desc.extend(round_desc)
 
-            # 更新复合实体（整合新元素）
             self._update_composite_entity()
             if timeout_occurred:
                 enhancement_desc.append(f"\n超时（{single_enhance_timeout}秒），保留部分操作")

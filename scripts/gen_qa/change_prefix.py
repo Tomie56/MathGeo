@@ -61,8 +61,8 @@ def replace_results_in_paths(jsonl_path: str, target_str: str, output_path: str 
 # ------------------------------ 执行示例 ------------------------------
 if __name__ == "__main__":
     # 配置参数
-    INPUT_JSONL = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n200_v1/json/qa/qa_shaded_with_gt_20251029_065031_727.jsonl"
-    TARGET_STR = "results_n200_v1"  # 替换为你需要的指定字符串
+    INPUT_JSONL = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n500_v1/json/qa/qa_shaded_with_gt_20251029_100050_775.jsonl"
+    TARGET_STR = "results_n500_v1"  # 替换为你需要的指定字符串
     OUTPUT_JSONL = None  # 默认为生成带modified后缀的新文件，可自定义路径
     
     # 执行替换

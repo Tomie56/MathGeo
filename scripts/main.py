@@ -7,6 +7,7 @@ from typing import Dict, Any, Optional, List, Generator
 import cv2
 import sympy as sp
 from sympy import symbols, simplify
+import traceback 
 
 # 配置日志系统
 logging.basicConfig(
@@ -121,6 +122,7 @@ class GeoChainPipeline:
                 logger.info(f"已生成基础图形样本 {i+1}/{n}（种子：{sample_seed}）")
             except Exception as e:
                 logger.error(f"生成样本 {i+1} 失败：{str(e)}，跳过该样本")
+                logger.error(f"错误堆栈：\n{traceback.format_exc()}")
         
         if not os.path.exists(self.base_jsonl_path) or os.path.getsize(self.base_jsonl_path) == 0:
             raise RuntimeError("未生成任何有效的基础图形JSONL文件")
@@ -184,6 +186,7 @@ class GeoChainPipeline:
                     continue
                 except Exception as e:
                     logger.error(f"处理基础图形 #{line_num} 失败: {str(e)}，跳过")
+                    logger.error(f"错误堆栈：\n{traceback.format_exc()}")  # 打印完整堆栈
                     continue
         
         if not self.enhanced_jsons:
@@ -369,11 +372,11 @@ class GeoChainPipeline:
     def run(self) -> None:
         """执行全流程"""
         try:
-            # self.run_template()      # 生成基础图形
-            # self.run_builder()       # 增强图形
-            # # self.run_drawer()        # 绘制原始图像
-            # self.run_shader()        # 区域阴影与标注
-            # self.run_gt()            # 计算参数
+            self.run_template()      # 生成基础图形
+            self.run_builder()       # 增强图形
+            # self.run_drawer()        # 绘制原始图像
+            self.run_shader()        # 区域阴影与标注
+            self.run_gt()            # 计算参数
             self.run_qa()            # 生成问答
             logger.info("=== 全流程执行完成 ===")
         except Exception as e:

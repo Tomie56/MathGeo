@@ -10,8 +10,8 @@ from typing import Dict, Any, Optional, List, Tuple
 import cv2
 import sympy as sp
 from sympy import symbols, simplify
+import traceback 
 
-# 配置日志系统
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(module)s - %(levelname)s - %(message)s',
@@ -22,13 +22,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger('MathGeo')
 
-# 导入工具模块（确保各模块路径正确）
-from tools.template import TemplateGenerator  # 基础图形生成器
-from tools.builder import RandomGeometryBuilder  # 图形增强器
-from tools.drawer import GeometryDrawer  # 图像绘制器
-from tools.shader import EnhancedDrawer # 区域着色器
-from tools.gt import GeometryCalculator  # 几何参数计算器（保留接口）
-from tools.qa_template import QAGenerator  # 问答生成器（保留接口）
+from tools.template import TemplateGenerator
+from tools.builder import RandomGeometryBuilder
+from tools.drawer import GeometryDrawer 
+from tools.shader import EnhancedDrawer
+from tools.gt import GeometryCalculator
+from tools.qa_template import QAGenerator
 
 
 class MathGeoPipeline:
@@ -38,18 +37,16 @@ class MathGeoPipeline:
         self._init_workspace()
         self._set_random_seeds()
         
-        # 并行与超时配置
         self.thread_num = self.config['global'].get('thread_num', 4)  # 多线程数量（默认4）
-        self.task_timeout = 500  # 单次生成超时时间（20秒）
+        self.task_timeout = 4 * self.config['global'].get('thread_num', 4)  # 防止卡死，时间感觉和样本数、线程数相关
         
-        # 中间数据存储
-        self.base_jsonl_path: Optional[str] = None  # 基础图形JSONL文件路径
-        self.enhanced_jsons: List[Dict[str, Any]] = []  # 增强图形JSON列表
-        self.raw_image_paths: List[str] = []  # 原始图像路径列表
-        self.shaded_image_paths: List[str] = []  # 着色图像路径列表（保留接口）
-        self.final_image_paths: List[str] = []  # 最终标注图像路径列表（保留接口）
-        self.shaded_jsonl_path: Optional[str] = None  # 着色图形JSONL路径（保留接口）
-        self.gt_jsonl_path: Optional[str] = None  # 带GT参数的最终JSONL路径
+        self.base_jsonl_path: Optional[str] = None
+        self.enhanced_jsons: List[Dict[str, Any]] = []
+        self.raw_image_paths: List[str] = []
+        self.shaded_image_paths: List[str] = []
+        self.final_image_paths: List[str] = []
+        self.shaded_jsonl_path: Optional[str] = None
+        self.gt_jsonl_path: Optional[str] = None
 
     def _load_config(self, config_path: str) -> Dict[str, Any]:
         """加载并验证总配置文件（补充线程数默认值）"""
@@ -119,24 +116,21 @@ class MathGeoPipeline:
             except Exception as e:
                 result_queue.put(('error', e))
 
-        # 启动任务线程
         task_thread = threading.Thread(target=task_wrapper, daemon=True)
         task_thread.start()
-        # 等待任务完成或超时
         task_thread.join(timeout=timeout)
 
         if task_thread.is_alive():
-            # 任务超时
             return ('timeout', None)
         else:
-            # 任务完成，获取结果
             try:
                 return result_queue.get_nowait()
             except queue.Empty:
                 return ('error', RuntimeError("任务无返回结果"))
 
     def run_template(self) -> None:
-        """步骤1：生成基础图形JSONL（多线程+单次20秒超时）"""
+        """步骤1：生成基础图形JSONL"""
+        
         logger.info(f"=== 开始生成基础图形（多线程：{self.thread_num}个，超时：{self.task_timeout}秒） ===")
         template_cfg = self.config['template']
         seed = template_cfg.get('seed')
@@ -147,36 +141,30 @@ class MathGeoPipeline:
             f'base_{self._get_timestamp()}.jsonl'
         )
 
-        # 任务队列：存储 (任务索引, 样本种子)
         task_queue = queue.Queue()
         for i in range(n):
             sample_seed = seed + 42 * i if seed is not None else None
-            task_queue.put((i + 1, sample_seed))  # i+1 为样本序号
-
-        # 文件写入锁（确保线程安全）
+            task_queue.put((i + 1, sample_seed)) 
+            
         write_lock = threading.Lock()
         success_count = 0
 
         def worker():
-            """线程工作函数：处理队列中的任务"""
             nonlocal success_count
             while not task_queue.empty():
                 try:
                     sample_idx, sample_seed = task_queue.get_nowait()
                     logger.info(f"线程[{threading.current_thread().name}] 处理基础图形样本 {sample_idx}/{n}（种子：{sample_seed}）")
 
-                    # 定义单个样本生成任务
                     def generate_sample():
                         generator = TemplateGenerator(template_cfg, seed=sample_seed)
                         generator.generate_base_shape()
                         generator.generate_derivations()
                         return generator.export_json()
 
-                    # 执行任务（带超时）
                     status, result = self._run_task_with_timeout(generate_sample, timeout=self.task_timeout + 40)
 
                     if status == 'success':
-                        # 线程安全写入文件
                         with write_lock:
                             with open(self.base_jsonl_path, "a", encoding="utf-8") as f:
                                 json.dump(result, f, ensure_ascii=False)
@@ -187,6 +175,7 @@ class MathGeoPipeline:
                         logger.error(f"线程[{threading.current_thread().name}] 样本 {sample_idx} 生成超时（{self.task_timeout}秒），跳过")
                     else:
                         logger.error(f"线程[{threading.current_thread().name}] 样本 {sample_idx} 生成失败：{str(result)}，跳过")
+                        
                 except queue.Empty:
                     break
                 except Exception as e:
@@ -194,14 +183,12 @@ class MathGeoPipeline:
                 finally:
                     task_queue.task_done()
 
-        # 启动线程池
         threads = []
         for i in range(self.thread_num):
             t = threading.Thread(target=worker, name=f"Template-Worker-{i+1}")
             t.start()
             threads.append(t)
 
-        # 等待所有任务完成
         task_queue.join()
         logger.info(f"基础图形生成完成：成功 {success_count}/{n} 个样本")
 
@@ -295,6 +282,7 @@ class MathGeoPipeline:
                     break
                 except Exception as e:
                     logger.error(f"线程[{threading.current_thread().name}] 处理基础图形 #{line_num} 异常：{str(e)}，跳过")
+                    
                 finally:
                     task_queue.task_done()
 

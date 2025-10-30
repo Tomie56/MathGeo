@@ -1,13 +1,13 @@
 {
     "global": {
         "output_root": "./results",
-        "main_seed": 40251029,
-        "thread_num": 128
+        "main_seed": 60251029,
+        "thread_num": 10
     },
     "template": {
-        "n": 500,
-        "points_limit": 15,
-        "lines_limit": 20,
+        "n": 5,
+        "points_limit": 20,
+        "lines_limit": 30,
         "output_dir": "./results/json/base",
         "output_filename": "base_templates.jsonl",
         "base": {
@@ -39,10 +39,11 @@
     "builder": {
         "output_dir": "./results/json/enhanced",
         "output_filename": "enhanced_geometries.jsonl",
-        "num_enhancements": 4,
+        "num_enhancements": 7,
         "rounds_distribution": {
             "0": 1,
-            "1": 3
+            "1": 4,
+            "2": 2
         },
         "min_operations_per_round": 1,
         "max_operations_per_round": 1,
@@ -157,7 +158,7 @@
             "length": 0.7,
             "angle": 0.2
         },   
-        "num_questions_per_group": 4,
+        "num_questions_per_group": 5,
         "output_dir": "./results/json/qa"
     }
 }
