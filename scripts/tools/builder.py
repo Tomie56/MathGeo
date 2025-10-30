@@ -271,6 +271,10 @@ class RandomGeometryBuilder:
             new_line["description"] = description
         
         self.line_id_map[lid] = new_line
+        
+        # 立即验证映射是否成功
+        if self.line_id_map.get(lid) != new_line:
+            raise RuntimeError(f"线段 {lid} 添加到line_id_map失败，映射同步异常")
         self.lines.append(new_line)
         self.line_pairs.add((p1, p2))
         
@@ -949,7 +953,7 @@ class RandomGeometryBuilder:
     # ------------------------------ 操作执行（含level计算） ------------------------------
     def execute_operation(self, op: Dict) -> Dict:
         op_type = op["type"]
-        result = {"operation": op_type, "details": op, "new_elements": []}
+        result = {"operation": op_type, "details": op, "new_elements": [], "new_line": "", "description": ""}
         
         if op_type == "connect_points":
             p1_id, p2_id = op["point_ids"]
@@ -1215,7 +1219,7 @@ class RandomGeometryBuilder:
         min_ops_per_round = config["min_operations_per_round"]
         max_ops_per_round = config["max_operations_per_round"]
         num_enhancements = config["num_enhancements"]
-        single_enhance_timeout = config.get("single_enhance_timeout", 30)
+        single_enhance_timeout = config.get("single_enhance_timeout", 40)
 
         try:
             rounds_list = []
@@ -1236,11 +1240,10 @@ class RandomGeometryBuilder:
         for enh_idx, num_rounds in enumerate(rounds_list):
             enh_seed = base_seed + enh_idx * 100
             random.seed(enh_seed)
-            
             self.data = json.loads(json.dumps(original_data))
-            self.points = self.data["points"]
-            self.lines = self.data["lines"]
-            self.arcs = self.data.get("arcs", [])
+            # self.points = self.data["points"]
+            # self.lines = self.data["lines"]
+            # self.arcs = self.data.get("arcs", [])
             self.point_id_map = {p["id"]: p for p in self.points}
             self.line_id_map = {l["id"]: l for l in self.lines}
             self.arc_id_map = {a["id"]: a for a in self.arcs}
@@ -1301,7 +1304,6 @@ class RandomGeometryBuilder:
                             )
                             op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
                             op_result = self.execute_operation(op)
-
                             logger.debug(f"操作{op_type}成功，新增元素：{op_result['new_elements']}")
 
                             round_result["operations"].append(op_result)

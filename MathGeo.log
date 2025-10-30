@@ -4760,3 +4760,147 @@ NoneType: None
 2025-10-30 19:04:07,215 - builder - INFO - 增强结果7：执行第 2/2 轮操作
 2025-10-30 19:04:09,420 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
 2025-10-30 19:04:22,767 - shader - INFO - 成功标注第0张图像，原始版本
+2025-10-30 20:03:24,693 - main_mt_v1 - INFO - 工作目录初始化完成: ./results
+2025-10-30 20:03:24,693 - main_mt_v1 - INFO - 主随机种子: 60251029
+2025-10-30 20:03:24,693 - main_mt_v1 - INFO - 各模块随机种子初始化完成
+2025-10-30 20:03:24,693 - main_mt_v1 - INFO - === 开始生成基础图形（多线程：10个，超时：40秒） ===
+2025-10-30 20:03:24,694 - main_mt_v1 - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/5（种子：60251030）
+2025-10-30 20:03:24,694 - main_mt_v1 - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/5（种子：60251072）
+2025-10-30 20:03:24,698 - main_mt_v1 - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/5（种子：60251114）
+2025-10-30 20:03:24,701 - main_mt_v1 - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/5（种子：60251156）
+2025-10-30 20:03:24,702 - main_mt_v1 - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/5（种子：60251198）
+2025-10-30 20:03:26,515 - main_mt_v1 - INFO - 线程[Template-Worker-3] 样本 3 生成成功
+2025-10-30 20:03:31,454 - main_mt_v1 - INFO - 线程[Template-Worker-4] 样本 4 生成成功
+2025-10-30 20:03:36,638 - main_mt_v1 - INFO - 线程[Template-Worker-5] 样本 5 生成成功
+2025-10-30 20:03:38,870 - main_mt_v1 - INFO - 线程[Template-Worker-2] 样本 2 生成成功
+2025-10-30 20:03:39,687 - main_mt_v1 - INFO - 线程[Template-Worker-1] 样本 1 生成成功
+2025-10-30 20:03:50,142 - main_mt_v1 - INFO - 工作目录初始化完成: ./results
+2025-10-30 20:03:50,142 - main_mt_v1 - INFO - 主随机种子: 80251029
+2025-10-30 20:03:50,143 - main_mt_v1 - INFO - 各模块随机种子初始化完成
+2025-10-30 20:03:50,143 - main_mt_v1 - INFO - === 开始生成基础图形（多线程：20个，超时：80秒） ===
+2025-10-30 20:03:50,143 - main_mt_v1 - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：80251030）
+2025-10-30 20:03:50,143 - main_mt_v1 - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：80251072）
+2025-10-30 20:03:50,144 - main_mt_v1 - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：80251114）
+2025-10-30 20:03:50,144 - main_mt_v1 - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：80251156）
+2025-10-30 20:03:50,145 - main_mt_v1 - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：80251198）
+2025-10-30 20:03:50,152 - main_mt_v1 - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：80251240）
+2025-10-30 20:03:50,153 - main_mt_v1 - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：80251282）
+2025-10-30 20:03:50,153 - main_mt_v1 - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：80251324）
+2025-10-30 20:03:50,156 - main_mt_v1 - INFO - 线程[Template-Worker-9] 处理基础图形样本 9/20（种子：80251366）
+2025-10-30 20:03:50,157 - main_mt_v1 - INFO - 线程[Template-Worker-10] 处理基础图形样本 10/20（种子：80251408）
+2025-10-30 20:03:50,158 - main_mt_v1 - INFO - 线程[Template-Worker-11] 处理基础图形样本 11/20（种子：80251450）
+2025-10-30 20:03:50,161 - main_mt_v1 - INFO - 线程[Template-Worker-12] 处理基础图形样本 12/20（种子：80251492）
+2025-10-30 20:03:50,162 - main_mt_v1 - INFO - 线程[Template-Worker-13] 处理基础图形样本 13/20（种子：80251534）
+2025-10-30 20:03:50,166 - main_mt_v1 - INFO - 线程[Template-Worker-14] 处理基础图形样本 14/20（种子：80251576）
+2025-10-30 20:03:50,167 - main_mt_v1 - INFO - 线程[Template-Worker-15] 处理基础图形样本 15/20（种子：80251618）
+2025-10-30 20:03:50,173 - main_mt_v1 - INFO - 线程[Template-Worker-16] 处理基础图形样本 16/20（种子：80251660）
+2025-10-30 20:03:50,177 - main_mt_v1 - INFO - 线程[Template-Worker-17] 处理基础图形样本 17/20（种子：80251702）
+2025-10-30 20:03:50,177 - main_mt_v1 - INFO - 线程[Template-Worker-18] 处理基础图形样本 18/20（种子：80251744）
+2025-10-30 20:03:50,179 - main_mt_v1 - INFO - 线程[Template-Worker-19] 处理基础图形样本 19/20（种子：80251786）
+2025-10-30 20:03:50,181 - main_mt_v1 - INFO - 线程[Template-Worker-20] 处理基础图形样本 20/20（种子：80251828）
+2025-10-30 20:03:54,290 - main_mt_v1 - INFO - 线程[Template-Worker-3] 样本 3 生成成功
+2025-10-30 20:03:55,959 - main_mt_v1 - INFO - 线程[Template-Worker-8] 样本 8 生成成功
+2025-10-30 20:03:56,964 - main_mt_v1 - INFO - 线程[Template-Worker-17] 样本 17 生成成功
+2025-10-30 20:04:00,391 - main_mt_v1 - ERROR - 线程[Template-Worker-20] 样本 20 生成失败：，跳过
+2025-10-30 20:04:21,227 - main_mt_v1 - INFO - 线程[Template-Worker-16] 样本 16 生成成功
+2025-10-30 20:04:23,030 - main_mt_v1 - INFO - 线程[Template-Worker-18] 样本 18 生成成功
+2025-10-30 20:04:24,001 - main_mt_v1 - INFO - 线程[Template-Worker-7] 样本 7 生成成功
+2025-10-30 20:04:26,305 - main_mt_v1 - INFO - 线程[Template-Worker-4] 样本 4 生成成功
+2025-10-30 20:04:28,380 - main_mt_v1 - INFO - 线程[Template-Worker-9] 样本 9 生成成功
+2025-10-30 20:04:37,234 - main_mt_v1 - INFO - 线程[Template-Worker-2] 样本 2 生成成功
+2025-10-30 20:04:38,669 - main_mt_v1 - INFO - 线程[Template-Worker-6] 样本 6 生成成功
+2025-10-30 20:04:43,650 - main_mt_v1 - INFO - 线程[Template-Worker-15] 样本 15 生成成功
+2025-10-30 20:04:55,581 - main_mt_v1 - INFO - 线程[Template-Worker-19] 样本 19 生成成功
+2025-10-30 20:05:00,228 - main_mt_v1 - INFO - 线程[Template-Worker-12] 样本 12 生成成功
+2025-10-30 20:05:29,839 - main_mt_v1 - INFO - 线程[Template-Worker-13] 样本 13 生成成功
+2025-10-30 20:05:50,153 - main_mt_v1 - ERROR - 线程[Template-Worker-1] 样本 1 生成超时（80秒），跳过
+2025-10-30 20:05:50,165 - main_mt_v1 - ERROR - 线程[Template-Worker-10] 样本 10 生成超时（80秒），跳过
+2025-10-30 20:05:50,175 - main_mt_v1 - ERROR - 线程[Template-Worker-14] 样本 14 生成超时（80秒），跳过
+2025-10-30 20:05:50,221 - main_mt_v1 - ERROR - 线程[Template-Worker-5] 样本 5 生成超时（80秒），跳过
+2025-10-30 20:05:50,227 - main_mt_v1 - ERROR - 线程[Template-Worker-11] 样本 11 生成超时（80秒），跳过
+2025-10-30 20:05:50,738 - main_mt_v1 - INFO - 基础图形生成完成：成功 14/20 个样本
+2025-10-30 20:05:50,751 - main_mt_v1 - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_200350_143.jsonl
+2025-10-30 20:05:50,757 - main_mt_v1 - INFO - === 开始生成增强图形（多线程：20个，超时：80秒） ===
+2025-10-30 20:05:51,024 - main_mt_v1 - INFO - 线程[Builder-Worker-1] 处理基础图形 #1
+2025-10-30 20:05:51,044 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:51,055 - main_mt_v1 - ERROR - 线程[Builder-Worker-1] 基础图形 #1 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:05:51,060 - main_mt_v1 - INFO - 线程[Builder-Worker-1] 处理基础图形 #2
+2025-10-30 20:05:51,060 - main_mt_v1 - INFO - 线程[Builder-Worker-2] 处理基础图形 #3
+2025-10-30 20:05:51,176 - main_mt_v1 - INFO - 线程[Builder-Worker-3] 处理基础图形 #4
+2025-10-30 20:05:51,302 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:51,311 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:51,511 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:51,511 - main_mt_v1 - INFO - 线程[Builder-Worker-4] 处理基础图形 #5
+2025-10-30 20:05:51,585 - main_mt_v1 - INFO - 线程[Builder-Worker-5] 处理基础图形 #6
+2025-10-30 20:05:51,625 - main_mt_v1 - ERROR - 线程[Builder-Worker-1] 基础图形 #2 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:05:51,697 - main_mt_v1 - ERROR - 线程[Builder-Worker-2] 基础图形 #3 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:05:51,742 - main_mt_v1 - INFO - 线程[Builder-Worker-6] 处理基础图形 #7
+2025-10-30 20:05:51,919 - main_mt_v1 - INFO - 线程[Builder-Worker-7] 处理基础图形 #8
+2025-10-30 20:05:51,985 - main_mt_v1 - INFO - 线程[Builder-Worker-8] 处理基础图形 #9
+2025-10-30 20:05:52,003 - main_mt_v1 - ERROR - 线程[Builder-Worker-3] 基础图形 #4 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:05:52,074 - main_mt_v1 - INFO - 线程[Builder-Worker-9] 处理基础图形 #10
+2025-10-30 20:05:52,125 - main_mt_v1 - INFO - 线程[Builder-Worker-1] 处理基础图形 #11
+2025-10-30 20:05:52,175 - main_mt_v1 - INFO - 线程[Builder-Worker-10] 处理基础图形 #12
+2025-10-30 20:05:52,186 - main_mt_v1 - INFO - 线程[Builder-Worker-2] 处理基础图形 #13
+2025-10-30 20:05:52,353 - main_mt_v1 - INFO - 线程[Builder-Worker-11] 处理基础图形 #14
+2025-10-30 20:05:53,197 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:53,436 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:54,424 - main_mt_v1 - ERROR - 线程[Builder-Worker-4] 基础图形 #5 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:05:54,566 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:55,586 - main_mt_v1 - ERROR - 线程[Builder-Worker-6] 基础图形 #7 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:05:56,378 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:56,436 - main_mt_v1 - ERROR - 线程[Builder-Worker-9] 基础图形 #10 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:05:56,796 - main_mt_v1 - ERROR - 线程[Builder-Worker-5] 基础图形 #6 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:05:59,328 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:05:59,986 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:06:01,324 - main_mt_v1 - ERROR - 线程[Builder-Worker-1] 基础图形 #11 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:06:02,520 - main_mt_v1 - ERROR - 线程[Builder-Worker-10] 基础图形 #12 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:06:02,891 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:06:03,346 - main_mt_v1 - ERROR - 线程[Builder-Worker-8] 基础图形 #9 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:06:03,695 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:06:03,720 - main_mt_v1 - ERROR - 线程[Builder-Worker-7] 基础图形 #8 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:06:04,540 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:06:06,406 - main_mt_v1 - ERROR - 线程[Builder-Worker-11] 基础图形 #14 增强失败：name 'op_result' is not defined，跳过
+2025-10-30 20:06:59,559 - main_mt_v1 - INFO - 工作目录初始化完成: ./results
+2025-10-30 20:06:59,559 - main_mt_v1 - INFO - 主随机种子: 80251029
+2025-10-30 20:06:59,559 - main_mt_v1 - INFO - 各模块随机种子初始化完成
+2025-10-30 20:06:59,560 - main_mt_v1 - INFO - === 开始生成基础图形（多线程：20个，超时：80秒） ===
+2025-10-30 20:06:59,560 - main_mt_v1 - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：80251030）
+2025-10-30 20:06:59,560 - main_mt_v1 - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：80251072）
+2025-10-30 20:06:59,561 - main_mt_v1 - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：80251114）
+2025-10-30 20:06:59,565 - main_mt_v1 - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：80251156）
+2025-10-30 20:06:59,568 - main_mt_v1 - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：80251198）
+2025-10-30 20:06:59,570 - main_mt_v1 - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：80251240）
+2025-10-30 20:06:59,573 - main_mt_v1 - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：80251282）
+2025-10-30 20:06:59,576 - main_mt_v1 - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：80251324）
+2025-10-30 20:06:59,577 - main_mt_v1 - INFO - 线程[Template-Worker-9] 处理基础图形样本 9/20（种子：80251366）
+2025-10-30 20:06:59,581 - main_mt_v1 - INFO - 线程[Template-Worker-10] 处理基础图形样本 10/20（种子：80251408）
+2025-10-30 20:06:59,582 - main_mt_v1 - INFO - 线程[Template-Worker-11] 处理基础图形样本 11/20（种子：80251450）
+2025-10-30 20:06:59,583 - main_mt_v1 - INFO - 线程[Template-Worker-12] 处理基础图形样本 12/20（种子：80251492）
+2025-10-30 20:06:59,586 - main_mt_v1 - INFO - 线程[Template-Worker-13] 处理基础图形样本 13/20（种子：80251534）
+2025-10-30 20:06:59,588 - main_mt_v1 - INFO - 线程[Template-Worker-14] 处理基础图形样本 14/20（种子：80251576）
+2025-10-30 20:06:59,590 - main_mt_v1 - INFO - 线程[Template-Worker-15] 处理基础图形样本 15/20（种子：80251618）
+2025-10-30 20:06:59,592 - main_mt_v1 - INFO - 线程[Template-Worker-16] 处理基础图形样本 16/20（种子：80251660）
+2025-10-30 20:06:59,592 - main_mt_v1 - INFO - 线程[Template-Worker-17] 处理基础图形样本 17/20（种子：80251702）
+2025-10-30 20:06:59,597 - main_mt_v1 - INFO - 线程[Template-Worker-18] 处理基础图形样本 18/20（种子：80251744）
+2025-10-30 20:06:59,598 - main_mt_v1 - INFO - 线程[Template-Worker-19] 处理基础图形样本 19/20（种子：80251786）
+2025-10-30 20:06:59,601 - main_mt_v1 - INFO - 线程[Template-Worker-20] 处理基础图形样本 20/20（种子：80251828）
+2025-10-30 20:07:07,637 - main_mt_v1 - INFO - 线程[Template-Worker-3] 样本 3 生成成功
+2025-10-30 20:07:10,078 - main_mt_v1 - INFO - 线程[Template-Worker-19] 样本 19 生成成功
+2025-10-30 20:07:11,517 - main_mt_v1 - INFO - 线程[Template-Worker-15] 样本 15 生成成功
+2025-10-30 20:07:12,726 - main_mt_v1 - ERROR - 线程[Template-Worker-20] 样本 20 生成失败：list index out of range，跳过
+2025-10-30 20:07:13,322 - main_mt_v1 - INFO - 线程[Template-Worker-12] 样本 12 生成成功
+2025-10-30 20:07:16,889 - main_mt_v1 - INFO - 线程[Template-Worker-17] 样本 17 生成成功
+2025-10-30 20:07:20,202 - main_mt_v1 - INFO - 线程[Template-Worker-9] 样本 9 生成成功
+2025-10-30 20:11:54,967 - main_mt_v1 - INFO - 工作目录初始化完成: ./results
+2025-10-30 20:11:54,967 - main_mt_v1 - INFO - 主随机种子: 80251027
+2025-10-30 20:11:54,968 - main_mt_v1 - INFO - 各模块随机种子初始化完成
+2025-10-30 20:11:54,968 - main_mt_v1 - INFO - === 开始生成基础图形（多线程：20个，超时：80秒） ===
+2025-10-30 20:11:54,968 - main_mt_v1 - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/5（种子：80251028）
+2025-10-30 20:11:54,968 - main_mt_v1 - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/5（种子：80251070）
+2025-10-30 20:11:54,969 - main_mt_v1 - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/5（种子：80251112）
+2025-10-30 20:11:54,973 - main_mt_v1 - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/5（种子：80251154）
+2025-10-30 20:11:54,975 - main_mt_v1 - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/5（种子：80251196）
+2025-10-30 20:11:57,748 - main_mt_v1 - INFO - 线程[Template-Worker-1] 样本 1 生成成功
+2025-10-30 20:11:58,264 - main_mt_v1 - INFO - 线程[Template-Worker-5] 样本 5 生成成功
+2025-10-30 20:12:15,055 - main_mt_v1 - INFO - 线程[Template-Worker-3] 样本 3 生成成功

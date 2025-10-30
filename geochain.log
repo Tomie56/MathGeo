@@ -41429,3 +41429,966 @@ KeyError: 'MidL1'
 
 2025-10-30 19:30:49,571 - main - INFO - 处理基础图形 #3
 2025-10-30 19:30:50,418 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:30:51,736 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:30:52,507 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:30:52,513 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:30:52,788 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:30:54,020 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:30:54,999 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:30:56,617 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:30:56,618 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:30:56,619 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 19:30:56,622 - main - INFO - 处理基础图形 #4
+2025-10-30 19:30:57,870 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:30:58,485 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:30:59,391 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:30:59,818 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:31:00,340 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:31:00,842 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:31:02,932 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:31:03,132 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 19:31:03,133 - main - ERROR - 处理基础图形 #4 失败: 'VMidL4'，跳过
+2025-10-30 19:31:03,138 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1193, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1302, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 491, in _generate_random_operation
+    s2, e2 = self.line_id_map[line2_id]["start_point_id"], self.line_id_map[line2_id]["end_point_id"]
+KeyError: 'VMidL4'
+
+2025-10-30 19:31:03,139 - main - INFO - 处理基础图形 #5
+2025-10-30 19:31:03,694 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:31:04,046 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:31:04,288 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:31:05,087 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:31:05,359 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:31:05,426 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:31:05,726 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:31:05,727 - main - ERROR - 处理基础图形 #5 失败: 'ExtL1'，跳过
+2025-10-30 19:31:05,729 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1193, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1302, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 485, in _generate_random_operation
+    s1, e1 = self.line_id_map[line1_id]["start_point_id"], self.line_id_map[line1_id]["end_point_id"]
+KeyError: 'ExtL1'
+
+2025-10-30 19:31:05,732 - main - INFO - 增强图形JSONL保存至: ./results/json/enhanced/enhanced_20251030_193047_933.jsonl（共7个）
+2025-10-30 19:31:05,738 - shader - INFO - 加载 7 条enhanced数据
+2025-10-30 19:31:05,738 - shader - INFO - 已设置 7 条增强JSON数据
+2025-10-30 19:31:05,738 - shader - INFO - === 开始处理图像 ===
+2025-10-30 19:31:06,165 - shader - INFO - 成功标注第0张图像，原始版本
+2025-10-30 19:31:06,394 - shader - INFO - 成功标注第1张图像，原始版本
+2025-10-30 19:31:06,631 - shader - INFO - 成功标注第2张图像，原始版本
+2025-10-30 19:31:06,844 - shader - INFO - 成功标注第3张图像，原始版本
+2025-10-30 19:31:07,089 - shader - INFO - 成功标注第4张图像，原始版本
+2025-10-30 19:31:07,379 - shader - INFO - 成功标注第5张图像，原始版本
+2025-10-30 19:31:07,587 - shader - INFO - 成功标注第6张图像，原始版本
+2025-10-30 19:31:07,594 - shader - INFO - 所有处理结果已保存至：./results/json/shaded/shaded_20251030_193105_732.jsonl
+2025-10-30 19:31:07,594 - main - INFO - === 处理完成 ===
+- 结果JSONL路径：./results/json/shaded/shaded_20251030_193105_732.jsonl
+2025-10-30 19:31:07,595 - main - INFO - === 开始计算几何参数（符号表达式化简） ===
+2025-10-30 19:31:08,029 - gt - INFO - 处理完成，结果保存至: ./results/json/final/shaded_with_gt_20251030_193105_732.jsonl
+2025-10-30 19:31:08,032 - main - INFO - 几何参数计算完成，结果保存至: ./results/json/final/shaded_with_gt_20251030_193105_732.jsonl
+2025-10-30 19:31:08,032 - main - INFO - 共处理 7 条数据，每条数据已添加线条/圆弧长度信息
+2025-10-30 19:31:08,032 - main - INFO - 使用GT结果文件: /mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl
+2025-10-30 19:31:08,032 - main - INFO - === 开始生成问答数据 ===
+2025-10-30 19:31:08,033 - main - INFO - QA配置参数: {
+  "question_types": [
+    "length",
+    "angle"
+  ],
+  "type_weights": {
+    "length": 0.7,
+    "angle": 0.2
+  },
+  "num_questions_per_group": 5,
+  "output_dir": "./results/json/qa",
+  "seed": 60251033
+}
+2025-10-30 19:31:08,035 - main - ERROR - 问答生成流程失败: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 326, in run_qa
+    with open(self.gt_jsonl_path, 'r', encoding='utf-8') as f_in, \
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+2025-10-30 19:31:08,036 - main - ERROR - 流程执行失败: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 380, in run
+    self.run_qa()            # 生成问答
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 326, in run_qa
+    with open(self.gt_jsonl_path, 'r', encoding='utf-8') as f_in, \
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+2025-10-30 19:33:22,495 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 19:33:22,495 - main - INFO - 主随机种子: 60251029
+2025-10-30 19:33:22,495 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 19:33:22,495 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 19:33:24,652 - main - INFO - 已生成基础图形样本 1/5（种子：60251030）
+2025-10-30 19:33:25,959 - main - INFO - 已生成基础图形样本 2/5（种子：60251072）
+2025-10-30 19:33:30,641 - main - INFO - 已生成基础图形样本 3/5（种子：60251114）
+2025-10-30 19:33:37,891 - main - INFO - 已生成基础图形样本 4/5（种子：60251156）
+2025-10-30 19:33:41,374 - main - INFO - 已生成基础图形样本 5/5（种子：60251198）
+2025-10-30 19:33:41,375 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_193322_495.jsonl
+2025-10-30 19:33:41,375 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 19:33:41,378 - main - INFO - 处理基础图形 #1
+2025-10-30 19:33:41,473 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:33:41,783 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:33:41,968 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:33:41,969 - main - ERROR - 处理基础图形 #1 失败: 'PerpL2'，跳过
+2025-10-30 19:33:41,976 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1197, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1306, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 495, in _generate_random_operation
+    s2, e2 = self.line_id_map[line2_id]["start_point_id"], self.line_id_map[line2_id]["end_point_id"]
+KeyError: 'PerpL2'
+
+2025-10-30 19:33:41,976 - main - INFO - 处理基础图形 #2
+2025-10-30 19:33:42,254 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:33:42,530 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:33:42,845 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:33:42,845 - main - ERROR - 处理基础图形 #2 失败: 'MidL1'，跳过
+2025-10-30 19:33:42,846 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1197, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1306, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 489, in _generate_random_operation
+    s1, e1 = self.line_id_map[line1_id]["start_point_id"], self.line_id_map[line1_id]["end_point_id"]
+KeyError: 'MidL1'
+
+2025-10-30 19:33:42,846 - main - INFO - 处理基础图形 #3
+2025-10-30 19:33:43,703 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:33:46,267 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:33:47,340 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:33:47,346 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:33:47,615 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:33:48,858 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:33:49,816 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:33:50,553 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:33:50,554 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:33:50,554 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 19:33:50,558 - main - INFO - 处理基础图形 #4
+2025-10-30 19:33:51,816 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:33:52,443 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:33:53,359 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:33:53,818 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:33:54,341 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:33:54,829 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:34:02,241 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:34:02,445 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 19:34:04,964 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 19:34:04,969 - main - INFO - 处理基础图形 #5
+2025-10-30 19:34:05,531 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:34:05,888 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:34:06,134 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:34:06,968 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:34:07,215 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:34:07,282 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:34:07,581 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:34:07,582 - main - ERROR - 处理基础图形 #5 失败: 'ConnP1'，跳过
+2025-10-30 19:34:07,586 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1197, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1306, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 489, in _generate_random_operation
+    s1, e1 = self.line_id_map[line1_id]["start_point_id"], self.line_id_map[line1_id]["end_point_id"]
+KeyError: 'ConnP1'
+
+2025-10-30 19:34:07,588 - main - INFO - 增强图形JSONL保存至: ./results/json/enhanced/enhanced_20251030_193341_375.jsonl（共14个）
+2025-10-30 19:34:07,595 - shader - INFO - 加载 14 条enhanced数据
+2025-10-30 19:34:07,596 - shader - INFO - 已设置 14 条增强JSON数据
+2025-10-30 19:34:07,596 - shader - INFO - === 开始处理图像 ===
+2025-10-30 19:34:08,281 - shader - INFO - 成功标注第0张图像，原始版本
+2025-10-30 19:34:08,561 - shader - INFO - 成功标注第1张图像，原始版本
+2025-10-30 19:34:08,790 - shader - INFO - 成功标注第2张图像，原始版本
+2025-10-30 19:34:08,998 - shader - INFO - 成功标注第3张图像，原始版本
+2025-10-30 19:34:09,240 - shader - INFO - 成功标注第4张图像，原始版本
+2025-10-30 19:34:09,510 - shader - INFO - 成功标注第5张图像，原始版本
+2025-10-30 19:34:09,716 - shader - INFO - 成功标注第6张图像，原始版本
+2025-10-30 19:34:09,978 - shader - INFO - 成功标注第7张图像，原始版本
+2025-10-30 19:34:10,237 - shader - INFO - 成功标注第8张图像，原始版本
+2025-10-30 19:34:10,495 - shader - INFO - 成功标注第9张图像，原始版本
+2025-10-30 19:34:10,756 - shader - INFO - 成功标注第10张图像，原始版本
+2025-10-30 19:34:11,022 - shader - INFO - 成功标注第11张图像，原始版本
+2025-10-30 19:34:11,340 - shader - INFO - 成功标注第12张图像，原始版本
+2025-10-30 19:34:11,661 - shader - INFO - 成功标注第13张图像，原始版本
+2025-10-30 19:34:11,669 - shader - INFO - 所有处理结果已保存至：./results/json/shaded/shaded_20251030_193407_589.jsonl
+2025-10-30 19:34:11,670 - main - INFO - === 处理完成 ===
+- 结果JSONL路径：./results/json/shaded/shaded_20251030_193407_589.jsonl
+2025-10-30 19:34:11,670 - main - INFO - === 开始计算几何参数（符号表达式化简） ===
+2025-10-30 19:34:13,663 - gt - INFO - 已处理 10 条数据
+2025-10-30 19:34:15,518 - gt - INFO - 处理完成，结果保存至: ./results/json/final/shaded_with_gt_20251030_193407_589.jsonl
+2025-10-30 19:34:15,523 - main - INFO - 几何参数计算完成，结果保存至: ./results/json/final/shaded_with_gt_20251030_193407_589.jsonl
+2025-10-30 19:34:15,523 - main - INFO - 共处理 14 条数据，每条数据已添加线条/圆弧长度信息
+2025-10-30 19:34:15,523 - main - INFO - 使用GT结果文件: /mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl
+2025-10-30 19:34:15,524 - main - INFO - === 开始生成问答数据 ===
+2025-10-30 19:34:15,524 - main - INFO - QA配置参数: {
+  "question_types": [
+    "length",
+    "angle"
+  ],
+  "type_weights": {
+    "length": 0.7,
+    "angle": 0.2
+  },
+  "num_questions_per_group": 5,
+  "output_dir": "./results/json/qa",
+  "seed": 60251033
+}
+2025-10-30 19:34:15,526 - main - ERROR - 问答生成流程失败: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 326, in run_qa
+    with open(self.gt_jsonl_path, 'r', encoding='utf-8') as f_in, \
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+2025-10-30 19:34:15,527 - main - ERROR - 流程执行失败: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 380, in run
+    self.run_qa()            # 生成问答
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 326, in run_qa
+    with open(self.gt_jsonl_path, 'r', encoding='utf-8') as f_in, \
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+2025-10-30 19:40:06,547 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 19:40:06,547 - main - INFO - 主随机种子: 60251029
+2025-10-30 19:40:06,547 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 19:40:06,548 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 19:40:08,709 - main - INFO - 已生成基础图形样本 1/5（种子：60251030）
+2025-10-30 19:40:09,997 - main - INFO - 已生成基础图形样本 2/5（种子：60251072）
+2025-10-30 19:40:14,656 - main - INFO - 已生成基础图形样本 3/5（种子：60251114）
+2025-10-30 19:40:21,872 - main - INFO - 已生成基础图形样本 4/5（种子：60251156）
+2025-10-30 19:40:25,331 - main - INFO - 已生成基础图形样本 5/5（种子：60251198）
+2025-10-30 19:40:25,332 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_194006_548.jsonl
+2025-10-30 19:40:25,332 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 19:40:25,335 - main - INFO - 处理基础图形 #1
+2025-10-30 19:40:25,429 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:40:25,708 - main - ERROR - 处理基础图形 #1 失败: 单轮内线段 M0 未添加到line_id_map，同步失败，跳过
+2025-10-30 19:40:25,715 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1197, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1314, in run_rounds
+    raise RuntimeError(f"单轮内线段 {elem_id} 未添加到line_id_map，同步失败")
+RuntimeError: 单轮内线段 M0 未添加到line_id_map，同步失败
+
+2025-10-30 19:40:25,716 - main - INFO - 处理基础图形 #2
+2025-10-30 19:40:26,003 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:40:26,162 - main - ERROR - 处理基础图形 #2 失败: 单轮内线段 E 未添加到line_id_map，同步失败，跳过
+2025-10-30 19:40:26,163 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1197, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1314, in run_rounds
+    raise RuntimeError(f"单轮内线段 {elem_id} 未添加到line_id_map，同步失败")
+RuntimeError: 单轮内线段 E 未添加到line_id_map，同步失败
+
+2025-10-30 19:40:26,163 - main - INFO - 处理基础图形 #3
+2025-10-30 19:40:27,023 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:40:28,967 - main - ERROR - 处理基础图形 #3 失败: 单轮内线段 M0 未添加到line_id_map，同步失败，跳过
+2025-10-30 19:40:28,970 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1197, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1314, in run_rounds
+    raise RuntimeError(f"单轮内线段 {elem_id} 未添加到line_id_map，同步失败")
+RuntimeError: 单轮内线段 M0 未添加到line_id_map，同步失败
+
+2025-10-30 19:40:28,970 - main - INFO - 处理基础图形 #4
+2025-10-30 19:40:30,227 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:40:30,849 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:40:31,370 - main - ERROR - 处理基础图形 #4 失败: 单轮内线段 O2 未添加到line_id_map，同步失败，跳过
+2025-10-30 19:40:31,375 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1197, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1314, in run_rounds
+    raise RuntimeError(f"单轮内线段 {elem_id} 未添加到line_id_map，同步失败")
+RuntimeError: 单轮内线段 O2 未添加到line_id_map，同步失败
+
+2025-10-30 19:40:31,375 - main - INFO - 处理基础图形 #5
+2025-10-30 19:40:31,926 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:40:32,093 - main - ERROR - 处理基础图形 #5 失败: 单轮内线段 D 未添加到line_id_map，同步失败，跳过
+2025-10-30 19:40:32,093 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1197, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1314, in run_rounds
+    raise RuntimeError(f"单轮内线段 {elem_id} 未添加到line_id_map，同步失败")
+RuntimeError: 单轮内线段 D 未添加到line_id_map，同步失败
+
+2025-10-30 19:40:32,094 - main - ERROR - 流程执行失败: 未生成任何有效的增强图形
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 376, in run
+    self.run_builder()       # 增强图形
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 193, in run_builder
+    raise RuntimeError("未生成任何有效的增强图形")
+RuntimeError: 未生成任何有效的增强图形
+2025-10-30 19:43:42,862 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 19:43:42,862 - main - INFO - 主随机种子: 60251029
+2025-10-30 19:43:42,862 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 19:43:42,862 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 19:43:45,015 - main - INFO - 已生成基础图形样本 1/5（种子：60251030）
+2025-10-30 19:43:46,332 - main - INFO - 已生成基础图形样本 2/5（种子：60251072）
+2025-10-30 19:43:51,035 - main - INFO - 已生成基础图形样本 3/5（种子：60251114）
+2025-10-30 19:43:58,285 - main - INFO - 已生成基础图形样本 4/5（种子：60251156）
+2025-10-30 19:44:01,762 - main - INFO - 已生成基础图形样本 5/5（种子：60251198）
+2025-10-30 19:44:01,763 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_194342_862.jsonl
+2025-10-30 19:44:01,763 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 19:44:01,766 - main - INFO - 处理基础图形 #1
+2025-10-30 19:44:01,860 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:44:02,371 - main - ERROR - 处理基础图形 #1 失败: 'new_line'，跳过
+2025-10-30 19:44:02,378 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1313, in run_rounds
+    for elem_id in op_result["new_line"]:
+KeyError: 'new_line'
+
+2025-10-30 19:44:02,378 - main - INFO - 处理基础图形 #2
+2025-10-30 19:44:02,658 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:44:02,809 - main - ERROR - 处理基础图形 #2 失败: 'new_line'，跳过
+2025-10-30 19:44:02,809 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1313, in run_rounds
+    for elem_id in op_result["new_line"]:
+KeyError: 'new_line'
+
+2025-10-30 19:44:02,810 - main - INFO - 处理基础图形 #3
+2025-10-30 19:44:03,666 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:44:04,822 - main - ERROR - 处理基础图形 #3 失败: 单轮内线段 V 未添加到line_id_map，同步失败，跳过
+2025-10-30 19:44:04,825 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1316, in run_rounds
+    raise RuntimeError(f"单轮内线段 {elem_id} 未添加到line_id_map，同步失败")
+RuntimeError: 单轮内线段 V 未添加到line_id_map，同步失败
+
+2025-10-30 19:44:04,826 - main - INFO - 处理基础图形 #4
+2025-10-30 19:44:06,074 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:44:06,298 - main - ERROR - 处理基础图形 #4 失败: 单轮内线段 C 未添加到line_id_map，同步失败，跳过
+2025-10-30 19:44:06,302 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1316, in run_rounds
+    raise RuntimeError(f"单轮内线段 {elem_id} 未添加到line_id_map，同步失败")
+RuntimeError: 单轮内线段 C 未添加到line_id_map，同步失败
+
+2025-10-30 19:44:06,302 - main - INFO - 处理基础图形 #5
+2025-10-30 19:44:06,850 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:44:07,019 - main - ERROR - 处理基础图形 #5 失败: 单轮内线段 P 未添加到line_id_map，同步失败，跳过
+2025-10-30 19:44:07,020 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1316, in run_rounds
+    raise RuntimeError(f"单轮内线段 {elem_id} 未添加到line_id_map，同步失败")
+RuntimeError: 单轮内线段 P 未添加到line_id_map，同步失败
+
+2025-10-30 19:44:07,020 - main - ERROR - 流程执行失败: 未生成任何有效的增强图形
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 376, in run
+    self.run_builder()       # 增强图形
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 193, in run_builder
+    raise RuntimeError("未生成任何有效的增强图形")
+RuntimeError: 未生成任何有效的增强图形
+2025-10-30 19:50:44,373 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 19:50:44,374 - main - INFO - 主随机种子: 60251029
+2025-10-30 19:50:44,374 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 19:50:44,374 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 19:50:46,735 - main - INFO - 已生成基础图形样本 1/5（种子：60251030）
+2025-10-30 19:50:48,037 - main - INFO - 已生成基础图形样本 2/5（种子：60251072）
+2025-10-30 19:50:52,691 - main - INFO - 已生成基础图形样本 3/5（种子：60251114）
+2025-10-30 19:50:59,920 - main - INFO - 已生成基础图形样本 4/5（种子：60251156）
+2025-10-30 19:51:03,355 - main - INFO - 已生成基础图形样本 5/5（种子：60251198）
+2025-10-30 19:51:03,356 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_195044_374.jsonl
+2025-10-30 19:51:03,356 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 19:51:03,359 - main - INFO - 处理基础图形 #1
+2025-10-30 19:51:03,453 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:51:03,745 - main - ERROR - 处理基础图形 #1 失败: 'new_line'，跳过
+2025-10-30 19:51:03,752 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1205, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1327, in run_rounds
+    for elem_id in op_result["new_line"]:
+KeyError: 'new_line'
+
+2025-10-30 19:51:03,752 - main - INFO - 处理基础图形 #2
+2025-10-30 19:51:04,028 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:51:04,224 - main - ERROR - 处理基础图形 #2 失败: 'new_line'，跳过
+2025-10-30 19:51:04,226 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1205, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1327, in run_rounds
+    for elem_id in op_result["new_line"]:
+KeyError: 'new_line'
+
+2025-10-30 19:51:04,226 - main - INFO - 处理基础图形 #3
+2025-10-30 19:51:05,081 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:51:07,512 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:51:08,698 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:51:08,703 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:51:08,973 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:51:10,192 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:51:11,556 - main - ERROR - 处理基础图形 #3 失败: 'new_line'，跳过
+2025-10-30 19:51:11,561 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1205, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1327, in run_rounds
+    for elem_id in op_result["new_line"]:
+KeyError: 'new_line'
+
+2025-10-30 19:51:11,562 - main - INFO - 处理基础图形 #4
+2025-10-30 19:51:12,807 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:51:13,428 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:51:14,334 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:51:14,777 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:51:15,306 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:51:15,814 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:51:18,991 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:51:19,200 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 19:51:21,401 - main - ERROR - 处理基础图形 #4 失败: 'new_line'，跳过
+2025-10-30 19:51:21,406 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1205, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1327, in run_rounds
+    for elem_id in op_result["new_line"]:
+KeyError: 'new_line'
+
+2025-10-30 19:51:21,407 - main - INFO - 处理基础图形 #5
+2025-10-30 19:51:21,951 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:51:22,298 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:51:22,541 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:51:23,329 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:51:23,567 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:52:06,812 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 19:52:06,812 - main - INFO - 主随机种子: 60251029
+2025-10-30 19:52:06,812 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 19:52:06,812 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 19:52:08,957 - main - INFO - 已生成基础图形样本 1/5（种子：60251030）
+2025-10-30 19:52:10,311 - main - INFO - 已生成基础图形样本 2/5（种子：60251072）
+2025-10-30 19:52:14,994 - main - INFO - 已生成基础图形样本 3/5（种子：60251114）
+2025-10-30 19:52:22,234 - main - INFO - 已生成基础图形样本 4/5（种子：60251156）
+2025-10-30 19:52:25,694 - main - INFO - 已生成基础图形样本 5/5（种子：60251198）
+2025-10-30 19:52:25,694 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_195206_812.jsonl
+2025-10-30 19:52:25,694 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 19:52:25,697 - main - INFO - 处理基础图形 #1
+2025-10-30 19:52:25,792 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:52:26,303 - main - ERROR - 处理基础图形 #1 失败: 'new_line'，跳过
+2025-10-30 19:52:26,310 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1323, in run_rounds
+    new_id.add(op_result["new_line"])
+KeyError: 'new_line'
+
+2025-10-30 19:52:26,310 - main - INFO - 处理基础图形 #2
+2025-10-30 19:52:26,588 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:52:26,831 - main - ERROR - 处理基础图形 #2 失败: 'new_line'，跳过
+2025-10-30 19:52:26,832 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1323, in run_rounds
+    new_id.add(op_result["new_line"])
+KeyError: 'new_line'
+
+2025-10-30 19:52:26,832 - main - INFO - 处理基础图形 #3
+2025-10-30 19:52:27,694 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:52:28,664 - main - ERROR - 处理基础图形 #3 失败: 'new_line'，跳过
+2025-10-30 19:52:28,667 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1323, in run_rounds
+    new_id.add(op_result["new_line"])
+KeyError: 'new_line'
+
+2025-10-30 19:52:28,668 - main - INFO - 处理基础图形 #4
+2025-10-30 19:52:29,943 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:52:30,565 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:52:31,478 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:52:31,919 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:52:32,440 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:52:32,927 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:52:36,874 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:52:37,071 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 19:52:37,072 - main - ERROR - 处理基础图形 #4 失败: 'VMidL4'，跳过
+2025-10-30 19:52:37,076 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1320, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 489, in _generate_random_operation
+    s1, e1 = self.line_id_map[line1_id]["start_point_id"], self.line_id_map[line1_id]["end_point_id"]
+KeyError: 'VMidL4'
+
+2025-10-30 19:52:37,076 - main - INFO - 处理基础图形 #5
+2025-10-30 19:52:37,637 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:52:37,989 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:52:38,232 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:52:39,029 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:52:39,269 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:52:39,336 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:52:39,658 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:52:39,659 - main - ERROR - 处理基础图形 #5 失败: 'PerpL0'，跳过
+2025-10-30 19:52:39,661 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1320, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 489, in _generate_random_operation
+    s1, e1 = self.line_id_map[line1_id]["start_point_id"], self.line_id_map[line1_id]["end_point_id"]
+KeyError: 'PerpL0'
+
+2025-10-30 19:52:39,662 - main - ERROR - 流程执行失败: 未生成任何有效的增强图形
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 376, in run
+    self.run_builder()       # 增强图形
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 193, in run_builder
+    raise RuntimeError("未生成任何有效的增强图形")
+RuntimeError: 未生成任何有效的增强图形
+2025-10-30 19:53:54,874 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 19:53:54,875 - main - INFO - 主随机种子: 60251029
+2025-10-30 19:53:54,875 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 19:53:54,875 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 19:53:57,042 - main - INFO - 已生成基础图形样本 1/5（种子：60251030）
+2025-10-30 19:53:58,334 - main - INFO - 已生成基础图形样本 2/5（种子：60251072）
+2025-10-30 19:54:03,000 - main - INFO - 已生成基础图形样本 3/5（种子：60251114）
+2025-10-30 19:54:10,260 - main - INFO - 已生成基础图形样本 4/5（种子：60251156）
+2025-10-30 19:54:13,717 - main - INFO - 已生成基础图形样本 5/5（种子：60251198）
+2025-10-30 19:54:13,718 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_195354_875.jsonl
+2025-10-30 19:54:13,718 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 19:54:13,721 - main - INFO - 处理基础图形 #1
+2025-10-30 19:54:13,816 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:54:14,125 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:54:14,308 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:54:14,647 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:54:14,993 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:54:15,178 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:54:15,473 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:54:15,531 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 19:54:15,684 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 19:54:15,687 - main - INFO - 处理基础图形 #2
+2025-10-30 19:54:15,965 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:54:16,322 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:54:16,552 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:54:16,805 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:54:17,045 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:54:17,045 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:54:17,136 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:54:17,235 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 19:54:17,235 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:54:17,236 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 19:54:17,239 - main - INFO - 处理基础图形 #3
+2025-10-30 19:54:18,091 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:54:18,940 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:54:21,815 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:54:21,821 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:54:22,093 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:54:23,353 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:54:24,935 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:54:26,578 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:54:26,579 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:54:26,580 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 19:54:26,583 - main - INFO - 处理基础图形 #4
+2025-10-30 19:54:27,837 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:54:28,457 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:54:29,379 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:54:29,817 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:54:30,343 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:54:30,832 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:54:33,781 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:54:33,979 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 19:54:33,980 - main - ERROR - 处理基础图形 #4 失败: 'VMidL4'，跳过
+2025-10-30 19:54:33,987 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1320, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 495, in _generate_random_operation
+    s2, e2 = self.line_id_map[line2_id]["start_point_id"], self.line_id_map[line2_id]["end_point_id"]
+KeyError: 'VMidL4'
+
+2025-10-30 19:54:33,988 - main - INFO - 处理基础图形 #5
+2025-10-30 19:54:34,544 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:54:34,915 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:54:35,156 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:54:35,956 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:54:36,198 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:54:36,264 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 19:54:36,562 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 19:54:36,562 - main - ERROR - 处理基础图形 #5 失败: 'PerpL0'，跳过
+2025-10-30 19:54:36,565 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1320, in run_rounds
+    op = self._generate_random_operation(op_type, config["operation_constraints"].get(op_type, {}))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 489, in _generate_random_operation
+    s1, e1 = self.line_id_map[line1_id]["start_point_id"], self.line_id_map[line1_id]["end_point_id"]
+KeyError: 'PerpL0'
+
+2025-10-30 19:54:36,567 - main - INFO - 增强图形JSONL保存至: ./results/json/enhanced/enhanced_20251030_195413_718.jsonl（共21个）
+2025-10-30 19:54:36,574 - shader - INFO - 加载 21 条enhanced数据
+2025-10-30 19:54:36,574 - shader - INFO - 已设置 21 条增强JSON数据
+2025-10-30 19:54:36,574 - shader - INFO - === 开始处理图像 ===
+2025-10-30 19:54:37,370 - shader - INFO - 成功标注第0张图像，原始版本
+2025-10-30 19:54:37,614 - shader - INFO - 成功标注第1张图像，原始版本
+2025-10-30 19:54:37,838 - shader - INFO - 成功标注第2张图像，原始版本
+2025-10-30 19:54:38,080 - shader - INFO - 成功标注第3张图像，原始版本
+2025-10-30 19:54:38,326 - shader - INFO - 成功标注第4张图像，原始版本
+2025-10-30 19:54:38,590 - shader - INFO - 成功标注第5张图像，原始版本
+2025-10-30 19:54:38,807 - shader - INFO - 成功标注第6张图像，原始版本
+2025-10-30 19:54:38,988 - shader - INFO - 成功标注第7张图像，原始版本
+2025-10-30 19:54:39,190 - shader - INFO - 成功标注第8张图像，原始版本
+2025-10-30 19:54:39,371 - shader - INFO - 成功标注第9张图像，原始版本
+2025-10-30 19:54:39,557 - shader - INFO - 成功标注第10张图像，原始版本
+2025-10-30 19:54:39,757 - shader - INFO - 成功标注第11张图像，原始版本
+2025-10-30 19:54:39,941 - shader - INFO - 成功标注第12张图像，原始版本
+2025-10-30 19:54:40,128 - shader - INFO - 成功标注第13张图像，原始版本
+2025-10-30 19:54:40,337 - shader - INFO - 成功标注第14张图像，原始版本
+2025-10-30 19:54:40,566 - shader - INFO - 成功标注第15张图像，原始版本
+2025-10-30 19:54:40,873 - shader - INFO - 成功标注第16张图像，原始版本
+2025-10-30 19:54:41,085 - shader - INFO - 成功标注第17张图像，原始版本
+2025-10-30 19:54:41,326 - shader - INFO - 成功标注第18张图像，原始版本
+2025-10-30 19:54:41,613 - shader - INFO - 成功标注第19张图像，原始版本
+2025-10-30 19:54:41,823 - shader - INFO - 成功标注第20张图像，原始版本
+2025-10-30 19:54:41,832 - shader - INFO - 所有处理结果已保存至：./results/json/shaded/shaded_20251030_195436_567.jsonl
+2025-10-30 19:54:41,833 - main - INFO - === 处理完成 ===
+- 结果JSONL路径：./results/json/shaded/shaded_20251030_195436_567.jsonl
+2025-10-30 19:54:41,834 - main - INFO - === 开始计算几何参数（符号表达式化简） ===
+2025-10-30 19:54:42,094 - gt - INFO - 已处理 10 条数据
+2025-10-30 19:54:42,641 - gt - INFO - 已处理 20 条数据
+2025-10-30 19:54:42,689 - gt - INFO - 处理完成，结果保存至: ./results/json/final/shaded_with_gt_20251030_195436_567.jsonl
+2025-10-30 19:54:42,693 - main - INFO - 几何参数计算完成，结果保存至: ./results/json/final/shaded_with_gt_20251030_195436_567.jsonl
+2025-10-30 19:54:42,694 - main - INFO - 共处理 21 条数据，每条数据已添加线条/圆弧长度信息
+2025-10-30 19:54:42,694 - main - INFO - 使用GT结果文件: /mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl
+2025-10-30 19:54:42,694 - main - INFO - === 开始生成问答数据 ===
+2025-10-30 19:54:42,694 - main - INFO - QA配置参数: {
+  "question_types": [
+    "length",
+    "angle"
+  ],
+  "type_weights": {
+    "length": 0.7,
+    "angle": 0.2
+  },
+  "num_questions_per_group": 5,
+  "output_dir": "./results/json/qa",
+  "seed": 60251033
+}
+2025-10-30 19:54:42,697 - main - ERROR - 问答生成流程失败: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 326, in run_qa
+    with open(self.gt_jsonl_path, 'r', encoding='utf-8') as f_in, \
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+2025-10-30 19:54:42,698 - main - ERROR - 流程执行失败: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 380, in run
+    self.run_qa()            # 生成问答
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 326, in run_qa
+    with open(self.gt_jsonl_path, 'r', encoding='utf-8') as f_in, \
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl'
+2025-10-30 19:58:34,339 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 19:58:34,340 - main - INFO - 主随机种子: 60251029
+2025-10-30 19:58:34,340 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 19:58:34,340 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 19:58:36,501 - main - INFO - 已生成基础图形样本 1/5（种子：60251030）
+2025-10-30 19:58:37,786 - main - INFO - 已生成基础图形样本 2/5（种子：60251072）
+2025-10-30 19:58:42,412 - main - INFO - 已生成基础图形样本 3/5（种子：60251114）
+2025-10-30 19:58:49,655 - main - INFO - 已生成基础图形样本 4/5（种子：60251156）
+2025-10-30 19:58:53,088 - main - INFO - 已生成基础图形样本 5/5（种子：60251198）
+2025-10-30 19:58:53,089 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_195834_340.jsonl
+2025-10-30 19:58:53,089 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 19:58:53,092 - main - INFO - 处理基础图形 #1
+2025-10-30 19:58:53,186 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:58:53,559 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:58:53,667 - main - ERROR - 处理基础图形 #1 失败: 'M0'，跳过
+2025-10-30 19:58:53,674 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1321, in run_rounds
+    op_result = self.execute_operation(op)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1121, in execute_operation
+    new_ips = self.detect_new_intersections(perp_line_id)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 822, in detect_new_intersections
+    x1, y1 = self.get_point_coords(s)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 164, in get_point_coords
+    p = self.point_id_map[pid]
+KeyError: 'M0'
+
+2025-10-30 19:58:53,674 - main - INFO - 处理基础图形 #2
+2025-10-30 19:58:53,955 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:58:54,410 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:58:54,539 - main - ERROR - 处理基础图形 #2 失败: 'M0'，跳过
+2025-10-30 19:58:54,540 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1321, in run_rounds
+    op_result = self.execute_operation(op)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1121, in execute_operation
+    new_ips = self.detect_new_intersections(perp_line_id)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 822, in detect_new_intersections
+    x1, y1 = self.get_point_coords(s)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 164, in get_point_coords
+    p = self.point_id_map[pid]
+KeyError: 'M0'
+
+2025-10-30 19:58:54,541 - main - INFO - 处理基础图形 #3
+2025-10-30 19:58:55,392 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:58:56,901 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:58:56,996 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:58:57,269 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:58:57,351 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-10-30 19:58:57,629 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:58:58,081 - main - ERROR - 处理基础图形 #3 失败: 'M0'，跳过
+2025-10-30 19:58:58,086 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 166, in run_builder
+    enhancements = base_builder.generate_enhancements({
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1201, in generate_enhancements
+    all_results = self.run_rounds(run_config)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1321, in run_rounds
+    op_result = self.execute_operation(op)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 1121, in execute_operation
+    new_ips = self.detect_new_intersections(perp_line_id)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 823, in detect_new_intersections
+    x2, y2 = self.get_point_coords(e)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/builder.py", line 164, in get_point_coords
+    p = self.point_id_map[pid]
+KeyError: 'M0'
+
+2025-10-30 19:58:58,086 - main - INFO - 处理基础图形 #4
+2025-10-30 19:58:59,331 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 19:58:59,944 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 19:59:00,860 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 19:59:01,291 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 19:59:01,852 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 19:59:02,357 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 20:01:39,388 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 20:01:39,389 - main - INFO - 主随机种子: 60251029
+2025-10-30 20:01:39,389 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 20:01:39,389 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 20:01:41,549 - main - INFO - 已生成基础图形样本 1/5（种子：60251030）
+2025-10-30 20:01:42,835 - main - INFO - 已生成基础图形样本 2/5（种子：60251072）
+2025-10-30 20:01:47,500 - main - INFO - 已生成基础图形样本 3/5（种子：60251114）
+2025-10-30 20:01:54,729 - main - INFO - 已生成基础图形样本 4/5（种子：60251156）
+2025-10-30 20:01:58,188 - main - INFO - 已生成基础图形样本 5/5（种子：60251198）
+2025-10-30 20:01:58,189 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_200139_389.jsonl
+2025-10-30 20:01:58,189 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 20:01:58,192 - main - INFO - 处理基础图形 #1
+2025-10-30 20:01:58,286 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:01:58,679 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 20:01:58,857 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 20:01:59,226 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 20:01:59,800 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 20:01:59,981 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 20:02:00,550 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 20:02:00,833 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 20:02:01,225 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 20:02:01,229 - main - INFO - 处理基础图形 #2
+2025-10-30 20:02:01,508 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:02:02,125 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 20:02:02,788 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 20:02:03,291 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 20:02:03,659 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 20:02:03,898 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 20:02:04,337 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 20:02:05,143 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 20:02:05,595 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 20:02:05,598 - main - INFO - 处理基础图形 #3
+2025-10-30 20:02:06,479 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:02:08,041 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 20:02:09,638 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 20:02:11,785 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 20:02:13,354 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 20:02:14,843 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 20:02:17,686 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 20:02:18,270 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 20:02:18,340 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 20:02:18,344 - main - INFO - 处理基础图形 #4
+2025-10-30 20:02:19,602 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:02:20,247 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 20:02:21,163 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 20:02:21,597 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 20:02:22,139 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 20:02:22,650 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 20:02:25,794 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 20:02:27,705 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 20:02:30,813 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 20:02:30,818 - main - INFO - 处理基础图形 #5
+2025-10-30 20:02:31,395 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:02:31,761 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 20:02:32,022 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-10-30 20:02:32,995 - builder - INFO - 增强结果5：执行第 1/1 轮操作
+2025-10-30 20:02:33,410 - builder - INFO - 增强结果6：执行第 1/2 轮操作
+2025-10-30 20:02:35,110 - builder - INFO - 增强结果6：执行第 2/2 轮操作
+2025-10-30 20:02:36,481 - builder - INFO - 增强结果7：执行第 1/2 轮操作
+2025-10-30 20:02:37,570 - builder - INFO - 增强结果7：执行第 2/2 轮操作
+2025-10-30 20:02:38,120 - builder - INFO - 生成 7 个独立增强图形（预期 7 个）
+2025-10-30 20:02:38,127 - main - INFO - 增强图形JSONL保存至: ./results/json/enhanced/enhanced_20251030_200158_189.jsonl（共35个）
+2025-10-30 20:02:38,135 - shader - INFO - 加载 35 条enhanced数据
+2025-10-30 20:02:38,136 - shader - INFO - 已设置 35 条增强JSON数据
+2025-10-30 20:02:38,136 - shader - INFO - === 开始处理图像 ===
+2025-10-30 20:02:39,349 - shader - INFO - 成功标注第0张图像，原始版本
+2025-10-30 20:02:39,556 - shader - INFO - 成功标注第1张图像，原始版本
+2025-10-30 20:02:39,762 - shader - INFO - 成功标注第2张图像，原始版本
+2025-10-30 20:02:39,973 - shader - INFO - 成功标注第3张图像，原始版本
+2025-10-30 20:02:40,178 - shader - INFO - 成功标注第4张图像，原始版本
+2025-10-30 20:02:40,383 - shader - INFO - 成功标注第5张图像，原始版本
+2025-10-30 20:02:40,587 - shader - INFO - 成功标注第6张图像，原始版本
+2025-10-30 20:02:40,767 - shader - INFO - 成功标注第7张图像，原始版本
+2025-10-30 20:02:40,949 - shader - INFO - 成功标注第8张图像，原始版本
+2025-10-30 20:02:41,129 - shader - INFO - 成功标注第9张图像，原始版本
+2025-10-30 20:02:41,309 - shader - INFO - 成功标注第10张图像，原始版本
+2025-10-30 20:02:41,491 - shader - INFO - 成功标注第11张图像，原始版本
+2025-10-30 20:02:41,671 - shader - INFO - 成功标注第12张图像，原始版本
+2025-10-30 20:02:41,854 - shader - INFO - 成功标注第13张图像，原始版本
+2025-10-30 20:02:42,065 - shader - INFO - 成功标注第14张图像，原始版本
+2025-10-30 20:02:42,274 - shader - INFO - 成功标注第15张图像，原始版本
+2025-10-30 20:02:42,485 - shader - INFO - 成功标注第16张图像，原始版本
+2025-10-30 20:02:42,698 - shader - INFO - 成功标注第17张图像，原始版本
+2025-10-30 20:02:42,907 - shader - INFO - 成功标注第18张图像，原始版本
+2025-10-30 20:02:43,119 - shader - INFO - 成功标注第19张图像，原始版本
+2025-10-30 20:02:43,330 - shader - INFO - 成功标注第20张图像，原始版本
+2025-10-30 20:02:43,588 - shader - INFO - 成功标注第21张图像，原始版本
+2025-10-30 20:02:43,847 - shader - INFO - 成功标注第22张图像，原始版本
+2025-10-30 20:02:44,107 - shader - INFO - 成功标注第23张图像，原始版本
+2025-10-30 20:07:26,539 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 20:07:26,540 - main - INFO - 主随机种子: 80251029
+2025-10-30 20:07:26,540 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 20:07:26,540 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 20:08:01,438 - main - INFO - 已生成基础图形样本 1/20（种子：80251030）
+2025-10-30 20:08:02,404 - main - INFO - 已生成基础图形样本 2/20（种子：80251072）
+2025-10-30 20:08:03,938 - main - INFO - 已生成基础图形样本 3/20（种子：80251114）
+2025-10-30 20:08:05,713 - main - INFO - 已生成基础图形样本 4/20（种子：80251156）
+2025-10-30 20:08:14,409 - main - INFO - 已生成基础图形样本 5/20（种子：80251198）
+2025-10-30 20:08:17,276 - main - ERROR - 生成样本 6 失败：点数量超过限制，图形可能过于复杂，放弃生成，跳过该样本
+2025-10-30 20:08:17,283 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 115, in run_template
+    generator.generate_derivations()
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 1282, in generate_derivations
+    self._calculate_new_entity_intersections(new_id)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 760, in _calculate_new_entity_intersections
+    pid = self._add_point(x, y, is_circle_init=False, level=intersection_level)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 197, in _add_point
+    raise Exception("点数量超过限制，图形可能过于复杂，放弃生成")
+Exception: 点数量超过限制，图形可能过于复杂，放弃生成
+
+2025-10-30 20:08:18,171 - main - INFO - 已生成基础图形样本 7/20（种子：80251282）
+2025-10-30 20:08:19,093 - main - INFO - 已生成基础图形样本 8/20（种子：80251324）
+2025-10-30 20:08:20,199 - main - INFO - 已生成基础图形样本 9/20（种子：80251366）
+2025-10-30 20:08:26,260 - main - ERROR - 生成样本 10 失败：点数量超过限制，图形可能过于复杂，放弃生成，跳过该样本
+2025-10-30 20:08:26,265 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 115, in run_template
+    generator.generate_derivations()
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 1269, in generate_derivations
+    new_id = self._rule_concentric(base_entity)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 839, in _rule_concentric
+    new_id = self.generate_regular_polygon(
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 653, in generate_regular_polygon
+    vertices.append(self._add_point(x, y, is_circle_init=False, level=1 if is_base else 2))
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 197, in _add_point
+    raise Exception("点数量超过限制，图形可能过于复杂，放弃生成")
+Exception: 点数量超过限制，图形可能过于复杂，放弃生成
+
+2025-10-30 20:09:11,242 - main - INFO - 已生成基础图形样本 11/20（种子：80251450）
+2025-10-30 20:09:12,006 - main - INFO - 已生成基础图形样本 12/20（种子：80251492）
+2025-10-30 20:09:50,831 - main - INFO - 已生成基础图形样本 13/20（种子：80251534）
+2025-10-30 20:10:24,386 - main - INFO - 已生成基础图形样本 14/20（种子：80251576）
+2025-10-30 20:10:24,671 - main - INFO - 已生成基础图形样本 15/20（种子：80251618）
+2025-10-30 20:10:29,170 - main - INFO - 已生成基础图形样本 16/20（种子：80251660）
+2025-10-30 20:10:29,923 - main - INFO - 已生成基础图形样本 17/20（种子：80251702）
+2025-10-30 20:10:32,478 - main - INFO - 已生成基础图形样本 18/20（种子：80251744）
+2025-10-30 20:10:35,161 - main - INFO - 已生成基础图形样本 19/20（种子：80251786）
+2025-10-30 20:10:37,614 - main - INFO - 已生成基础图形样本 20/20（种子：80251828）
+2025-10-30 20:10:37,615 - main - INFO - 基础图形JSONL保存至: ./results/json/base/base_20251030_200726_540.jsonl
+2025-10-30 20:10:37,615 - main - INFO - === 开始生成增强图形 ===
+2025-10-30 20:10:37,617 - main - INFO - 处理基础图形 #1
+2025-10-30 20:10:40,267 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-10-30 20:10:44,513 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-10-30 20:10:54,402 - main - INFO - 工作目录初始化完成: ./results
+2025-10-30 20:10:54,402 - main - INFO - 主随机种子: 80251027
+2025-10-30 20:10:54,402 - main - INFO - 各模块随机种子初始化完成
+2025-10-30 20:10:54,402 - main - INFO - === 开始生成基础图形 ===
+2025-10-30 20:10:55,074 - main - INFO - 已生成基础图形样本 1/5（种子：80251028）

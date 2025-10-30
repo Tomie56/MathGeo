@@ -175,6 +175,7 @@ class MathGeoPipeline:
                         logger.error(f"线程[{threading.current_thread().name}] 样本 {sample_idx} 生成超时（{self.task_timeout}秒），跳过")
                     else:
                         logger.error(f"线程[{threading.current_thread().name}] 样本 {sample_idx} 生成失败：{str(result)}，跳过")
+                        logger.error(f"错误堆栈：\n{traceback.format_exc()}")
                         
                 except queue.Empty:
                     break

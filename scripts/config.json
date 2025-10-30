@@ -1,8 +1,8 @@
 {
     "global": {
         "output_root": "./results",
-        "main_seed": 60251029,
-        "thread_num": 10
+        "main_seed": 80251027,
+        "thread_num": 20
     },
     "template": {
         "n": 5,
