@@ -1,16 +1,4 @@
-"""
-启动脚本（兼容bash自动化调用）:
-python ./scripts/call_api/get_answer.py <输入jsonl路径> --output <输出jsonl路径> [--req-per-question 1] [--clean-tmp]
-
-增强功能：
-1. 支持自定义生成答案数量（通过参数调整）
-2. 增强结果有效性校验（检查LaTeX答案框）
-3. 支持自动清理临时文件（节省存储空间）
-4. 强化gt字段兼容性（呼应format.py的筛选逻辑）
-"""
-
 import asyncio
-import aiohttp
 import json
 import os
 import itertools
@@ -20,10 +8,10 @@ import sys
 from datetime import datetime
 import traceback
 import base64
-from aoss_client import client
 from tqdm import tqdm
 from mimetypes import guess_type
 import argparse
+from openai import AsyncOpenAI, APIError, Timeout, APIConnectionError  # 导入OpenAI异步客户端及异常
 
 def log_message(message):
     """增强型日志记录（与全流程脚本保持一致）"""
@@ -31,15 +19,17 @@ def log_message(message):
     print(f"[{timestamp}] {message}")
     sys.stdout.flush()
 
-# 基础配置（可通过命令行参数覆盖部分配置）
-ips = ['10.119.26.128']
-URLS = [f"http://{ip}:8000" for ip in ips]
-MAX_CONCURRENT_PER_SERVER = 80
+# 基础配置（改为API Key模式）
+API_KEY = "sk-118c7a1f568f42ee93bc0cdf5b95fe17"  # API Key
+BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"  # 接口基础地址
+MODEL = "qwen3-vl-235b-a22b-thinking"  # 模型名称
+MAX_CONCURRENT = 1  # 最大并发数
 max_retry = 3
-server_status = defaultdict(lambda: {"pending": 0, "response_time": 1.0})
+server_status = defaultdict(lambda: {"pending": 0, "response_time": 1.0})  # 保留状态跟踪
 
 # 修正AOSS客户端配置路径（适配当前用户目录）
 try:
+    from aoss_client import client
     _aoss_client = client.Client('/mnt/afs/jingjinhao/aoss.conf')
 except Exception as e:
     log_message(f"AOSS客户端初始化警告：{str(e)} | 若无需S3图片支持，可忽略此警告")
@@ -48,12 +38,16 @@ except Exception as e:
 class APIOptimizer:
     def __init__(self, req_per_question):
         self.request_queue = asyncio.Queue()
-        self.server_cycle = itertools.cycle(URLS)
         self.start_time = datetime.now()
         self.success_count = 0
         self.failure_count = 0
         self.total_processed = 0
         self.req_per_question = req_per_question  # 从参数接收生成答案数量
+        # 初始化OpenAI异步客户端
+        self.client = AsyncOpenAI(
+            api_key=API_KEY,
+            base_url=BASE_URL,
+        )
 
     async def encode_image_to_base64(self, image_path):
         """优化图片编码逻辑：增加路径有效性检查"""
@@ -85,13 +79,8 @@ class APIOptimizer:
         return f"data:{mime_type};base64,{base64_data}"
 
     async def dynamic_load_balancer(self):
-        """保持原有负载均衡逻辑，优化异常处理"""
-        try:
-            candidates = [url for url in URLS if server_status[url]["pending"] < MAX_CONCURRENT_PER_SERVER*0.8]
-            return min(candidates, key=lambda x: server_status[x]["pending"]*server_status[x]["response_time"]) if candidates else next(self.server_cycle)
-        except Exception as e:
-            log_message(f"负载均衡异常 | 错误：{str(e)} | 使用默认服务器")
-            return URLS[0]
+        """简化负载均衡（单接口模式）"""
+        return BASE_URL  # 直接返回基础地址
 
     async def construct_messages(self, image_paths, item):
         """优化提示词：明确几何问题求解要求，关联gt字段信息"""
@@ -133,9 +122,8 @@ class APIOptimizer:
         ]
         return messages
 
-    async def call_openai_api_async(self, session, idx, image_paths, item):
-        """优化API调用：增加请求有效性检查，细化错误日志"""
-        base_url = None
+    async def call_openai_api_async(self, idx, image_paths, item):
+        """修改为OpenAI客户端调用方式"""
         messages = await self.construct_messages(image_paths, item)
         if not messages:
             log_message(f"样本{idx} | 无法构建有效请求（无图片或参数错误）")
@@ -143,43 +131,36 @@ class APIOptimizer:
 
         for retry in range(max_retry):
             try:
-                base_url = await self.dynamic_load_balancer()
-                server_status[base_url]["pending"] += 1
+                # 记录当前请求状态
+                server_status[BASE_URL]["pending"] += 1
                 start_time = datetime.now()
 
-                async with session.post(
-                    f"{base_url}/v1/chat/completions",
-                    headers={"Authorization": "Bearer EMPTY"},
-                    json={
-                        "model": "Qwen3-VL-235B-A22B-Thinking",
-                        "messages": messages,
-                        "temperature": 0.3, 
-                        "max_tokens": 16384, 
-                    },
-                    timeout=aiohttp.ClientTimeout(total=2000) 
-                ) as response:
-                    rt = (datetime.now() - start_time).total_seconds()
-                    server_status[base_url]["response_time"] = 0.9 * server_status[base_url]["response_time"] + 0.1 * rt
+                # 调用OpenAI异步客户端
+                response = await self.client.chat.completions.create(
+                    model=MODEL,
+                    messages=messages,
+                    temperature=0.3,
+                    max_tokens=16384,
+                    timeout=2000  # 超时设置（秒）
+                )
 
-                    if response.status == 200:
-                        result = await response.json()
-                        return result['choices'][0]['message']['content']
-                    else:
-                        response_text = await response.text()
-                        log_message(f"样本{idx} | API异常（重试{retry+1}/{max_retry}）| 状态码：{response.status} | 响应：{response_text[:200]}")
+                # 更新响应时间统计
+                rt = (datetime.now() - start_time).total_seconds()
+                server_status[BASE_URL]["response_time"] = 0.9 * server_status[BASE_URL]["response_time"] + 0.1 * rt
 
-            except (aiohttp.ClientConnectorError, aiohttp.ServerTimeoutError, asyncio.TimeoutError) as e:
+                return response.choices[0].message.content
+
+            except (APIConnectionError, Timeout) as e:
                 log_message(f"样本{idx} | 网络异常（重试{retry+1}/{max_retry}）| 类型：{type(e).__name__} | 错误：{str(e)}")
-            except json.JSONDecodeError as e:
-                log_message(f"样本{idx} | JSON解析失败（重试{retry+1}/{max_retry}）| 错误：{str(e)}")
+            except APIError as e:
+                log_message(f"样本{idx} | API异常（重试{retry+1}/{max_retry}）| 状态码：{e.status_code} | 错误：{e.message}")
             except KeyError as e:
                 log_message(f"样本{idx} | 响应格式错误（重试{retry+1}/{max_retry}）| 缺失字段：{str(e)}")
             except Exception as e:
                 log_message(f"样本{idx} | 未处理异常（重试{retry+1}/{max_retry}）| 类型：{type(e).__name__} | 错误：{str(e)}")
             finally:
-                if base_url:
-                    server_status[base_url]["pending"] -= 1
-                await asyncio.sleep((1 + retry)**2)  # 调整重试间隔（更合理的退避策略）
+                server_status[BASE_URL]["pending"] -= 1
+                await asyncio.sleep((1 + retry)**2)  # 退避策略
         return None
 
     def is_answer_valid(self, answer):
@@ -188,8 +169,8 @@ class APIOptimizer:
             return False
         return '\\boxed{' in answer
 
-    async def worker(self, session, pbar, tmp_dir):
-        """优化工作线程：增加答案有效性校验，细化状态统计"""
+    async def worker(self, pbar, tmp_dir):
+        """优化工作线程：移除aiohttp session（改用客户端内置连接）"""
         while True:
             task_retrieved = False
             try:
@@ -214,13 +195,13 @@ class APIOptimizer:
 
                 # 处理图片路径（兼容单图/多图）
                 image_paths = item['image'] if isinstance(item['image'], list) else [item['image']]
-                image_paths = [os.path.abspath(path) for path in image_paths]  # 转为绝对路径，避免错误
+                image_paths = [os.path.abspath(path) for path in image_paths]
 
                 # API调用生成答案（筛选有效结果）
                 results = []
                 retry_history = []
                 for attempt in range(self.req_per_question + max_retry):
-                    result = await self.call_openai_api_async(session, idx, image_paths, item)
+                    result = await self.call_openai_api_async(idx, image_paths, item)
                     if result:
                         if self.is_answer_valid(result):
                             results.append(result)
@@ -236,7 +217,7 @@ class APIOptimizer:
                 tmp_path = f"{output_json}.tmp"
                 async with aiofiles.open(tmp_path, 'w', encoding='utf-8') as f:
                     item['generated_answer'] = results[:self.req_per_question]
-                    item['answer_validity'] = [self.is_answer_valid(ans) for ans in results[:self.req_per_question]]  # 新增有效性标记
+                    item['answer_validity'] = [self.is_answer_valid(ans) for ans in results[:self.req_per_question]]
                     await f.write(json.dumps(item, ensure_ascii=False, indent=2))
                 os.replace(tmp_path, output_json)
 
@@ -259,7 +240,7 @@ class APIOptimizer:
                     '成功': self.success_count,
                     '失败': self.failure_count,
                     '速度': f"{self.total_processed/(datetime.now()-self.start_time).total_seconds():.2f}条/s",
-                    '负载': '/'.join(f'{s["pending"]}' for s in server_status.values()),
+                    '负载': f"{server_status[BASE_URL]['pending']}",
                     '累计处理': self.total_processed
                 })
                 pbar.update(1)
@@ -318,19 +299,17 @@ class APIOptimizer:
         for idx, item in enumerate(items):
             await self.request_queue.put((idx, item))
 
-        # 4. 启动工作线程处理任务
-        connector = aiohttp.TCPConnector(limit=MAX_CONCURRENT_PER_SERVER*len(URLS))
-        async with aiohttp.ClientSession(connector=connector) as session:
-            with tqdm(total=total_items, desc="生成答案", file=sys.stdout) as pbar:
-                worker_count = min(MAX_CONCURRENT_PER_SERVER*len(URLS), total_items)
-                workers = [asyncio.create_task(self.worker(session, pbar, tmp_dir)) for _ in range(worker_count)]
-                
-                await self.request_queue.join()
-                # 取消所有工作线程
-                for w in workers:
-                    if not w.done():
-                        w.cancel()
-                await asyncio.gather(*workers, return_exceptions=True)
+        # 4. 启动工作线程处理任务（无需aiohttp session，使用客户端内置连接）
+        with tqdm(total=total_items, desc="生成答案", file=sys.stdout) as pbar:
+            worker_count = min(MAX_CONCURRENT, total_items)
+            workers = [asyncio.create_task(self.worker(pbar, tmp_dir)) for _ in range(worker_count)]
+            
+            await self.request_queue.join()
+            # 取消所有工作线程
+            for w in workers:
+                if not w.done():
+                    w.cancel()
+            await asyncio.gather(*workers, return_exceptions=True)
 
         # 5. 汇总结果到输出文件
         log_message(f"汇总结果到：{output_path}")
@@ -363,7 +342,7 @@ class APIOptimizer:
         log_message(f"最终文件路径：{output_path}")
 
 async def main_async():
-    # 解析命令行参数（新增自定义配置参数）
+    # 解析命令行参数
     parser = argparse.ArgumentParser(description="调用API生成数学问题答案（增强版）")
     parser.add_argument("input_path", help="输入JSONL路径（get_question.py输出）")
     parser.add_argument("--output", required=True, help="输出JSONL路径")

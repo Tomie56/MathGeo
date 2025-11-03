@@ -931,10 +931,10 @@ class TemplateGenerator:
             
             else:
                 dir_angle_map = {
-                    "up": rotation + pi/2,
-                    "down": rotation - pi/2,
-                    "left": rotation + pi,
-                    "right": rotation
+                    "up": pi/2,
+                    "down": pi/2,
+                    "left": pi,
+                    "right": 0
                 }
                 angle = dir_angle_map[direction]
                 dir_desc = direction

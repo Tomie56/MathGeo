@@ -38,7 +38,7 @@ class MathGeoPipeline:
         self._set_random_seeds()
         
         self.thread_num = self.config['global'].get('thread_num', 4)  # 多线程数量（默认4）
-        self.task_timeout = 4 * self.config['global'].get('thread_num', 4)  # 防止卡死，时间感觉和样本数、线程数相关
+        self.task_timeout = 16 * self.config['global'].get('thread_num', 4)  # 防止卡死，时间感觉和样本数、线程数相关
         
         self.base_jsonl_path: Optional[str] = None
         self.enhanced_jsons: List[Dict[str, Any]] = []
@@ -175,7 +175,6 @@ class MathGeoPipeline:
                         logger.error(f"线程[{threading.current_thread().name}] 样本 {sample_idx} 生成超时（{self.task_timeout}秒），跳过")
                     else:
                         logger.error(f"线程[{threading.current_thread().name}] 样本 {sample_idx} 生成失败：{str(result)}，跳过")
-                        logger.error(f"错误堆栈：\n{traceback.format_exc()}")
                         
                 except queue.Empty:
                     break
@@ -199,11 +198,14 @@ class MathGeoPipeline:
 
     def run_builder(self) -> None:
         """步骤2：读取基础图形JSONL，生成增强图形（多线程+单次20秒超时）"""
-        if not self.base_jsonl_path or not os.path.exists(self.base_jsonl_path):
-            raise RuntimeError("未找到基础图形JSONL文件，无法执行增强步骤")
+        # if not self.base_jsonl_path or not os.path.exists(self.base_jsonl_path):
+        #     raise RuntimeError("未找到基础图形JSONL文件，无法执行增强步骤")
+        
+        self.base_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n500_v3/json/base/base_20251102_155610_148.jsonl"
         
         logger.info(f"=== 开始生成增强图形（多线程：{self.thread_num}个，超时：{self.task_timeout}秒） ===")
         builder_cfg = self.config['builder']
+        
 
         # 构建增强图形输出路径
         output_filename = f'enhanced_{self._get_timestamp()}.jsonl'
@@ -331,6 +333,32 @@ class MathGeoPipeline:
             json_output_dir, 
             f'shaded_{self._get_timestamp()}.jsonl'
         )
+
+        # self.config['drawer']['jsonl_path'] = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/enhanced/enhanced_20251102_094839_151.jsonl"
+        # jsonl_path = self.config['drawer']['jsonl_path']  # 获取该路径
+
+        # 读取jsonl文件并解析为self.enhanced_jsons
+        # self.enhanced_jsons = []
+        # if not os.path.exists(jsonl_path):
+        #     logger.error(f"指定的jsonl文件不存在：{jsonl_path}")
+        #     raise FileNotFoundError(f"增强图形jsonl文件不存在：{jsonl_path}")
+        
+        # try:
+        #     with open(jsonl_path, 'r', encoding='utf-8') as f:
+        #         for line_num, line in enumerate(f, 1):
+        #             line = line.strip()
+        #             if not line:  # 跳过空行
+        #                 continue
+        #             try:
+        #                 # 解析每行的JSON数据并添加到列表
+        #                 geo_data = json.loads(line)
+        #                 self.enhanced_jsons.append(geo_data)
+        #             except json.JSONDecodeError as e:
+        #                 logger.warning(f"跳过无效JSON行（第{line_num}行）：{str(e)}")
+        #     logger.info(f"成功从{jsonl_path}加载{len(self.enhanced_jsons)}条增强图形数据")
+        # except Exception as e:
+        #     logger.error(f"读取jsonl文件失败：{str(e)}")
+        #     raise
 
         tool_config = {
             "global": {"output_root": output_root},
@@ -482,7 +510,7 @@ class MathGeoPipeline:
     def run(self) -> None:
         """执行全流程"""
         try:
-            self.run_template()      # 生成基础图形（多线程+超时）
+            # self.run_template()      # 生成基础图形（多线程+超时）
             self.run_builder()       # 增强图形（多线程+超时）
             # self.run_drawer()        # 绘制原始图像
             self.run_shader()        # 区域阴影与标注

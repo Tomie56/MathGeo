@@ -23,10 +23,11 @@ def main():
     # 解析命令行参数
     parser = argparse.ArgumentParser(description="替换JSONL文件中image字段的'results'字符串")
     parser.add_argument("--input", 
-                      default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A20_v1/api/length_arc_test_20251029_answer.jsonl",
+                      default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/qa/qa_shaded_with_gt_20251102_122021_612.jsonl",
                       help="输入JSONL文件路径（默认提供目标文件路径）")
-    parser.add_argument("--output", required=True, help="输出JSONL文件路径")
-    parser.add_argument("--replace-with", required=True, help="用于替换'results'的字符串")
+    parser.add_argument("--output", 
+                        default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/qa/qa_shaded_with_gt_20251102_122021_612_modified.jsonl", help="输出JSONL文件路径")
+    parser.add_argument("--replace-with", default="A500_v2",help="用于替换'results'的字符串")
     args = parser.parse_args()
 
     # 验证输入文件

@@ -1191,7 +1191,7 @@ class RandomGeometryBuilder:
         run_config = {
             **config,
             "num_enhancements": num_enhancements,
-            "single_enhance_timeout": config.get("single_enhance_timeout", 30)
+            "single_enhance_timeout": config.get("single_enhance_timeout", 256)
         }
         
         all_results = self.run_rounds(run_config)
@@ -1219,7 +1219,7 @@ class RandomGeometryBuilder:
         min_ops_per_round = config["min_operations_per_round"]
         max_ops_per_round = config["max_operations_per_round"]
         num_enhancements = config["num_enhancements"]
-        single_enhance_timeout = config.get("single_enhance_timeout", 40)
+        single_enhance_timeout = config.get("single_enhance_timeout", 256)
 
         try:
             rounds_list = []
@@ -1241,23 +1241,26 @@ class RandomGeometryBuilder:
             enh_seed = base_seed + enh_idx * 100
             random.seed(enh_seed)
             self.data = json.loads(json.dumps(original_data))
-            # self.points = self.data["points"]
-            # self.lines = self.data["lines"]
-            # self.arcs = self.data.get("arcs", [])
+            self.points = self.data["points"]
+            self.lines = self.data["lines"]
+            self.arcs = self.data.get("arcs", [])
             self.point_id_map = {p["id"]: p for p in self.points}
             self.line_id_map = {l["id"]: l for l in self.lines}
             self.arc_id_map = {a["id"]: a for a in self.arcs}
             self.line_pairs = self._build_line_pairs()
             self.on_segment_points_cache = set(self._cache_on_segment_points())
             self.all_points_cache = set(self.point_id_map.keys())
+            self.entity_vertices_cache = self._cache_entity_vertices()
+            self.entity_lines_cache = self._cache_entity_lines()
+            self.entity_arcs_cache = self._cache_entity_arcs()    
             
             self.enhancement_history = []
             self.operation_counter = 0
 
             enhancement_desc = [
-                f"原始图形描述: {original_desc}",
-                f"增强结果序号: {enh_idx + 1}/{num_enhancements}",
-                f"本结果操作轮数: {num_rounds}"
+                f"Original graphic description: {original_desc}",
+                f"Enhancement index: {enh_idx + 1}/{num_enhancements}",
+                f"Number of rounds: {num_rounds}"
             ]
 
             timeout_occurred = False
@@ -1329,6 +1332,13 @@ class RandomGeometryBuilder:
 
                 round_results.append(round_result)
                 enhancement_desc.extend(round_desc)
+                
+                self.entity_vertices_cache = self._cache_entity_vertices()
+                self.entity_lines_cache = self._cache_entity_lines()
+                self.entity_arcs_cache = self._cache_entity_arcs()
+                self.point_id_map = {p["id"]: p for p in self.points}  # 包含本轮新增的点
+                self.line_id_map = {l["id"]: l for l in self.lines}    # 包含本轮新增的线
+                self.arc_id_map = {a["id"]: a for a in self.arcs}      # 包含本轮新增的圆弧
 
             self._update_composite_entity()
             if timeout_occurred:

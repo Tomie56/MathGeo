@@ -37,7 +37,7 @@ def log_message(message):
     sys.stdout.flush()
 
 ips = [
-    '10.119.25.133'
+    '10.119.29.179'
 ]
 URLS = [
     f"http://{ip}:8000" for ip in ips

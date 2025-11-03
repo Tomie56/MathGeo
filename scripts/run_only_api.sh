@@ -13,7 +13,7 @@ fi
 
 INPUT_JSONL="$1"
 # 提取输入文件名（不含路径）用于生成中间文件
-BASE_NAME="length_arc_test_20251029"
+BASE_NAME="length_arc_test_20251102"
 
 # 定义中间文件路径（避免覆盖原始文件）
 FORMATTED_JSONL="${WORK_DIR}/api/${BASE_NAME}_formatted.jsonl"

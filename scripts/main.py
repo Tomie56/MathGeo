@@ -297,10 +297,10 @@ class GeoChainPipeline:
     def run_qa(self) -> None:
         """步骤6：基于GT计算结果生成问答数据（直接读取self.gt_jsonl_path）"""
         # 检查GT处理结果路径是否有效
-        # if not hasattr(self, 'gt_jsonl_path') or not self.gt_jsonl_path or not os.path.exists(self.gt_jsonl_path):
-        #     raise RuntimeError("GT计算结果路径无效或不存在，请先执行run_gt生成结果")
+        if not hasattr(self, 'gt_jsonl_path') or not self.gt_jsonl_path or not os.path.exists(self.gt_jsonl_path):
+            raise RuntimeError("GT计算结果路径无效或不存在，请先执行run_gt生成结果")
         
-        self.gt_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl"
+        # self.gt_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl"
         
         logger.info(f"使用GT结果文件: {self.gt_jsonl_path}")
 
