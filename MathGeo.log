@@ -41160,3 +41160,987 @@ RuntimeError: 未加载enhanced数据，无法处理
 2025-11-02 19:10:24,356 - main_mt_v1 - INFO - 生成问答对总数: 8180 个
 2025-11-02 19:10:24,356 - main_mt_v1 - INFO - 问答结果保存至: ./results_n500_v3/json/qa/qa_shaded_with_gt_20251102_184634_728.jsonl
 2025-11-02 19:10:24,356 - main_mt_v1 - INFO - === 全流程执行完成 ===
+2025-11-04 15:20:21,627 - main_mt_v1 - INFO - 工作目录初始化完成: ./results_n20_v2
+2025-11-04 15:20:21,628 - main_mt_v1 - INFO - 主随机种子: 2255
+2025-11-04 15:20:21,628 - main_mt_v1 - INFO - 各模块随机种子初始化完成
+2025-11-04 15:20:21,629 - main_mt_v1 - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-04 15:20:21,629 - main_mt_v1 - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-04 15:20:21,629 - main_mt_v1 - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-04 15:20:21,630 - main_mt_v1 - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-04 15:20:21,631 - main_mt_v1 - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-04 15:20:21,639 - main_mt_v1 - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-04 15:20:21,644 - main_mt_v1 - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-04 15:20:21,645 - main_mt_v1 - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：2508）
+2025-11-04 15:20:21,648 - main_mt_v1 - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：2550）
+2025-11-04 15:20:21,648 - main_mt_v1 - INFO - 线程[Template-Worker-9] 处理基础图形样本 9/20（种子：2592）
+2025-11-04 15:20:21,652 - main_mt_v1 - INFO - 线程[Template-Worker-10] 处理基础图形样本 10/20（种子：2634）
+2025-11-04 15:20:21,662 - main_mt_v1 - INFO - 线程[Template-Worker-11] 处理基础图形样本 11/20（种子：2676）
+2025-11-04 15:20:21,662 - main_mt_v1 - INFO - 线程[Template-Worker-12] 处理基础图形样本 12/20（种子：2718）
+2025-11-04 15:20:21,663 - main_mt_v1 - INFO - 线程[Template-Worker-13] 处理基础图形样本 13/20（种子：2760）
+2025-11-04 15:20:21,671 - main_mt_v1 - INFO - 线程[Template-Worker-14] 处理基础图形样本 14/20（种子：2802）
+2025-11-04 15:20:21,673 - main_mt_v1 - INFO - 线程[Template-Worker-15] 处理基础图形样本 15/20（种子：2844）
+2025-11-04 15:20:21,675 - main_mt_v1 - INFO - 线程[Template-Worker-16] 处理基础图形样本 16/20（种子：2886）
+2025-11-04 15:20:21,678 - main_mt_v1 - INFO - 线程[Template-Worker-17] 处理基础图形样本 17/20（种子：2928）
+2025-11-04 15:20:21,684 - main_mt_v1 - INFO - 线程[Template-Worker-18] 处理基础图形样本 18/20（种子：2970）
+2025-11-04 15:20:21,689 - main_mt_v1 - INFO - 线程[Template-Worker-19] 处理基础图形样本 19/20（种子：3012）
+2025-11-04 15:20:21,689 - main_mt_v1 - INFO - 线程[Template-Worker-20] 处理基础图形样本 20/20（种子：3054）
+2025-11-04 15:20:23,797 - main_mt_v1 - INFO - 线程[Template-Worker-13] 样本 13 生成成功
+2025-11-04 15:20:27,838 - main_mt_v1 - INFO - 线程[Template-Worker-10] 样本 10 生成成功
+2025-11-04 15:20:38,076 - main_mt_v1 - INFO - 线程[Template-Worker-1] 样本 1 生成成功
+2025-11-04 15:20:41,739 - main_mt_v1 - INFO - 线程[Template-Worker-17] 样本 17 生成成功
+2025-11-04 15:20:51,003 - main_mt_v1 - INFO - 线程[Template-Worker-7] 样本 7 生成成功
+2025-11-04 15:20:51,735 - main_mt_v1 - INFO - 线程[Template-Worker-9] 样本 9 生成成功
+2025-11-04 15:20:53,528 - main_mt_v1 - INFO - 线程[Template-Worker-8] 样本 8 生成成功
+2025-11-04 15:21:15,920 - main_mt_v1 - INFO - 线程[Template-Worker-16] 样本 16 生成成功
+2025-11-04 15:21:21,702 - main_mt_v1 - INFO - 线程[Template-Worker-5] 样本 5 生成成功
+2025-11-04 15:21:29,048 - main_mt_v1 - INFO - 线程[Template-Worker-3] 样本 3 生成成功
+2025-11-04 15:21:30,861 - main_mt_v1 - INFO - 线程[Template-Worker-15] 样本 15 生成成功
+2025-11-04 15:21:59,840 - main_mt_v1 - INFO - 线程[Template-Worker-14] 样本 14 生成成功
+2025-11-04 15:22:16,060 - main_mt_v1 - INFO - 线程[Template-Worker-11] 样本 11 生成成功
+2025-11-04 15:22:27,314 - main_mt_v1 - INFO - 线程[Template-Worker-19] 样本 19 生成成功
+2025-11-04 15:23:32,091 - main_mt_v1 - ERROR - 线程[Template-Worker-18] 样本 18 生成失败：点数量超过限制，图形可能过于复杂，放弃生成，跳过
+2025-11-04 15:25:29,085 - main_mt_v1 - INFO - 线程[Template-Worker-6] 样本 6 生成成功
+2025-11-04 15:25:32,475 - main_mt_v1 - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：点数量超过限制，图形可能过于复杂，放弃生成，跳过
+2025-11-04 15:25:41,736 - main_mt_v1 - INFO - 线程[Template-Worker-12] 样本 12 生成成功
+2025-11-04 15:26:21,636 - main_mt_v1 - ERROR - 线程[Template-Worker-2] 样本 2 生成超时（320秒），跳过
+2025-11-04 15:26:21,735 - main_mt_v1 - ERROR - 线程[Template-Worker-20] 样本 20 生成超时（320秒），跳过
+2025-11-04 15:26:21,766 - main_mt_v1 - INFO - 基础图形生成完成：成功 16/20 个样本
+2025-11-04 15:26:21,789 - main_mt_v1 - INFO - 基础图形JSONL保存至: ./results_n20_v2/json/base/base_20251104_152021_629.jsonl
+2025-11-04 15:26:21,797 - main_mt_v1 - INFO - === 开始生成增强图形（多线程：20个，超时：320秒） ===
+2025-11-04 15:26:22,040 - main_mt_v1 - INFO - 线程[Builder-Worker-1] 处理基础图形 #1
+2025-11-04 15:26:22,051 - main_mt_v1 - INFO - 线程[Builder-Worker-2] 处理基础图形 #2
+2025-11-04 15:26:22,080 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-04 15:26:22,085 - main_mt_v1 - INFO - 线程[Builder-Worker-3] 处理基础图形 #3
+2025-11-04 15:26:22,107 - main_mt_v1 - INFO - 线程[Builder-Worker-4] 处理基础图形 #4
+2025-11-04 15:26:22,123 - main_mt_v1 - INFO - 线程[Builder-Worker-5] 处理基础图形 #5
+2025-11-04 15:26:22,192 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-04 15:26:22,200 - main_mt_v1 - INFO - 线程[Builder-Worker-6] 处理基础图形 #6
+2025-11-04 15:26:22,207 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-04 15:26:22,226 - main_mt_v1 - INFO - 线程[Builder-Worker-7] 处理基础图形 #7
+2025-11-04 15:26:22,267 - main_mt_v1 - INFO - 线程[Builder-Worker-8] 处理基础图形 #8
+2025-11-04 15:26:22,309 - main_mt_v1 - INFO - 线程[Builder-Worker-9] 处理基础图形 #9
+2025-11-04 15:26:22,371 - main_mt_v1 - INFO - 线程[Builder-Worker-10] 处理基础图形 #10
+2025-11-04 15:26:22,388 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-04 15:26:22,411 - main_mt_v1 - INFO - 线程[Builder-Worker-11] 处理基础图形 #11
+2025-11-04 15:26:22,517 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-04 15:26:22,568 - main_mt_v1 - INFO - 线程[Builder-Worker-12] 处理基础图形 #12
+2025-11-04 15:26:22,596 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:22,661 - main_mt_v1 - INFO - 线程[Builder-Worker-13] 处理基础图形 #13
+2025-11-04 15:26:22,688 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:22,768 - main_mt_v1 - INFO - 线程[Builder-Worker-14] 处理基础图形 #14
+2025-11-04 15:26:22,939 - main_mt_v1 - INFO - 线程[Builder-Worker-15] 处理基础图形 #15
+2025-11-04 15:26:23,027 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-04 15:26:23,033 - main_mt_v1 - INFO - 线程[Builder-Worker-16] 处理基础图形 #16
+2025-11-04 15:26:23,157 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:23,441 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-04 15:26:23,467 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:23,527 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:24,743 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-04 15:26:24,792 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:24,996 - main_mt_v1 - INFO - 线程[Builder-Worker-1] 基础图形 #1 增强成功（1个结果）
+2025-11-04 15:26:25,580 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:25,764 - main_mt_v1 - INFO - 线程[Builder-Worker-2] 基础图形 #2 增强成功（1个结果）
+2025-11-04 15:26:26,113 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:26,121 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-04 15:26:27,143 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:26:28,199 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:28,333 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:30,102 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:30,215 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:26:30,784 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:26:30,943 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-04 15:26:30,975 - main_mt_v1 - INFO - 线程[Builder-Worker-3] 基础图形 #3 增强成功（4个结果）
+2025-11-04 15:26:31,029 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:26:31,976 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:26:31,987 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-04 15:26:32,171 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:32,207 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:32,231 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:26:32,549 - main_mt_v1 - INFO - 线程[Builder-Worker-4] 基础图形 #4 增强成功（4个结果）
+2025-11-04 15:26:32,785 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:32,948 - main_mt_v1 - INFO - 线程[Builder-Worker-6] 基础图形 #6 增强成功（4个结果）
+2025-11-04 15:26:33,840 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:37,644 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:26:38,004 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:38,253 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:39,027 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:26:39,348 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:26:39,489 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:39,558 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:40,580 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:41,505 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:26:42,091 - main_mt_v1 - INFO - 线程[Builder-Worker-7] 基础图形 #7 增强成功（4个结果）
+2025-11-04 15:26:43,739 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:26:44,098 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:44,413 - main_mt_v1 - INFO - 线程[Builder-Worker-5] 基础图形 #5 增强成功（4个结果）
+2025-11-04 15:26:47,127 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:26:47,311 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:47,436 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-04 15:26:47,447 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:26:47,993 - main_mt_v1 - INFO - 线程[Builder-Worker-9] 基础图形 #9 增强成功（4个结果）
+2025-11-04 15:26:48,161 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:26:49,207 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:26:49,359 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:26:50,339 - main_mt_v1 - INFO - 线程[Builder-Worker-10] 基础图形 #10 增强成功（4个结果）
+2025-11-04 15:26:56,036 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:26:56,925 - main_mt_v1 - INFO - 线程[Builder-Worker-13] 基础图形 #13 增强成功（4个结果）
+2025-11-04 15:26:57,244 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:26:58,815 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-04 15:27:02,007 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:27:03,276 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:27:05,684 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:27:06,153 - main_mt_v1 - INFO - 线程[Builder-Worker-14] 基础图形 #14 增强成功（4个结果）
+2025-11-04 15:27:06,517 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:27:12,470 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:27:12,649 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-04 15:27:14,273 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:27:14,937 - main_mt_v1 - INFO - 线程[Builder-Worker-8] 基础图形 #8 增强成功（4个结果）
+2025-11-04 15:27:15,278 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:27:20,334 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:27:22,735 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:27:22,938 - main_mt_v1 - INFO - 线程[Builder-Worker-11] 基础图形 #11 增强成功（4个结果）
+2025-11-04 15:27:45,216 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:27:45,299 - main_mt_v1 - INFO - 线程[Builder-Worker-12] 基础图形 #12 增强成功（4个结果）
+2025-11-04 15:28:00,908 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-04 15:28:14,170 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:28:45,113 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:28:45,363 - main_mt_v1 - INFO - 线程[Builder-Worker-16] 基础图形 #16 增强成功（4个结果）
+2025-11-04 15:30:32,190 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-04 15:31:44,381 - main_mt_v1 - ERROR - 线程[Builder-Worker-15] 基础图形 #15 增强超时（320秒），跳过
+2025-11-04 15:31:44,427 - main_mt_v1 - INFO - 增强图形生成完成：成功处理 15/16 个基础图形
+2025-11-04 15:31:44,453 - main_mt_v1 - INFO - 增强图形JSONL保存至: ./results_n20_v2/json/enhanced/enhanced_20251104_152621_825.jsonl（共54个增强图形）
+2025-11-04 15:31:45,338 - shader - INFO - 加载 54 条enhanced数据
+2025-11-04 15:31:45,349 - shader - INFO - 已设置 54 条增强JSON数据
+2025-11-04 15:31:45,360 - shader - INFO - === 开始处理图像 ===
+2025-11-04 15:32:15,163 - shader - INFO - 成功标注第0张图像，原始版本
+2025-11-04 15:32:51,604 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:32:51,631 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:32:51,719 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:32:51,724 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:33:12,329 - shader - INFO - 成功标注第0张第0次阴影图像
+2025-11-04 15:33:12,341 - shader - INFO - 第0条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_0_attempt_0_geometry_line_0001.png
+2025-11-04 15:33:14,655 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:14,701 - shader - WARNING - 第0次尝试无可用未选区域，跳过
+2025-11-04 15:33:16,754 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:16,815 - shader - WARNING - 第0次尝试无可用未选区域，跳过
+2025-11-04 15:33:19,178 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:19,207 - shader - WARNING - 第0次尝试无可用未选区域，跳过
+2025-11-04 15:33:26,744 - shader - INFO - 成功标注第1张图像，原始版本
+2025-11-04 15:33:36,282 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.53px (配置阈值: 10.0px)
+2025-11-04 15:33:38,158 - shader - INFO - 成功标注第1张第0次阴影图像
+2025-11-04 15:33:38,169 - shader - INFO - 第1条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_1_attempt_0_geometry_line_0002.png
+2025-11-04 15:33:43,301 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.53px (配置阈值: 10.0px)
+2025-11-04 15:33:44,559 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-04 15:33:44,639 - shader - INFO - 成功标注第1张第1次阴影图像
+2025-11-04 15:33:44,639 - shader - INFO - 第1条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_1_attempt_1_geometry_line_0002.png
+2025-11-04 15:33:45,507 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.53px (配置阈值: 10.0px)
+2025-11-04 15:33:45,662 - shader - INFO - 成功标注第1张第2次阴影图像
+2025-11-04 15:33:45,662 - shader - INFO - 第1条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_1_attempt_2_geometry_line_0002.png
+2025-11-04 15:33:45,839 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:45,840 - shader - WARNING - 第1次尝试无可用未选区域，跳过
+2025-11-04 15:33:46,072 - shader - INFO - 成功标注第2张图像，原始版本
+2025-11-04 15:33:46,963 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:47,471 - shader - INFO - 成功标注第2张第0次阴影图像
+2025-11-04 15:33:47,471 - shader - INFO - 第2条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_2_attempt_0_geometry_line_0003.png
+2025-11-04 15:33:48,130 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:48,389 - shader - INFO - 成功标注第2张第1次阴影图像
+2025-11-04 15:33:48,390 - shader - INFO - 第2条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_2_attempt_1_geometry_line_0003.png
+2025-11-04 15:33:49,271 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:49,539 - shader - INFO - 成功标注第2张第2次阴影图像
+2025-11-04 15:33:49,539 - shader - INFO - 第2条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_2_attempt_2_geometry_line_0003.png
+2025-11-04 15:33:49,743 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:49,744 - shader - WARNING - 第2次尝试无可用未选区域，跳过
+2025-11-04 15:33:50,034 - shader - INFO - 成功标注第3张图像，原始版本
+2025-11-04 15:33:50,525 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:50,531 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.31px (配置阈值: 10.0px)
+2025-11-04 15:33:51,154 - shader - INFO - 成功标注第3张第0次阴影图像
+2025-11-04 15:33:51,154 - shader - INFO - 第3条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_3_attempt_0_geometry_line_0004.png
+2025-11-04 15:33:51,423 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:51,746 - shader - INFO - 成功标注第3张第1次阴影图像
+2025-11-04 15:33:51,746 - shader - INFO - 第3条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_3_attempt_1_geometry_line_0004.png
+2025-11-04 15:33:52,018 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:52,294 - shader - INFO - 成功标注第3张第2次阴影图像
+2025-11-04 15:33:52,294 - shader - INFO - 第3条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_3_attempt_2_geometry_line_0004.png
+2025-11-04 15:33:52,486 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:52,486 - shader - WARNING - 第3次尝试无可用未选区域，跳过
+2025-11-04 15:33:52,766 - shader - INFO - 成功标注第4张图像，原始版本
+2025-11-04 15:33:53,144 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:53,147 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.94px (配置阈值: 10.0px)
+2025-11-04 15:33:53,358 - shader - INFO - 成功标注第4张第0次阴影图像
+2025-11-04 15:33:53,358 - shader - INFO - 第4条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_4_attempt_0_geometry_line_0005.png
+2025-11-04 15:33:53,719 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:53,949 - shader - INFO - 成功标注第4张第1次阴影图像
+2025-11-04 15:33:53,949 - shader - INFO - 第4条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_4_attempt_1_geometry_line_0005.png
+2025-11-04 15:33:54,111 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:54,113 - shader - WARNING - 第4次尝试无可用未选区域，跳过
+2025-11-04 15:33:54,281 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:54,281 - shader - WARNING - 第4次尝试无可用未选区域，跳过
+2025-11-04 15:33:54,588 - shader - INFO - 成功标注第5张图像，原始版本
+2025-11-04 15:33:55,101 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:55,115 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.55px (配置阈值: 10.0px)
+2025-11-04 15:33:55,573 - shader - INFO - 成功标注第5张第0次阴影图像
+2025-11-04 15:33:55,574 - shader - INFO - 第5条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_5_attempt_0_geometry_line_0006.png
+2025-11-04 15:33:56,094 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.37px (配置阈值: 10.0px)
+2025-11-04 15:33:56,097 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.55px (配置阈值: 10.0px)
+2025-11-04 15:33:56,385 - shader - INFO - 成功标注第5张第1次阴影图像
+2025-11-04 15:33:56,386 - shader - INFO - 第5条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_5_attempt_1_geometry_line_0006.png
+2025-11-04 15:33:56,583 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:56,583 - shader - WARNING - 第5次尝试无可用未选区域，跳过
+2025-11-04 15:33:56,784 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:56,784 - shader - WARNING - 第5次尝试无可用未选区域，跳过
+2025-11-04 15:33:57,048 - shader - INFO - 成功标注第6张图像，原始版本
+2025-11-04 15:33:57,684 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:33:58,043 - shader - INFO - 成功标注第6张第0次阴影图像
+2025-11-04 15:33:58,044 - shader - INFO - 第6条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_6_attempt_0_geometry_line_0007.png
+2025-11-04 15:33:58,460 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:33:58,462 - shader - INFO - 轮廓点与原始点的平均坐标差值: 7.87px (配置阈值: 10.0px)
+2025-11-04 15:33:58,674 - shader - INFO - 成功标注第6张第1次阴影图像
+2025-11-04 15:33:58,675 - shader - INFO - 第6条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_6_attempt_1_geometry_line_0007.png
+2025-11-04 15:33:58,856 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:58,857 - shader - WARNING - 第6次尝试无可用未选区域，跳过
+2025-11-04 15:33:59,016 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:33:59,017 - shader - WARNING - 第6次尝试无可用未选区域，跳过
+2025-11-04 15:33:59,374 - shader - INFO - 成功标注第7张图像，原始版本
+2025-11-04 15:33:59,651 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:33:59,954 - shader - INFO - 成功标注第7张第0次阴影图像
+2025-11-04 15:33:59,954 - shader - INFO - 第7条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_7_attempt_0_geometry_line_0008.png
+2025-11-04 15:34:00,444 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:34:00,803 - shader - INFO - 成功标注第7张第1次阴影图像
+2025-11-04 15:34:00,803 - shader - INFO - 第7条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_7_attempt_1_geometry_line_0008.png
+2025-11-04 15:34:02,619 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:34:02,623 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.82px (配置阈值: 10.0px)
+2025-11-04 15:34:02,985 - shader - INFO - 成功标注第7张第2次阴影图像
+2025-11-04 15:34:02,986 - shader - INFO - 第7条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_7_attempt_2_geometry_line_0008.png
+2025-11-04 15:34:03,179 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:03,180 - shader - WARNING - 第7次尝试无可用未选区域，跳过
+2025-11-04 15:34:03,483 - shader - INFO - 成功标注第8张图像，原始版本
+2025-11-04 15:34:03,773 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:34:04,063 - shader - INFO - 成功标注第8张第0次阴影图像
+2025-11-04 15:34:04,064 - shader - INFO - 第8条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_8_attempt_0_geometry_line_0009.png
+2025-11-04 15:34:04,556 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:34:04,560 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.05px (配置阈值: 10.0px)
+2025-11-04 15:34:04,856 - shader - INFO - 成功标注第8张第1次阴影图像
+2025-11-04 15:34:04,856 - shader - INFO - 第8条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_8_attempt_1_geometry_line_0009.png
+2025-11-04 15:34:05,217 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:34:05,526 - shader - INFO - 成功标注第8张第2次阴影图像
+2025-11-04 15:34:05,526 - shader - INFO - 第8条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_8_attempt_2_geometry_line_0009.png
+2025-11-04 15:34:05,724 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:05,724 - shader - WARNING - 第8次尝试无可用未选区域，跳过
+2025-11-04 15:34:05,986 - shader - INFO - 成功标注第9张图像，原始版本
+2025-11-04 15:34:06,425 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:34:06,856 - shader - INFO - 成功标注第9张第0次阴影图像
+2025-11-04 15:34:06,857 - shader - INFO - 第9条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_9_attempt_0_geometry_line_0010.png
+2025-11-04 15:34:07,221 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.44px (配置阈值: 10.0px)
+2025-11-04 15:34:07,225 - shader - INFO - 轮廓点与原始点的平均坐标差值: 7.87px (配置阈值: 10.0px)
+2025-11-04 15:34:07,557 - shader - INFO - 成功标注第9张第1次阴影图像
+2025-11-04 15:34:07,558 - shader - INFO - 第9条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_9_attempt_1_geometry_line_0010.png
+2025-11-04 15:34:07,770 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:07,770 - shader - WARNING - 第9次尝试无可用未选区域，跳过
+2025-11-04 15:34:07,934 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:07,934 - shader - WARNING - 第9次尝试无可用未选区域，跳过
+2025-11-04 15:34:08,278 - shader - INFO - 成功标注第10张图像，原始版本
+2025-11-04 15:34:08,754 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:08,754 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:09,176 - shader - INFO - 成功标注第10张第0次阴影图像
+2025-11-04 15:34:09,177 - shader - INFO - 第10条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_10_attempt_0_geometry_line_0011.png
+2025-11-04 15:34:09,816 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:09,816 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:10,120 - shader - INFO - 成功标注第10张第1次阴影图像
+2025-11-04 15:34:10,120 - shader - INFO - 第10条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_10_attempt_1_geometry_line_0011.png
+2025-11-04 15:34:10,809 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:10,809 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:10,812 - shader - INFO - 轮廓点与原始点的平均坐标差值: 9.24px (配置阈值: 10.0px)
+2025-11-04 15:34:11,127 - shader - INFO - 成功标注第10张第2次阴影图像
+2025-11-04 15:34:11,128 - shader - INFO - 第10条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_10_attempt_2_geometry_line_0011.png
+2025-11-04 15:34:11,490 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:11,491 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:11,831 - shader - INFO - 成功标注第10张第3次阴影图像
+2025-11-04 15:34:11,831 - shader - INFO - 第10条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_10_attempt_3_geometry_line_0011.png
+2025-11-04 15:34:12,254 - shader - INFO - 成功标注第11张图像，原始版本
+2025-11-04 15:34:13,382 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:13,382 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:13,907 - shader - INFO - 成功标注第11张第0次阴影图像
+2025-11-04 15:34:13,908 - shader - INFO - 第11条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_11_attempt_0_geometry_line_0012.png
+2025-11-04 15:34:14,381 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:14,382 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:14,838 - shader - INFO - 成功标注第11张第1次阴影图像
+2025-11-04 15:34:14,838 - shader - INFO - 第11条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_11_attempt_1_geometry_line_0012.png
+2025-11-04 15:34:15,586 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:15,586 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:15,589 - shader - INFO - 轮廓点与原始点的平均坐标差值: 9.24px (配置阈值: 10.0px)
+2025-11-04 15:34:16,085 - shader - INFO - 成功标注第11张第2次阴影图像
+2025-11-04 15:34:16,085 - shader - INFO - 第11条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_11_attempt_2_geometry_line_0012.png
+2025-11-04 15:34:16,564 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:16,565 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:17,245 - shader - INFO - 成功标注第11张第3次阴影图像
+2025-11-04 15:34:17,245 - shader - INFO - 第11条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_11_attempt_3_geometry_line_0012.png
+2025-11-04 15:34:17,635 - shader - INFO - 成功标注第12张图像，原始版本
+2025-11-04 15:34:18,280 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:18,281 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:18,283 - shader - INFO - 轮廓点与原始点的平均坐标差值: 9.24px (配置阈值: 10.0px)
+2025-11-04 15:34:18,812 - shader - INFO - 成功标注第12张第0次阴影图像
+2025-11-04 15:34:18,812 - shader - INFO - 第12条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_12_attempt_0_geometry_line_0013.png
+2025-11-04 15:34:19,202 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:19,203 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:19,590 - shader - INFO - 成功标注第12张第1次阴影图像
+2025-11-04 15:34:19,590 - shader - INFO - 第12条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_12_attempt_1_geometry_line_0013.png
+2025-11-04 15:34:20,103 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:20,103 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:20,105 - shader - INFO - 轮廓点与原始点的平均坐标差值: 9.24px (配置阈值: 10.0px)
+2025-11-04 15:34:20,497 - shader - INFO - 成功标注第12张第2次阴影图像
+2025-11-04 15:34:20,497 - shader - INFO - 第12条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_12_attempt_2_geometry_line_0013.png
+2025-11-04 15:34:20,844 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:20,845 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:21,254 - shader - INFO - 成功标注第12张第3次阴影图像
+2025-11-04 15:34:21,254 - shader - INFO - 第12条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_12_attempt_3_geometry_line_0013.png
+2025-11-04 15:34:21,633 - shader - INFO - 成功标注第13张图像，原始版本
+2025-11-04 15:34:22,074 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:22,074 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:22,453 - shader - INFO - 成功标注第13张第0次阴影图像
+2025-11-04 15:34:22,453 - shader - INFO - 第13条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_13_attempt_0_geometry_line_0014.png
+2025-11-04 15:34:22,877 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:22,878 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:23,192 - shader - INFO - 成功标注第13张第1次阴影图像
+2025-11-04 15:34:23,192 - shader - INFO - 第13条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_13_attempt_1_geometry_line_0014.png
+2025-11-04 15:34:23,795 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:23,796 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:23,802 - shader - INFO - 轮廓点与原始点的平均坐标差值: 9.24px (配置阈值: 10.0px)
+2025-11-04 15:34:24,150 - shader - INFO - 成功标注第13张第2次阴影图像
+2025-11-04 15:34:24,151 - shader - INFO - 第13条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_13_attempt_2_geometry_line_0014.png
+2025-11-04 15:34:24,512 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:34:24,512 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:34:24,817 - shader - INFO - 成功标注第13张第3次阴影图像
+2025-11-04 15:34:24,818 - shader - INFO - 第13条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_13_attempt_3_geometry_line_0014.png
+2025-11-04 15:34:25,176 - shader - INFO - 成功标注第14张图像，原始版本
+2025-11-04 15:34:25,475 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:25,805 - shader - INFO - 成功标注第14张第0次阴影图像
+2025-11-04 15:34:25,806 - shader - INFO - 第14条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_14_attempt_0_geometry_line_0015.png
+2025-11-04 15:34:26,275 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:26,610 - shader - INFO - 成功标注第14张第1次阴影图像
+2025-11-04 15:34:26,611 - shader - INFO - 第14条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_14_attempt_1_geometry_line_0015.png
+2025-11-04 15:34:27,267 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:27,269 - shader - INFO - 轮廓点与原始点的平均坐标差值: 7.87px (配置阈值: 10.0px)
+2025-11-04 15:34:27,644 - shader - INFO - 成功标注第14张第2次阴影图像
+2025-11-04 15:34:27,644 - shader - INFO - 第14条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_14_attempt_2_geometry_line_0015.png
+2025-11-04 15:34:28,032 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:28,377 - shader - INFO - 成功标注第14张第3次阴影图像
+2025-11-04 15:34:28,377 - shader - INFO - 第14条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_14_attempt_3_geometry_line_0015.png
+2025-11-04 15:34:28,783 - shader - INFO - 成功标注第15张图像，原始版本
+2025-11-04 15:34:29,264 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:30,519 - shader - INFO - 成功标注第15张第0次阴影图像
+2025-11-04 15:34:30,519 - shader - INFO - 第15条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_15_attempt_0_geometry_line_0016.png
+2025-11-04 15:34:30,844 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:31,209 - shader - INFO - 成功标注第15张第1次阴影图像
+2025-11-04 15:34:31,210 - shader - INFO - 第15条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_15_attempt_1_geometry_line_0016.png
+2025-11-04 15:34:31,636 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:32,027 - shader - INFO - 成功标注第15张第2次阴影图像
+2025-11-04 15:34:32,027 - shader - INFO - 第15条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_15_attempt_2_geometry_line_0016.png
+2025-11-04 15:34:32,505 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:32,976 - shader - INFO - 成功标注第15张第3次阴影图像
+2025-11-04 15:34:32,977 - shader - INFO - 第15条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_15_attempt_3_geometry_line_0016.png
+2025-11-04 15:34:33,501 - shader - INFO - 成功标注第16张图像，原始版本
+2025-11-04 15:34:34,089 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:34,094 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.74px (配置阈值: 10.0px)
+2025-11-04 15:34:34,604 - shader - INFO - 成功标注第16张第0次阴影图像
+2025-11-04 15:34:34,605 - shader - INFO - 第16条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_16_attempt_0_geometry_line_0017.png
+2025-11-04 15:34:35,321 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:35,877 - shader - INFO - 成功标注第16张第1次阴影图像
+2025-11-04 15:34:35,877 - shader - INFO - 第16条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_16_attempt_1_geometry_line_0017.png
+2025-11-04 15:34:36,691 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:37,170 - shader - INFO - 成功标注第16张第2次阴影图像
+2025-11-04 15:34:37,170 - shader - INFO - 第16条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_16_attempt_2_geometry_line_0017.png
+2025-11-04 15:34:37,788 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:38,276 - shader - INFO - 成功标注第16张第3次阴影图像
+2025-11-04 15:34:38,276 - shader - INFO - 第16条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_16_attempt_3_geometry_line_0017.png
+2025-11-04 15:34:38,785 - shader - INFO - 成功标注第17张图像，原始版本
+2025-11-04 15:34:39,541 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:41,154 - shader - INFO - 成功标注第17张第0次阴影图像
+2025-11-04 15:34:41,155 - shader - INFO - 第17条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_17_attempt_0_geometry_line_0018.png
+2025-11-04 15:34:41,788 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:41,793 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.82px (配置阈值: 10.0px)
+2025-11-04 15:34:42,313 - shader - INFO - 成功标注第17张第1次阴影图像
+2025-11-04 15:34:42,314 - shader - INFO - 第17条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_17_attempt_1_geometry_line_0018.png
+2025-11-04 15:34:42,978 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:42,981 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.82px (配置阈值: 10.0px)
+2025-11-04 15:34:43,473 - shader - INFO - 成功标注第17张第2次阴影图像
+2025-11-04 15:34:43,474 - shader - INFO - 第17条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_17_attempt_2_geometry_line_0018.png
+2025-11-04 15:34:43,924 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.21px (配置阈值: 10.0px)
+2025-11-04 15:34:44,379 - shader - INFO - 成功标注第17张第3次阴影图像
+2025-11-04 15:34:44,379 - shader - INFO - 第17条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_17_attempt_3_geometry_line_0018.png
+2025-11-04 15:34:44,738 - shader - INFO - 成功标注第18张图像，原始版本
+2025-11-04 15:34:44,991 - shader - INFO - 轮廓点与原始点的平均坐标差值: 7.56px (配置阈值: 10.0px)
+2025-11-04 15:34:44,993 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.18px (配置阈值: 10.0px)
+2025-11-04 15:34:45,300 - shader - INFO - 成功标注第18张第0次阴影图像
+2025-11-04 15:34:45,301 - shader - INFO - 第18条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_18_attempt_0_geometry_line_0019.png
+2025-11-04 15:34:45,461 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:45,462 - shader - WARNING - 第18次尝试无可用未选区域，跳过
+2025-11-04 15:34:45,584 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:45,585 - shader - WARNING - 第18次尝试无可用未选区域，跳过
+2025-11-04 15:34:45,705 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:45,706 - shader - WARNING - 第18次尝试无可用未选区域，跳过
+2025-11-04 15:34:46,231 - shader - INFO - 成功标注第19张图像，原始版本
+2025-11-04 15:34:46,823 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.44px (配置阈值: 10.0px)
+2025-11-04 15:34:46,828 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.82px (配置阈值: 10.0px)
+2025-11-04 15:34:47,947 - shader - INFO - 成功标注第19张第0次阴影图像
+2025-11-04 15:34:47,947 - shader - INFO - 第19条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_19_attempt_0_geometry_line_0020.png
+2025-11-04 15:34:48,365 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.44px (配置阈值: 10.0px)
+2025-11-04 15:34:48,863 - shader - INFO - 成功标注第19张第1次阴影图像
+2025-11-04 15:34:48,863 - shader - INFO - 第19条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_19_attempt_1_geometry_line_0020.png
+2025-11-04 15:34:49,063 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:49,064 - shader - WARNING - 第19次尝试无可用未选区域，跳过
+2025-11-04 15:34:49,234 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:49,235 - shader - WARNING - 第19次尝试无可用未选区域，跳过
+2025-11-04 15:34:49,765 - shader - INFO - 成功标注第20张图像，原始版本
+2025-11-04 15:34:50,103 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.41px (配置阈值: 10.0px)
+2025-11-04 15:34:50,662 - shader - INFO - 成功标注第20张第0次阴影图像
+2025-11-04 15:34:50,662 - shader - INFO - 第20条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_20_attempt_0_geometry_line_0021.png
+2025-11-04 15:34:50,902 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.41px (配置阈值: 10.0px)
+2025-11-04 15:34:51,330 - shader - INFO - 成功标注第20张第1次阴影图像
+2025-11-04 15:34:51,330 - shader - INFO - 第20条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_20_attempt_1_geometry_line_0021.png
+2025-11-04 15:34:51,512 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:51,513 - shader - WARNING - 第20次尝试无可用未选区域，跳过
+2025-11-04 15:34:51,681 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:51,681 - shader - WARNING - 第20次尝试无可用未选区域，跳过
+2025-11-04 15:34:52,184 - shader - INFO - 成功标注第21张图像，原始版本
+2025-11-04 15:34:52,782 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.35px (配置阈值: 10.0px)
+2025-11-04 15:34:52,789 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.73px (配置阈值: 10.0px)
+2025-11-04 15:34:53,291 - shader - INFO - 成功标注第21张第0次阴影图像
+2025-11-04 15:34:53,291 - shader - INFO - 第21条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_21_attempt_0_geometry_line_0022.png
+2025-11-04 15:34:53,950 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.35px (配置阈值: 10.0px)
+2025-11-04 15:34:54,462 - shader - INFO - 成功标注第21张第1次阴影图像
+2025-11-04 15:34:54,463 - shader - INFO - 第21条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_21_attempt_1_geometry_line_0022.png
+2025-11-04 15:34:54,910 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.35px (配置阈值: 10.0px)
+2025-11-04 15:34:55,384 - shader - INFO - 成功标注第21张第2次阴影图像
+2025-11-04 15:34:55,384 - shader - INFO - 第21条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_21_attempt_2_geometry_line_0022.png
+2025-11-04 15:34:55,618 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:34:55,618 - shader - WARNING - 第21次尝试无可用未选区域，跳过
+2025-11-04 15:34:56,242 - shader - INFO - 成功标注第22张图像，原始版本
+2025-11-04 15:34:56,670 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:34:56,678 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:34:57,275 - shader - INFO - 成功标注第22张第0次阴影图像
+2025-11-04 15:34:57,275 - shader - INFO - 第22条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_22_attempt_0_geometry_line_0023.png
+2025-11-04 15:34:57,747 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:34:58,336 - shader - INFO - 成功标注第22张第1次阴影图像
+2025-11-04 15:34:58,336 - shader - INFO - 第22条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_22_attempt_1_geometry_line_0023.png
+2025-11-04 15:34:58,726 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:34:58,735 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:34:59,281 - shader - INFO - 成功标注第22张第2次阴影图像
+2025-11-04 15:34:59,281 - shader - INFO - 第22条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_22_attempt_2_geometry_line_0023.png
+2025-11-04 15:34:59,721 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:34:59,730 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:35:00,311 - shader - INFO - 成功标注第22张第3次阴影图像
+2025-11-04 15:35:00,311 - shader - INFO - 第22条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_22_attempt_3_geometry_line_0023.png
+2025-11-04 15:35:01,226 - shader - INFO - 成功标注第23张图像，原始版本
+2025-11-04 15:35:01,810 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:01,822 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:35:02,562 - shader - INFO - 成功标注第23张第0次阴影图像
+2025-11-04 15:35:02,562 - shader - INFO - 第23条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_23_attempt_0_geometry_line_0024.png
+2025-11-04 15:35:03,058 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:03,771 - shader - INFO - 成功标注第23张第1次阴影图像
+2025-11-04 15:35:03,772 - shader - INFO - 第23条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_23_attempt_1_geometry_line_0024.png
+2025-11-04 15:35:04,461 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:04,471 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:35:05,212 - shader - INFO - 成功标注第23张第2次阴影图像
+2025-11-04 15:35:05,213 - shader - INFO - 第23条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_23_attempt_2_geometry_line_0024.png
+2025-11-04 15:35:05,571 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:06,393 - shader - INFO - 成功标注第23张第3次阴影图像
+2025-11-04 15:35:06,393 - shader - INFO - 第23条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_23_attempt_3_geometry_line_0024.png
+2025-11-04 15:35:07,156 - shader - INFO - 成功标注第24张图像，原始版本
+2025-11-04 15:35:07,676 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:08,425 - shader - INFO - 成功标注第24张第0次阴影图像
+2025-11-04 15:35:08,426 - shader - INFO - 第24条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_24_attempt_0_geometry_line_0025.png
+2025-11-04 15:35:09,155 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:09,165 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:35:09,925 - shader - INFO - 成功标注第24张第1次阴影图像
+2025-11-04 15:35:09,926 - shader - INFO - 第24条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_24_attempt_1_geometry_line_0025.png
+2025-11-04 15:35:10,371 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:10,381 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:35:11,094 - shader - INFO - 成功标注第24张第2次阴影图像
+2025-11-04 15:35:11,095 - shader - INFO - 第24条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_24_attempt_2_geometry_line_0025.png
+2025-11-04 15:35:11,704 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:11,718 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:35:12,463 - shader - INFO - 成功标注第24张第3次阴影图像
+2025-11-04 15:35:12,464 - shader - INFO - 第24条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_24_attempt_3_geometry_line_0025.png
+2025-11-04 15:35:13,064 - shader - INFO - 成功标注第25张图像，原始版本
+2025-11-04 15:35:13,454 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:13,463 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.89px (配置阈值: 10.0px)
+2025-11-04 15:35:14,027 - shader - INFO - 成功标注第25张第0次阴影图像
+2025-11-04 15:35:14,027 - shader - INFO - 第25条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_25_attempt_0_geometry_line_0026.png
+2025-11-04 15:35:14,407 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:14,960 - shader - INFO - 成功标注第25张第1次阴影图像
+2025-11-04 15:35:14,960 - shader - INFO - 第25条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_25_attempt_1_geometry_line_0026.png
+2025-11-04 15:35:15,407 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:16,081 - shader - INFO - 成功标注第25张第2次阴影图像
+2025-11-04 15:35:16,082 - shader - INFO - 第25条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_25_attempt_2_geometry_line_0026.png
+2025-11-04 15:35:16,435 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.41px (配置阈值: 10.0px)
+2025-11-04 15:35:17,018 - shader - INFO - 成功标注第25张第3次阴影图像
+2025-11-04 15:35:17,018 - shader - INFO - 第25条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_25_attempt_3_geometry_line_0026.png
+2025-11-04 15:35:17,729 - shader - INFO - 成功标注第26张图像，原始版本
+2025-11-04 15:35:18,186 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:18,205 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:35:18,205 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:35:18,948 - shader - INFO - 成功标注第26张第0次阴影图像
+2025-11-04 15:35:18,948 - shader - INFO - 第26条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_26_attempt_0_geometry_line_0027.png
+2025-11-04 15:35:19,349 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:20,141 - shader - INFO - 成功标注第26张第1次阴影图像
+2025-11-04 15:35:20,141 - shader - INFO - 第26条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_26_attempt_1_geometry_line_0027.png
+2025-11-04 15:35:20,493 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:21,335 - shader - INFO - 成功标注第26张第2次阴影图像
+2025-11-04 15:35:21,335 - shader - INFO - 第26条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_26_attempt_2_geometry_line_0027.png
+2025-11-04 15:35:22,164 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:22,884 - shader - INFO - 成功标注第26张第3次阴影图像
+2025-11-04 15:35:22,885 - shader - INFO - 第26条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_26_attempt_3_geometry_line_0027.png
+2025-11-04 15:35:23,660 - shader - INFO - 成功标注第27张图像，原始版本
+2025-11-04 15:35:23,979 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:23,995 - shader - INFO - 轮廓点与原始点的平均坐标差值: 3.08px (配置阈值: 10.0px)
+2025-11-04 15:35:24,653 - shader - INFO - 成功标注第27张第0次阴影图像
+2025-11-04 15:35:24,654 - shader - INFO - 第27条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_27_attempt_0_geometry_line_0028.png
+2025-11-04 15:35:25,178 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:25,194 - shader - INFO - 轮廓点与原始点的平均坐标差值: 3.08px (配置阈值: 10.0px)
+2025-11-04 15:35:25,926 - shader - INFO - 成功标注第27张第1次阴影图像
+2025-11-04 15:35:25,926 - shader - INFO - 第27条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_27_attempt_1_geometry_line_0028.png
+2025-11-04 15:35:26,301 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:27,045 - shader - INFO - 成功标注第27张第2次阴影图像
+2025-11-04 15:35:27,046 - shader - INFO - 第27条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_27_attempt_2_geometry_line_0028.png
+2025-11-04 15:35:27,453 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:29,055 - shader - INFO - 成功标注第27张第3次阴影图像
+2025-11-04 15:35:29,056 - shader - INFO - 第27条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_27_attempt_3_geometry_line_0028.png
+2025-11-04 15:35:29,849 - shader - INFO - 成功标注第28张图像，原始版本
+2025-11-04 15:35:30,346 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:31,140 - shader - INFO - 成功标注第28张第0次阴影图像
+2025-11-04 15:35:31,141 - shader - INFO - 第28条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_28_attempt_0_geometry_line_0029.png
+2025-11-04 15:35:31,776 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:31,796 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:35:31,802 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:35:32,875 - shader - INFO - 成功标注第28张第1次阴影图像
+2025-11-04 15:35:32,876 - shader - INFO - 第28条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_28_attempt_1_geometry_line_0029.png
+2025-11-04 15:35:33,458 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:33,477 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:35:33,477 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:35:34,367 - shader - INFO - 成功标注第28张第2次阴影图像
+2025-11-04 15:35:34,368 - shader - INFO - 第28条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_28_attempt_2_geometry_line_0029.png
+2025-11-04 15:35:34,721 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.00px (配置阈值: 10.0px)
+2025-11-04 15:35:35,564 - shader - INFO - 成功标注第28张第3次阴影图像
+2025-11-04 15:35:35,565 - shader - INFO - 第28条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_28_attempt_3_geometry_line_0029.png
+2025-11-04 15:35:36,585 - shader - INFO - 成功标注第29张图像，原始版本
+2025-11-04 15:35:37,841 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:35:37,842 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:35:38,617 - shader - INFO - 成功标注第29张第0次阴影图像
+2025-11-04 15:35:38,617 - shader - INFO - 第29条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_29_attempt_0_geometry_line_0030.png
+2025-11-04 15:35:39,452 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:35:39,452 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:35:39,460 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:35:39,460 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:35:40,184 - shader - INFO - 成功标注第29张第1次阴影图像
+2025-11-04 15:35:40,184 - shader - INFO - 第29条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_29_attempt_1_geometry_line_0030.png
+2025-11-04 15:35:40,782 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:35:40,782 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:35:41,580 - shader - INFO - 成功标注第29张第2次阴影图像
+2025-11-04 15:35:41,580 - shader - INFO - 第29条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_29_attempt_2_geometry_line_0030.png
+2025-11-04 15:35:41,904 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-04 15:35:41,906 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-04 15:35:42,618 - shader - INFO - 成功标注第29张第3次阴影图像
+2025-11-04 15:35:42,619 - shader - INFO - 第29条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_29_attempt_3_geometry_line_0030.png
+2025-11-04 15:35:44,002 - shader - INFO - 成功标注第30张图像，原始版本
+2025-11-04 15:35:44,395 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:35:45,833 - shader - INFO - 成功标注第30张第0次阴影图像
+2025-11-04 15:35:45,833 - shader - INFO - 第30条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_30_attempt_0_geometry_line_0031.png
+2025-11-04 15:35:46,335 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:35:47,722 - shader - INFO - 成功标注第30张第1次阴影图像
+2025-11-04 15:35:47,723 - shader - INFO - 第30条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_30_attempt_1_geometry_line_0031.png
+2025-11-04 15:35:48,098 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:35:48,107 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.96px (配置阈值: 10.0px)
+2025-11-04 15:35:49,426 - shader - INFO - 成功标注第30张第2次阴影图像
+2025-11-04 15:35:49,427 - shader - INFO - 第30条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_30_attempt_2_geometry_line_0031.png
+2025-11-04 15:35:49,842 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:35:51,355 - shader - INFO - 成功标注第30张第3次阴影图像
+2025-11-04 15:35:51,356 - shader - INFO - 第30条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_30_attempt_3_geometry_line_0031.png
+2025-11-04 15:35:52,818 - shader - INFO - 成功标注第31张图像，原始版本
+2025-11-04 15:35:53,471 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:35:53,480 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.96px (配置阈值: 10.0px)
+2025-11-04 15:35:55,100 - shader - INFO - 成功标注第31张第0次阴影图像
+2025-11-04 15:35:55,101 - shader - INFO - 第31条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_31_attempt_0_geometry_line_0032.png
+2025-11-04 15:35:55,500 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:35:55,511 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.96px (配置阈值: 10.0px)
+2025-11-04 15:35:56,954 - shader - INFO - 成功标注第31张第1次阴影图像
+2025-11-04 15:35:56,955 - shader - INFO - 第31条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_31_attempt_1_geometry_line_0032.png
+2025-11-04 15:35:57,471 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:35:57,480 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.96px (配置阈值: 10.0px)
+2025-11-04 15:35:58,889 - shader - INFO - 成功标注第31张第2次阴影图像
+2025-11-04 15:35:58,889 - shader - INFO - 第31条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_31_attempt_2_geometry_line_0032.png
+2025-11-04 15:35:59,148 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:35:59,149 - shader - WARNING - 第31次尝试无可用未选区域，跳过
+2025-11-04 15:36:00,728 - shader - INFO - 成功标注第32张图像，原始版本
+2025-11-04 15:36:01,137 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:36:02,679 - shader - INFO - 成功标注第32张第0次阴影图像
+2025-11-04 15:36:02,679 - shader - INFO - 第32条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_32_attempt_0_geometry_line_0033.png
+2025-11-04 15:36:03,079 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:36:03,088 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.72px (配置阈值: 10.0px)
+2025-11-04 15:36:04,510 - shader - INFO - 成功标注第32张第1次阴影图像
+2025-11-04 15:36:04,511 - shader - INFO - 第32条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_32_attempt_1_geometry_line_0033.png
+2025-11-04 15:36:05,161 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:36:05,174 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.72px (配置阈值: 10.0px)
+2025-11-04 15:36:06,831 - shader - INFO - 成功标注第32张第2次阴影图像
+2025-11-04 15:36:06,831 - shader - INFO - 第32条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_32_attempt_2_geometry_line_0033.png
+2025-11-04 15:36:07,497 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:36:07,506 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.72px (配置阈值: 10.0px)
+2025-11-04 15:36:09,713 - shader - INFO - 成功标注第32张第3次阴影图像
+2025-11-04 15:36:09,719 - shader - INFO - 第32条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_32_attempt_3_geometry_line_0033.png
+2025-11-04 15:36:11,430 - shader - INFO - 成功标注第33张图像，原始版本
+2025-11-04 15:36:12,061 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:36:12,070 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.96px (配置阈值: 10.0px)
+2025-11-04 15:36:14,150 - shader - INFO - 成功标注第33张第0次阴影图像
+2025-11-04 15:36:14,151 - shader - INFO - 第33条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_33_attempt_0_geometry_line_0034.png
+2025-11-04 15:36:14,821 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:36:14,844 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.96px (配置阈值: 10.0px)
+2025-11-04 15:36:16,503 - shader - INFO - 成功标注第33张第1次阴影图像
+2025-11-04 15:36:16,504 - shader - INFO - 第33条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_33_attempt_1_geometry_line_0034.png
+2025-11-04 15:36:17,205 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:36:17,217 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.96px (配置阈值: 10.0px)
+2025-11-04 15:36:18,888 - shader - INFO - 成功标注第33张第2次阴影图像
+2025-11-04 15:36:18,889 - shader - INFO - 第33条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_33_attempt_2_geometry_line_0034.png
+2025-11-04 15:36:19,357 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.30px (配置阈值: 10.0px)
+2025-11-04 15:36:20,986 - shader - INFO - 成功标注第33张第3次阴影图像
+2025-11-04 15:36:20,986 - shader - INFO - 第33条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_33_attempt_3_geometry_line_0034.png
+2025-11-04 15:36:22,140 - shader - INFO - 成功标注第34张图像，原始版本
+2025-11-04 15:36:22,664 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:22,671 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.16px (配置阈值: 10.0px)
+2025-11-04 15:36:24,761 - shader - INFO - 成功标注第34张第0次阴影图像
+2025-11-04 15:36:24,762 - shader - INFO - 第34条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_34_attempt_0_geometry_line_0035.png
+2025-11-04 15:36:25,174 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:26,428 - shader - INFO - 成功标注第34张第1次阴影图像
+2025-11-04 15:36:26,429 - shader - INFO - 第34条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_34_attempt_1_geometry_line_0035.png
+2025-11-04 15:36:27,016 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:27,024 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.16px (配置阈值: 10.0px)
+2025-11-04 15:36:28,441 - shader - INFO - 成功标注第34张第2次阴影图像
+2025-11-04 15:36:28,441 - shader - INFO - 第34条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_34_attempt_2_geometry_line_0035.png
+2025-11-04 15:36:28,627 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:36:28,628 - shader - WARNING - 第34次尝试无可用未选区域，跳过
+2025-11-04 15:36:29,846 - shader - INFO - 成功标注第35张图像，原始版本
+2025-11-04 15:36:30,251 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:31,588 - shader - INFO - 成功标注第35张第0次阴影图像
+2025-11-04 15:36:31,588 - shader - INFO - 第35条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_35_attempt_0_geometry_line_0036.png
+2025-11-04 15:36:32,093 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:32,100 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.16px (配置阈值: 10.0px)
+2025-11-04 15:36:33,368 - shader - INFO - 成功标注第35张第1次阴影图像
+2025-11-04 15:36:33,368 - shader - INFO - 第35条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_35_attempt_1_geometry_line_0036.png
+2025-11-04 15:36:33,921 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:33,930 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.16px (配置阈值: 10.0px)
+2025-11-04 15:36:35,185 - shader - INFO - 成功标注第35张第2次阴影图像
+2025-11-04 15:36:35,186 - shader - INFO - 第35条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_35_attempt_2_geometry_line_0036.png
+2025-11-04 15:36:35,657 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:36,859 - shader - INFO - 成功标注第35张第3次阴影图像
+2025-11-04 15:36:36,860 - shader - INFO - 第35条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_35_attempt_3_geometry_line_0036.png
+2025-11-04 15:36:38,239 - shader - INFO - 成功标注第36张图像，原始版本
+2025-11-04 15:36:38,665 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.72px (配置阈值: 10.0px)
+2025-11-04 15:36:38,673 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.24px (配置阈值: 10.0px)
+2025-11-04 15:36:39,950 - shader - INFO - 成功标注第36张第0次阴影图像
+2025-11-04 15:36:39,951 - shader - INFO - 第36条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_36_attempt_0_geometry_line_0037.png
+2025-11-04 15:36:40,333 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.72px (配置阈值: 10.0px)
+2025-11-04 15:36:41,609 - shader - INFO - 成功标注第36张第1次阴影图像
+2025-11-04 15:36:41,609 - shader - INFO - 第36条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_36_attempt_1_geometry_line_0037.png
+2025-11-04 15:36:42,088 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.72px (配置阈值: 10.0px)
+2025-11-04 15:36:43,751 - shader - INFO - 成功标注第36张第2次阴影图像
+2025-11-04 15:36:43,751 - shader - INFO - 第36条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_36_attempt_2_geometry_line_0037.png
+2025-11-04 15:36:44,650 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.72px (配置阈值: 10.0px)
+2025-11-04 15:36:44,659 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.24px (配置阈值: 10.0px)
+2025-11-04 15:36:46,075 - shader - INFO - 成功标注第36张第3次阴影图像
+2025-11-04 15:36:46,076 - shader - INFO - 第36条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_36_attempt_3_geometry_line_0037.png
+2025-11-04 15:36:47,465 - shader - INFO - 成功标注第37张图像，原始版本
+2025-11-04 15:36:48,060 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:48,079 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.16px (配置阈值: 10.0px)
+2025-11-04 15:36:49,411 - shader - INFO - 成功标注第37张第0次阴影图像
+2025-11-04 15:36:49,412 - shader - INFO - 第37条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_37_attempt_0_geometry_line_0038.png
+2025-11-04 15:36:49,740 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:51,037 - shader - INFO - 成功标注第37张第1次阴影图像
+2025-11-04 15:36:51,038 - shader - INFO - 第37条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_37_attempt_1_geometry_line_0038.png
+2025-11-04 15:36:51,539 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:51,547 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.16px (配置阈值: 10.0px)
+2025-11-04 15:36:53,079 - shader - INFO - 成功标注第37张第2次阴影图像
+2025-11-04 15:36:53,080 - shader - INFO - 第37条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_37_attempt_2_geometry_line_0038.png
+2025-11-04 15:36:53,393 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.97px (配置阈值: 10.0px)
+2025-11-04 15:36:54,835 - shader - INFO - 成功标注第37张第3次阴影图像
+2025-11-04 15:36:54,836 - shader - INFO - 第37条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_37_attempt_3_geometry_line_0038.png
+2025-11-04 15:36:55,657 - shader - INFO - 成功标注第38张图像，原始版本
+2025-11-04 15:36:56,303 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:36:57,082 - shader - INFO - 成功标注第38张第0次阴影图像
+2025-11-04 15:36:57,083 - shader - INFO - 第38条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_38_attempt_0_geometry_line_0039.png
+2025-11-04 15:36:57,621 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:36:58,844 - shader - INFO - 成功标注第38张第1次阴影图像
+2025-11-04 15:36:58,844 - shader - INFO - 第38条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_38_attempt_1_geometry_line_0039.png
+2025-11-04 15:36:59,591 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:36:59,597 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.95px (配置阈值: 10.0px)
+2025-11-04 15:37:00,498 - shader - INFO - 成功标注第38张第2次阴影图像
+2025-11-04 15:37:00,498 - shader - INFO - 第38条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_38_attempt_2_geometry_line_0039.png
+2025-11-04 15:37:00,983 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:00,991 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.95px (配置阈值: 10.0px)
+2025-11-04 15:37:01,883 - shader - INFO - 成功标注第38张第3次阴影图像
+2025-11-04 15:37:01,884 - shader - INFO - 第38条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_38_attempt_3_geometry_line_0039.png
+2025-11-04 15:37:02,753 - shader - INFO - 成功标注第39张图像，原始版本
+2025-11-04 15:37:03,283 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:03,288 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.99px (配置阈值: 10.0px)
+2025-11-04 15:37:04,211 - shader - INFO - 成功标注第39张第0次阴影图像
+2025-11-04 15:37:04,212 - shader - INFO - 第39条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_39_attempt_0_geometry_line_0040.png
+2025-11-04 15:37:04,785 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:04,791 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.99px (配置阈值: 10.0px)
+2025-11-04 15:37:05,588 - shader - INFO - 成功标注第39张第1次阴影图像
+2025-11-04 15:37:05,588 - shader - INFO - 第39条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_39_attempt_1_geometry_line_0040.png
+2025-11-04 15:37:06,223 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:07,163 - shader - INFO - 成功标注第39张第2次阴影图像
+2025-11-04 15:37:07,163 - shader - INFO - 第39条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_39_attempt_2_geometry_line_0040.png
+2025-11-04 15:37:07,893 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:07,900 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.99px (配置阈值: 10.0px)
+2025-11-04 15:37:08,844 - shader - INFO - 成功标注第39张第3次阴影图像
+2025-11-04 15:37:08,844 - shader - INFO - 第39条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_39_attempt_3_geometry_line_0040.png
+2025-11-04 15:37:09,951 - shader - INFO - 成功标注第40张图像，原始版本
+2025-11-04 15:37:10,566 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:10,575 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.95px (配置阈值: 10.0px)
+2025-11-04 15:37:11,617 - shader - INFO - 成功标注第40张第0次阴影图像
+2025-11-04 15:37:11,617 - shader - INFO - 第40条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_40_attempt_0_geometry_line_0041.png
+2025-11-04 15:37:12,329 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:12,337 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.95px (配置阈值: 10.0px)
+2025-11-04 15:37:13,335 - shader - INFO - 成功标注第40张第1次阴影图像
+2025-11-04 15:37:13,336 - shader - INFO - 第40条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_40_attempt_1_geometry_line_0041.png
+2025-11-04 15:37:13,958 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:14,993 - shader - INFO - 成功标注第40张第2次阴影图像
+2025-11-04 15:37:14,994 - shader - INFO - 第40条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_40_attempt_2_geometry_line_0041.png
+2025-11-04 15:37:15,747 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:16,747 - shader - INFO - 成功标注第40张第3次阴影图像
+2025-11-04 15:37:16,747 - shader - INFO - 第40条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_40_attempt_3_geometry_line_0041.png
+2025-11-04 15:37:17,736 - shader - INFO - 成功标注第41张图像，原始版本
+2025-11-04 15:37:18,534 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:18,541 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.95px (配置阈值: 10.0px)
+2025-11-04 15:37:19,584 - shader - INFO - 成功标注第41张第0次阴影图像
+2025-11-04 15:37:19,584 - shader - INFO - 第41条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_41_attempt_0_geometry_line_0042.png
+2025-11-04 15:37:20,406 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:21,414 - shader - INFO - 成功标注第41张第1次阴影图像
+2025-11-04 15:37:21,414 - shader - INFO - 第41条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_41_attempt_1_geometry_line_0042.png
+2025-11-04 15:37:22,095 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:23,156 - shader - INFO - 成功标注第41张第2次阴影图像
+2025-11-04 15:37:23,157 - shader - INFO - 第41条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_41_attempt_2_geometry_line_0042.png
+2025-11-04 15:37:23,799 - shader - INFO - 轮廓点与原始点的平均坐标差值: 8.97px (配置阈值: 10.0px)
+2025-11-04 15:37:24,751 - shader - INFO - 成功标注第41张第3次阴影图像
+2025-11-04 15:37:24,751 - shader - INFO - 第41条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_41_attempt_3_geometry_line_0042.png
+2025-11-04 15:37:25,414 - shader - INFO - 成功标注第42张图像，原始版本
+2025-11-04 15:37:25,844 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:25,856 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.65px (配置阈值: 10.0px)
+2025-11-04 15:37:26,824 - shader - INFO - 成功标注第42张第0次阴影图像
+2025-11-04 15:37:26,825 - shader - INFO - 第42条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_42_attempt_0_geometry_line_0043.png
+2025-11-04 15:37:27,117 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:27,745 - shader - INFO - 成功标注第42张第1次阴影图像
+2025-11-04 15:37:27,745 - shader - INFO - 第42条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_42_attempt_1_geometry_line_0043.png
+2025-11-04 15:37:27,869 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:37:27,870 - shader - WARNING - 第42次尝试无可用未选区域，跳过
+2025-11-04 15:37:27,993 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:37:27,993 - shader - WARNING - 第42次尝试无可用未选区域，跳过
+2025-11-04 15:37:28,746 - shader - INFO - 成功标注第43张图像，原始版本
+2025-11-04 15:37:29,195 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:29,213 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.92px (配置阈值: 10.0px)
+2025-11-04 15:37:29,979 - shader - INFO - 成功标注第43张第0次阴影图像
+2025-11-04 15:37:29,979 - shader - INFO - 第43条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_43_attempt_0_geometry_line_0044.png
+2025-11-04 15:37:30,409 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:31,140 - shader - INFO - 成功标注第43张第1次阴影图像
+2025-11-04 15:37:31,140 - shader - INFO - 第43条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_43_attempt_1_geometry_line_0044.png
+2025-11-04 15:37:31,638 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:31,655 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.92px (配置阈值: 10.0px)
+2025-11-04 15:37:32,441 - shader - INFO - 成功标注第43张第2次阴影图像
+2025-11-04 15:37:32,441 - shader - INFO - 第43条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_43_attempt_2_geometry_line_0044.png
+2025-11-04 15:37:32,664 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:37:32,664 - shader - WARNING - 第43次尝试无可用未选区域，跳过
+2025-11-04 15:37:33,313 - shader - INFO - 成功标注第44张图像，原始版本
+2025-11-04 15:37:33,521 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:34,180 - shader - INFO - 成功标注第44张第0次阴影图像
+2025-11-04 15:37:34,180 - shader - INFO - 第44条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_44_attempt_0_geometry_line_0045.png
+2025-11-04 15:37:34,661 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:34,671 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.65px (配置阈值: 10.0px)
+2025-11-04 15:37:35,360 - shader - INFO - 成功标注第44张第1次阴影图像
+2025-11-04 15:37:35,361 - shader - INFO - 第44条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_44_attempt_1_geometry_line_0045.png
+2025-11-04 15:37:35,523 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:37:35,523 - shader - WARNING - 第44次尝试无可用未选区域，跳过
+2025-11-04 15:37:35,646 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:37:35,646 - shader - WARNING - 第44次尝试无可用未选区域，跳过
+2025-11-04 15:37:36,360 - shader - INFO - 成功标注第45张图像，原始版本
+2025-11-04 15:37:36,880 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:36,904 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.85px (配置阈值: 10.0px)
+2025-11-04 15:37:39,371 - shader - INFO - 成功标注第45张第0次阴影图像
+2025-11-04 15:37:39,371 - shader - INFO - 第45条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_45_attempt_0_geometry_line_0046.png
+2025-11-04 15:37:39,665 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:40,388 - shader - INFO - 成功标注第45张第1次阴影图像
+2025-11-04 15:37:40,388 - shader - INFO - 第45条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_45_attempt_1_geometry_line_0046.png
+2025-11-04 15:37:40,693 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:41,423 - shader - INFO - 成功标注第45张第2次阴影图像
+2025-11-04 15:37:41,423 - shader - INFO - 第45条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_45_attempt_2_geometry_line_0046.png
+2025-11-04 15:37:41,566 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:37:41,566 - shader - WARNING - 第45次尝试无可用未选区域，跳过
+2025-11-04 15:37:42,220 - shader - INFO - 成功标注第46张图像，原始版本
+2025-11-04 15:37:42,427 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:43,113 - shader - INFO - 成功标注第46张第0次阴影图像
+2025-11-04 15:37:43,113 - shader - INFO - 第46条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_46_attempt_0_geometry_line_0047.png
+2025-11-04 15:37:43,723 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:43,735 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.65px (配置阈值: 10.0px)
+2025-11-04 15:37:44,353 - shader - INFO - 成功标注第46张第1次阴影图像
+2025-11-04 15:37:44,353 - shader - INFO - 第46条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_46_attempt_1_geometry_line_0047.png
+2025-11-04 15:37:44,502 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:37:44,502 - shader - WARNING - 第46次尝试无可用未选区域，跳过
+2025-11-04 15:37:44,650 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:37:44,650 - shader - WARNING - 第46次尝试无可用未选区域，跳过
+2025-11-04 15:37:45,456 - shader - INFO - 成功标注第47张图像，原始版本
+2025-11-04 15:37:45,780 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.99px (配置阈值: 10.0px)
+2025-11-04 15:37:46,535 - shader - INFO - 成功标注第47张第0次阴影图像
+2025-11-04 15:37:46,535 - shader - INFO - 第47条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_47_attempt_0_geometry_line_0048.png
+2025-11-04 15:37:47,028 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.99px (配置阈值: 10.0px)
+2025-11-04 15:37:47,038 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.65px (配置阈值: 10.0px)
+2025-11-04 15:37:47,734 - shader - INFO - 成功标注第47张第1次阴影图像
+2025-11-04 15:37:47,734 - shader - INFO - 第47条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_47_attempt_1_geometry_line_0048.png
+2025-11-04 15:37:48,074 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.99px (配置阈值: 10.0px)
+2025-11-04 15:37:48,947 - shader - INFO - 成功标注第47张第2次阴影图像
+2025-11-04 15:37:48,947 - shader - INFO - 第47条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_47_attempt_2_geometry_line_0048.png
+2025-11-04 15:37:49,185 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.99px (配置阈值: 10.0px)
+2025-11-04 15:37:49,883 - shader - INFO - 成功标注第47张第3次阴影图像
+2025-11-04 15:37:49,883 - shader - INFO - 第47条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_47_attempt_3_geometry_line_0048.png
+2025-11-04 15:37:50,617 - shader - INFO - 成功标注第48张图像，原始版本
+2025-11-04 15:37:50,942 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:51,934 - shader - INFO - 成功标注第48张第0次阴影图像
+2025-11-04 15:37:51,934 - shader - INFO - 第48条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_48_attempt_0_geometry_line_0049.png
+2025-11-04 15:37:52,320 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:53,201 - shader - INFO - 成功标注第48张第1次阴影图像
+2025-11-04 15:37:53,202 - shader - INFO - 第48条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_48_attempt_1_geometry_line_0049.png
+2025-11-04 15:37:53,562 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:54,435 - shader - INFO - 成功标注第48张第2次阴影图像
+2025-11-04 15:37:54,436 - shader - INFO - 第48条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_48_attempt_2_geometry_line_0049.png
+2025-11-04 15:37:54,872 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:55,635 - shader - INFO - 成功标注第48张第3次阴影图像
+2025-11-04 15:37:55,636 - shader - INFO - 第48条数据第3次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_48_attempt_3_geometry_line_0049.png
+2025-11-04 15:37:56,408 - shader - INFO - 成功标注第49张图像，原始版本
+2025-11-04 15:37:56,735 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:57,751 - shader - INFO - 成功标注第49张第0次阴影图像
+2025-11-04 15:37:57,751 - shader - INFO - 第49条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_49_attempt_0_geometry_line_0050.png
+2025-11-04 15:37:58,201 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:37:58,219 - shader - INFO - 轮廓点与原始点的平均坐标差值: 6.20px (配置阈值: 10.0px)
+2025-11-04 15:37:59,115 - shader - INFO - 成功标注第49张第1次阴影图像
+2025-11-04 15:37:59,116 - shader - INFO - 第49条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_49_attempt_1_geometry_line_0050.png
+2025-11-04 15:37:59,385 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.10px (配置阈值: 10.0px)
+2025-11-04 15:38:00,217 - shader - INFO - 成功标注第49张第2次阴影图像
+2025-11-04 15:38:00,218 - shader - INFO - 第49条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_49_attempt_2_geometry_line_0050.png
+2025-11-04 15:38:00,376 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:38:00,376 - shader - WARNING - 第49次尝试无可用未选区域，跳过
+2025-11-04 15:38:01,013 - shader - INFO - 成功标注第50张图像，原始版本
+2025-11-04 15:38:01,295 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.93px (配置阈值: 10.0px)
+2025-11-04 15:38:02,237 - shader - INFO - 成功标注第50张第0次阴影图像
+2025-11-04 15:38:02,237 - shader - INFO - 第50条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_50_attempt_0_geometry_line_0051.png
+2025-11-04 15:38:02,571 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.93px (配置阈值: 10.0px)
+2025-11-04 15:38:03,214 - shader - INFO - 成功标注第50张第1次阴影图像
+2025-11-04 15:38:03,214 - shader - INFO - 第50条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_50_attempt_1_geometry_line_0051.png
+2025-11-04 15:38:03,328 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:38:03,329 - shader - WARNING - 第50次尝试无可用未选区域，跳过
+2025-11-04 15:38:03,450 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:38:03,451 - shader - WARNING - 第50次尝试无可用未选区域，跳过
+2025-11-04 15:38:04,127 - shader - INFO - 成功标注第51张图像，原始版本
+2025-11-04 15:38:04,744 - shader - INFO - 轮廓点与原始点的平均坐标差值: 3.79px (配置阈值: 10.0px)
+2025-11-04 15:38:04,859 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.59px (配置阈值: 10.0px)
+2025-11-04 15:38:05,662 - shader - INFO - 成功标注第51张第0次阴影图像
+2025-11-04 15:38:05,663 - shader - INFO - 第51条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_51_attempt_0_geometry_line_0052.png
+2025-11-04 15:38:06,940 - shader - INFO - 轮廓点与原始点的平均坐标差值: 3.79px (配置阈值: 10.0px)
+2025-11-04 15:38:07,750 - shader - INFO - 成功标注第51张第1次阴影图像
+2025-11-04 15:38:07,750 - shader - INFO - 第51条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_51_attempt_1_geometry_line_0052.png
+2025-11-04 15:38:08,170 - shader - INFO - 轮廓点与原始点的平均坐标差值: 3.79px (配置阈值: 10.0px)
+2025-11-04 15:38:08,892 - shader - INFO - 成功标注第51张第2次阴影图像
+2025-11-04 15:38:08,892 - shader - INFO - 第51条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_51_attempt_2_geometry_line_0052.png
+2025-11-04 15:38:09,099 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:38:09,101 - shader - WARNING - 第51次尝试无可用未选区域，跳过
+2025-11-04 15:38:09,729 - shader - INFO - 成功标注第52张图像，原始版本
+2025-11-04 15:38:10,270 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.93px (配置阈值: 10.0px)
+2025-11-04 15:38:10,307 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.97px (配置阈值: 10.0px)
+2025-11-04 15:38:12,758 - shader - INFO - 成功标注第52张第0次阴影图像
+2025-11-04 15:38:12,759 - shader - INFO - 第52条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_52_attempt_0_geometry_line_0053.png
+2025-11-04 15:38:13,121 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.93px (配置阈值: 10.0px)
+2025-11-04 15:38:13,768 - shader - INFO - 成功标注第52张第1次阴影图像
+2025-11-04 15:38:13,769 - shader - INFO - 第52条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_52_attempt_1_geometry_line_0053.png
+2025-11-04 15:38:13,908 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:38:13,909 - shader - WARNING - 第52次尝试无可用未选区域，跳过
+2025-11-04 15:38:14,074 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:38:14,074 - shader - WARNING - 第52次尝试无可用未选区域，跳过
+2025-11-04 15:38:14,912 - shader - INFO - 成功标注第53张图像，原始版本
+2025-11-04 15:38:15,364 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.59px (配置阈值: 10.0px)
+2025-11-04 15:38:16,160 - shader - INFO - 成功标注第53张第0次阴影图像
+2025-11-04 15:38:16,160 - shader - INFO - 第53条数据第0次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_53_attempt_0_geometry_line_0054.png
+2025-11-04 15:38:16,953 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.59px (配置阈值: 10.0px)
+2025-11-04 15:38:17,019 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.89px (配置阈值: 10.0px)
+2025-11-04 15:38:17,748 - shader - INFO - 成功标注第53张第1次阴影图像
+2025-11-04 15:38:17,748 - shader - INFO - 第53条数据第1次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_53_attempt_1_geometry_line_0054.png
+2025-11-04 15:38:18,220 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.59px (配置阈值: 10.0px)
+2025-11-04 15:38:18,887 - shader - INFO - 成功标注第53张第2次阴影图像
+2025-11-04 15:38:18,888 - shader - INFO - 第53条数据第2次尝试完成，阴影图像路径：./results_n20_v2/images/shaded/shaded_53_attempt_2_geometry_line_0054.png
+2025-11-04 15:38:19,084 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-04 15:38:19,085 - shader - WARNING - 第53次尝试无可用未选区域，跳过
+2025-11-04 15:38:19,157 - shader - INFO - 所有处理结果已保存至：./results_n20_v2/json/shaded/shaded_20251104_153144_535.jsonl
+2025-11-04 15:38:19,158 - main_mt_v1 - INFO - === 处理完成 ===
+- 结果JSONL路径：./results_n20_v2/json/shaded/shaded_20251104_153144_535.jsonl
+2025-11-04 15:38:19,162 - main_mt_v1 - INFO - === 开始计算几何参数（符号表达式化简） ===
+2025-11-04 15:38:19,368 - gt - INFO - 已处理 10 条数据
+2025-11-04 15:38:19,532 - gt - INFO - 已处理 20 条数据
+2025-11-04 15:38:19,728 - gt - INFO - 已处理 30 条数据
+2025-11-04 15:38:19,968 - gt - INFO - 已处理 40 条数据
+2025-11-04 15:38:20,301 - gt - INFO - 已处理 50 条数据
+2025-11-04 15:38:20,605 - gt - INFO - 已处理 60 条数据
+2025-11-04 15:38:20,885 - gt - INFO - 已处理 70 条数据
+2025-11-04 15:38:21,110 - gt - INFO - 已处理 80 条数据
+2025-11-04 15:38:21,476 - gt - INFO - 已处理 90 条数据
+2025-11-04 15:38:22,131 - gt - INFO - 已处理 100 条数据
+2025-11-04 15:38:22,705 - gt - INFO - 已处理 110 条数据
+2025-11-04 15:38:23,242 - gt - INFO - 已处理 120 条数据
+2025-11-04 15:38:23,718 - gt - INFO - 已处理 130 条数据
+2025-11-04 15:38:24,262 - gt - INFO - 已处理 140 条数据
+2025-11-04 15:38:24,710 - gt - INFO - 已处理 150 条数据
+2025-11-04 15:38:25,296 - gt - INFO - 已处理 160 条数据
+2025-11-04 15:38:26,300 - gt - INFO - 已处理 170 条数据
+2025-11-04 15:38:27,563 - gt - INFO - 已处理 180 条数据
+2025-11-04 15:38:28,886 - gt - INFO - 已处理 190 条数据
+2025-11-04 15:38:30,325 - gt - INFO - 已处理 200 条数据
+2025-11-04 15:38:31,571 - gt - INFO - 已处理 210 条数据
+2025-11-04 15:38:34,481 - gt - INFO - 已处理 220 条数据
+2025-11-04 15:38:38,147 - gt - INFO - 处理完成，结果保存至: ./results_n20_v2/json/final/shaded_with_gt_20251104_153144_535.jsonl
+2025-11-04 15:38:38,206 - main_mt_v1 - INFO - 几何参数计算完成，结果保存至: ./results_n20_v2/json/final/shaded_with_gt_20251104_153144_535.jsonl
+2025-11-04 15:38:38,207 - main_mt_v1 - INFO - 共处理 229 条数据，每条数据已添加线条/圆弧长度信息
+2025-11-04 15:38:38,213 - main_mt_v1 - INFO - 使用GT结果文件: ./results_n20_v2/json/final/shaded_with_gt_20251104_153144_535.jsonl
+2025-11-04 15:38:38,216 - main_mt_v1 - INFO - === 开始生成问答数据 ===
+2025-11-04 15:38:38,216 - main_mt_v1 - INFO - QA配置参数: {
+  "question_types": [
+    "length",
+    "angle"
+  ],
+  "type_weights": {
+    "length": 0.7,
+    "angle": 0.3
+  },
+  "num_questions_per_group": 3,
+  "output_dir": "./results_n20_v2/json/qa",
+  "seed": 2259
+}
+2025-11-04 15:38:38,272 - main_mt_v1 - INFO - 已处理 10 条几何数据，累计生成 20 个问答对
+2025-11-04 15:38:38,493 - main_mt_v1 - INFO - 已处理 20 条几何数据，累计生成 46 个问答对
+2025-11-04 15:38:38,723 - main_mt_v1 - INFO - 已处理 30 条几何数据，累计生成 72 个问答对
+2025-11-04 15:38:39,016 - main_mt_v1 - INFO - 已处理 40 条几何数据，累计生成 99 个问答对
+2025-11-04 15:38:39,285 - main_mt_v1 - INFO - 已处理 50 条几何数据，累计生成 128 个问答对
+2025-11-04 15:38:39,672 - main_mt_v1 - INFO - 已处理 60 条几何数据，累计生成 155 个问答对
+2025-11-04 15:38:39,892 - main_mt_v1 - INFO - 已处理 70 条几何数据，累计生成 182 个问答对
+2025-11-04 15:38:40,295 - main_mt_v1 - INFO - 已处理 80 条几何数据，累计生成 207 个问答对
+2025-11-04 15:38:40,619 - main_mt_v1 - INFO - 已处理 90 条几何数据，累计生成 234 个问答对
+2025-11-04 15:38:42,232 - main_mt_v1 - INFO - 已处理 100 条几何数据，累计生成 264 个问答对
+2025-11-04 15:38:44,173 - main_mt_v1 - INFO - 已处理 110 条几何数据，累计生成 294 个问答对
+2025-11-04 15:38:46,887 - main_mt_v1 - INFO - 已处理 120 条几何数据，累计生成 323 个问答对
+2025-11-04 15:38:49,168 - main_mt_v1 - INFO - 已处理 130 条几何数据，累计生成 353 个问答对
+2025-11-04 15:38:53,278 - main_mt_v1 - INFO - 已处理 140 条几何数据，累计生成 383 个问答对
+2025-11-04 15:38:55,325 - main_mt_v1 - INFO - 已处理 150 条几何数据，累计生成 413 个问答对
+2025-11-04 15:38:57,792 - main_mt_v1 - INFO - 已处理 160 条几何数据，累计生成 443 个问答对
+2025-11-04 15:39:08,790 - main_mt_v1 - INFO - 已处理 170 条几何数据，累计生成 473 个问答对
+2025-11-04 15:39:22,935 - main_mt_v1 - INFO - 已处理 180 条几何数据，累计生成 503 个问答对
+2025-11-04 15:40:04,596 - main_mt_v1 - INFO - 已处理 190 条几何数据，累计生成 533 个问答对
+2025-11-04 15:40:34,218 - main_mt_v1 - INFO - 已处理 200 条几何数据，累计生成 562 个问答对
+2025-11-04 15:41:08,429 - main_mt_v1 - INFO - 已处理 210 条几何数据，累计生成 591 个问答对
+2025-11-04 15:41:43,519 - main_mt_v1 - INFO - 已处理 220 条几何数据，累计生成 621 个问答对
+2025-11-04 15:42:13,898 - main_mt_v1 - INFO - === 问答生成完成 ===
+2025-11-04 15:42:13,899 - main_mt_v1 - INFO - 有效处理几何数据: 229 条
+2025-11-04 15:42:13,900 - main_mt_v1 - INFO - 生成问答对总数: 647 个
+2025-11-04 15:42:13,900 - main_mt_v1 - INFO - 问答结果保存至: ./results_n20_v2/json/qa/qa_shaded_with_gt_20251104_153144_535.jsonl
+2025-11-04 15:42:13,900 - main_mt_v1 - INFO - === 全流程执行完成 ===

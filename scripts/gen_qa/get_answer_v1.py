@@ -23,7 +23,7 @@ def log_message(message):
 API_KEY = "sk-118c7a1f568f42ee93bc0cdf5b95fe17"  # API Key
 BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"  # 接口基础地址
 MODEL = "qwen3-vl-235b-a22b-thinking"  # 模型名称
-MAX_CONCURRENT = 1  # 最大并发数
+MAX_CONCURRENT = 40  # 最大并发数
 max_retry = 3
 server_status = defaultdict(lambda: {"pending": 0, "response_time": 1.0})  # 保留状态跟踪
 

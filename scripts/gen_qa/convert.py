@@ -125,7 +125,7 @@ def process_item(item):
         "answer": extracted_answer if extracted_answer else "", 
         "gt": gt, 
         "judge": judge,
-        "level": item.get("level", "unknown")
+        "diff": item.get("diff", "unknown")
     }
 
 # -------------------------- 主函数（保持原有流程） --------------------------

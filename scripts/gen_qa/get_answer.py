@@ -32,7 +32,7 @@ def log_message(message):
     sys.stdout.flush()
 
 # 基础配置（可通过命令行参数覆盖部分配置）
-ips = ['10.119.26.128']
+ips = ['10.119.26.128', '10.119.27.8'] # 
 URLS = [f"http://{ip}:8000" for ip in ips]
 MAX_CONCURRENT_PER_SERVER = 80
 max_retry = 3
@@ -274,19 +274,19 @@ class APIOptimizer:
                 if task_retrieved:
                     self.request_queue.task_done()
 
-    async def process_jsonl(self, input_path, output_path, clean_tmp):
-        """优化数据处理流程：增强输入校验，支持临时文件清理"""
-        # 1. 读取并校验输入数据
-        log_message(f"读取输入文件：{input_path}")
-        items = []
+    async def process_jsonl(self, input_path, output_path, clean_tmp, start_line):
+        """优化数据处理流程：增强输入校验，支持临时文件清理和指定行开始处理"""
+        # 1. 读取并校验输入数据（记录原始行号）
+        log_message(f"读取输入文件：{input_path} | 从第{start_line}行开始处理")
+        valid_items = []  # 存储(原始行号, 数据)元组
         with open(input_path, 'r', encoding='utf-8') as f:
-            for line_num, line in enumerate(f, 1):
+            for line_num, line in enumerate(f, 1):  # line_num为原始行号（从1开始）
                 line = line.strip()
                 if not line:
                     continue
                 try:
                     data = json.loads(line)
-                    # 增强字段校验：确保gt.expr存在（呼应format.py的筛选）
+                    # 增强字段校验：确保核心字段存在
                     required_fields = ['image', 'generated_question', 'gt']
                     if all(field in data for field in required_fields):
                         if len(data['generated_question']) == 0:
@@ -295,7 +295,7 @@ class APIOptimizer:
                         if 'expr' not in data['gt']:
                             log_message(f"跳过行{line_num}：gt字段缺少expr")
                             continue
-                        items.append(data)
+                        valid_items.append((line_num, data))  # 记录原始行号和数据
                     else:
                         log_message(f"跳过行{line_num}：缺少核心字段（{', '.join(set(required_fields)-set(data.keys()))}）")
                 except json.JSONDecodeError:
@@ -303,20 +303,24 @@ class APIOptimizer:
                 except Exception as e:
                     log_message(f"跳过行{line_num}：处理异常 | 错误：{str(e)}")
 
-        total_items = len(items)
-        log_message(f"输入文件读取完成 | 有效条目：{total_items} | 需生成答案数/条目：{self.req_per_question}")
+        # 筛选出≥start_line的有效条目（按原始行号）
+        filtered_items = [item for item in valid_items if item[0] >= start_line]
+        total_valid = len(valid_items)
+        total_items = len(filtered_items)
+        
+        log_message(f"输入文件读取完成 | 总有效条目：{total_valid} | 从第{start_line}行开始的有效条目：{total_items} | 需生成答案数/条目：{self.req_per_question}")
         if total_items == 0:
-            log_message("无有效条目可处理，退出")
+            log_message("无符合条件的条目可处理，退出")
             return
 
         # 2. 初始化临时目录
         tmp_dir = os.path.join(os.path.dirname(output_path), "tmp_answer")
         os.makedirs(tmp_dir, exist_ok=True)
-        log_message(f"中间文件目录：{tmp_dir}")
+        log_message(f"中间文件目录：{tmp_dir}（文件名对应原文件行号）")
 
-        # 3. 填充任务队列
-        for idx, item in enumerate(items):
-            await self.request_queue.put((idx, item))
+        # 3. 填充任务队列（使用原始行号作为标识）
+        for original_line_num, item in filtered_items:
+            await self.request_queue.put((original_line_num, item))
 
         # 4. 启动工作线程处理任务
         connector = aiohttp.TCPConnector(limit=MAX_CONCURRENT_PER_SERVER*len(URLS))
@@ -332,12 +336,12 @@ class APIOptimizer:
                         w.cancel()
                 await asyncio.gather(*workers, return_exceptions=True)
 
-        # 5. 汇总结果到输出文件
+        # 5. 汇总结果到输出文件（仅包含处理过的条目，按原始行号顺序）
         log_message(f"汇总结果到：{output_path}")
         success_count = 0
         async with aiofiles.open(output_path, 'w', encoding='utf-8') as outf:
-            for idx in range(total_items):
-                json_file = os.path.join(tmp_dir, f"{idx}.json")
+            for original_line_num, _ in filtered_items:  # 按筛选后的顺序写入（保持原文件行号顺序）
+                json_file = os.path.join(tmp_dir, f"{original_line_num}.json")
                 if os.path.exists(json_file):
                     try:
                         async with aiofiles.open(json_file, 'r') as f:
@@ -346,7 +350,7 @@ class APIOptimizer:
                                 await outf.write(json.dumps(item, ensure_ascii=False) + '\n')
                                 success_count += 1
                     except Exception as e:
-                        log_message(f"跳过异常中间文件（序号{idx}）| 错误：{str(e)}")
+                        log_message(f"跳过异常中间文件（行号{original_line_num}）| 错误：{str(e)}")
 
         # 6. 清理临时文件（如果启用）
         if clean_tmp:
@@ -359,21 +363,25 @@ class APIOptimizer:
 
         # 7. 输出最终统计
         log_message(f"===== 处理完成 =====")
-        log_message(f"总条目：{total_items} | 成功生成：{success_count} | 成功率：{success_count/total_items:.1%}")
+        log_message(f"总有效条目：{total_valid} | 处理条目（≥{start_line}行）：{total_items} | 成功生成：{success_count} | 成功率：{success_count/total_items:.1%}" if total_items > 0 else "无处理条目")
         log_message(f"最终文件路径：{output_path}")
 
 async def main_async():
-    # 解析命令行参数（新增自定义配置参数）
+    # 解析命令行参数（新增--start-line参数）
     parser = argparse.ArgumentParser(description="调用API生成数学问题答案（增强版）")
     parser.add_argument("input_path", help="输入JSONL路径（get_question.py输出）")
     parser.add_argument("--output", required=True, help="输出JSONL路径")
     parser.add_argument("--req-per-question", type=int, default=1, help="每个问题生成的答案数量（默认1）")
     parser.add_argument("--clean-tmp", action="store_true", help="处理完成后清理临时文件")
+    parser.add_argument("--start-line", type=int, default=1, help="从指定行号开始处理（默认从第1行开始，行号对应原文件）")
     args = parser.parse_args()
 
     # 校验参数有效性
     if args.req_per_question < 1:
         log_message("错误：--req-per-question必须大于等于1")
+        sys.exit(1)
+    if args.start_line < 1:
+        log_message("错误：--start-line必须大于等于1")
         sys.exit(1)
 
     try:
@@ -388,9 +396,9 @@ async def main_async():
             os.makedirs(output_dir, exist_ok=True)
             log_message(f"创建输出目录：{output_dir}")
 
-        # 启动处理流程
+        # 启动处理流程（传入start_line参数）
         optimizer = APIOptimizer(req_per_question=args.req_per_question)
-        await optimizer.process_jsonl(args.input_path, args.output, args.clean_tmp)
+        await optimizer.process_jsonl(args.input_path, args.output, args.clean_tmp, args.start_line)
 
     except Exception as e:
         log_message(f"全局异常 | 类型：{type(e).__name__} | 错误：{str(e)}")

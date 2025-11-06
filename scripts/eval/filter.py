@@ -1,8 +1,8 @@
 import json
 
 # 输入和输出路径
-input_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v1/output/length_arc_test_20251029_qa.jsonl"
-output_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v1/output/A500_v1.jsonl"
+input_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v2/output/A500_v2_level.jsonl"
+output_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v2/output/A500_v2_level_judged.jsonl"
 
 # 读取并筛选数据
 filtered = []
@@ -13,7 +13,7 @@ with open(input_path, "r", encoding="utf-8") as f:
             filtered.append(item)
 
 # 按 level 从大到小排序
-filtered.sort(key=lambda x: x.get("level", 0), reverse=True)
+# filtered.sort(key=lambda x: x.get("level", 0), reverse=True)
 
 # 保存结果
 with open(output_path, "w", encoding="utf-8") as f:

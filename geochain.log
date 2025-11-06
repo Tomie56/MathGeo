@@ -42401,3 +42401,24 @@ Exception: 点数量超过限制，图形可能过于复杂，放弃生成
 2025-11-02 03:39:58,655 - main - INFO - 主随机种子: 80251027
 2025-11-02 03:39:58,655 - main - INFO - 各模块随机种子初始化完成
 2025-11-02 03:39:58,655 - main - INFO - === 开始生成基础图形 ===
+2025-11-04 15:13:31,507 - main - INFO - 工作目录初始化完成: ./results_n20_v2
+2025-11-04 15:13:31,507 - main - INFO - 主随机种子: 2255
+2025-11-04 15:13:31,508 - main - INFO - 各模块随机种子初始化完成
+2025-11-04 15:13:31,508 - main - INFO - === 开始生成基础图形 ===
+2025-11-04 15:13:32,513 - main - INFO - 已生成基础图形样本 1/20（种子：2256）
+2025-11-04 15:14:29,584 - main - INFO - 已生成基础图形样本 2/20（种子：2298）
+2025-11-04 15:14:34,966 - main - INFO - 已生成基础图形样本 3/20（种子：2340）
+2025-11-04 15:15:03,651 - main - ERROR - 生成样本 4 失败：点数量超过限制，图形可能过于复杂，放弃生成，跳过该样本
+2025-11-04 15:15:03,657 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 115, in run_template
+    generator.generate_derivations()
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 1282, in generate_derivations
+    self._calculate_new_entity_intersections(new_id)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 805, in _calculate_new_entity_intersections
+    pid = self._add_point(x, y, is_circle_init=False, level=intersection_level)
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/tools/template.py", line 197, in _add_point
+    raise Exception("点数量超过限制，图形可能过于复杂，放弃生成")
+Exception: 点数量超过限制，图形可能过于复杂，放弃生成
+
+2025-11-04 15:15:05,028 - main - INFO - 已生成基础图形样本 5/20（种子：2424）
