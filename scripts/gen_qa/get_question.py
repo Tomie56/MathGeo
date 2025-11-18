@@ -37,7 +37,7 @@ def log_message(message):
     sys.stdout.flush()
 
 ips = [
-    '10.119.29.179'
+    '10.119.23.0'
 ]
 URLS = [
     f"http://{ip}:8000" for ip in ips
@@ -134,7 +134,7 @@ class APIOptimizer:
                     f"{base_url}/v1/chat/completions",
                     headers={"Authorization": "Bearer EMPTY"},
                     json={
-                        "model": "Qwen3-VL-235B-A22B-Instruct",
+                        "model": "Qwen3-VL-235B-A22B-Thinking",
                         "messages": await self.construct_messages(image_path, item),
                     },
                     timeout=aiohttp.ClientTimeout(total=2000)

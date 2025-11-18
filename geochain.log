@@ -42422,3 +42422,626 @@ Traceback (most recent call last):
 Exception: 点数量超过限制，图形可能过于复杂，放弃生成
 
 2025-11-04 15:15:05,028 - main - INFO - 已生成基础图形样本 5/20（种子：2424）
+2025-11-18 19:40:06,268 - main - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:40:06,268 - main - INFO - 主随机种子: 2255
+2025-11-18 19:40:06,268 - main - INFO - 各模块随机种子初始化完成
+2025-11-18 19:40:06,268 - main - INFO - === 开始生成基础图形 ===
+2025-11-18 19:40:06,443 - main - ERROR - 生成样本 1 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:06,449 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:06,523 - main - INFO - 已生成基础图形样本 2/20（种子：2298）
+2025-11-18 19:40:06,972 - main - INFO - 已生成基础图形样本 3/20（种子：2340）
+2025-11-18 19:40:07,289 - main - ERROR - 生成样本 4 失败：Object of type Pow is not JSON serializable，跳过该样本
+2025-11-18 19:40:07,292 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Pow is not JSON serializable
+
+2025-11-18 19:40:07,309 - main - INFO - 已生成基础图形样本 5/20（种子：2424）
+2025-11-18 19:40:07,580 - main - ERROR - 生成样本 6 失败：Object of type Pow is not JSON serializable，跳过该样本
+2025-11-18 19:40:07,581 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Pow is not JSON serializable
+
+2025-11-18 19:40:07,828 - main - INFO - 已生成基础图形样本 7/20（种子：2508）
+2025-11-18 19:40:08,502 - main - ERROR - 生成样本 8 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:08,505 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:08,640 - main - ERROR - 生成样本 9 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:08,642 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:09,210 - main - ERROR - 生成样本 10 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:09,210 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:09,226 - main - INFO - 已生成基础图形样本 11/20（种子：2676）
+2025-11-18 19:40:09,240 - main - INFO - 已生成基础图形样本 12/20（种子：2718）
+2025-11-18 19:40:09,340 - main - ERROR - 生成样本 13 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:09,341 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:10,143 - main - ERROR - 生成样本 14 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:10,242 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:10,665 - main - ERROR - 生成样本 15 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:10,665 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:10,765 - main - ERROR - 生成样本 16 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:10,766 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:10,872 - main - ERROR - 生成样本 17 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:10,873 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:11,401 - main - ERROR - 生成样本 18 失败：Object of type Mul is not JSON serializable，跳过该样本
+2025-11-18 19:40:11,406 - main - ERROR - 错误堆栈：
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main.py", line 119, in run_template
+    json.dump(base_json, f, ensure_ascii=False)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/mnt/afs2/jingjinhao/miniconda3/envs/dev/lib/python3.8/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Mul is not JSON serializable
+
+2025-11-18 19:40:11,422 - main - INFO - 已生成基础图形样本 19/20（种子：3012）
+2025-11-18 19:40:18,103 - main - INFO - 已生成基础图形样本 20/20（种子：3054）
+2025-11-18 19:40:18,104 - main - INFO - 基础图形JSONL保存至: ./results_n20_v3/json/base/base_20251118_194006_268.jsonl
+2025-11-18 19:40:18,104 - main - INFO - === 开始生成增强图形 ===
+2025-11-18 19:40:18,109 - main - ERROR - 基础图形JSONL第1行格式错误，跳过
+2025-11-18 19:40:18,109 - main - INFO - 处理基础图形 #2
+2025-11-18 19:40:18,126 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:40:18,367 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:40:18,397 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:40:18,633 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:40:18,634 - main - ERROR - 基础图形JSONL第3行格式错误，跳过
+2025-11-18 19:40:18,634 - main - ERROR - 基础图形JSONL第4行格式错误，跳过
+2025-11-18 19:40:18,635 - main - ERROR - 基础图形JSONL第5行格式错误，跳过
+2025-11-18 19:40:18,635 - main - INFO - 处理基础图形 #6
+2025-11-18 19:40:18,638 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:40:18,639 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:40:18,640 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:40:18,640 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:40:18,641 - main - ERROR - 基础图形JSONL第7行格式错误，跳过
+2025-11-18 19:40:18,641 - main - INFO - 处理基础图形 #8
+2025-11-18 19:40:19,609 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:40:20,544 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:40:24,755 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:40:27,451 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:40:27,455 - main - INFO - 增强图形JSONL保存至: ./results_n20_v3/json/enhanced/enhanced_20251118_194018_104.jsonl（共9个）
+2025-11-18 19:40:27,460 - shader - INFO - 加载 9 条enhanced数据
+2025-11-18 19:40:27,460 - shader - INFO - 已设置 9 条增强JSON数据
+2025-11-18 19:40:27,460 - shader - INFO - === 开始处理图像 ===
+2025-11-18 19:40:28,053 - shader - INFO - 成功标注第0张图像，原始版本
+2025-11-18 19:40:28,427 - shader - INFO - 成功标注第1张图像，原始版本
+2025-11-18 19:40:28,754 - shader - INFO - 成功标注第2张图像，原始版本
+2025-11-18 19:40:29,079 - shader - INFO - 成功标注第3张图像，原始版本
+2025-11-18 19:40:29,188 - shader - INFO - 成功标注第4张图像，原始版本
+2025-11-18 19:40:29,472 - shader - INFO - 成功标注第5张图像，原始版本
+2025-11-18 19:40:29,795 - shader - INFO - 成功标注第6张图像，原始版本
+2025-11-18 19:40:30,187 - shader - INFO - 成功标注第7张图像，原始版本
+2025-11-18 19:40:30,577 - shader - INFO - 成功标注第8张图像，原始版本
+2025-11-18 19:40:30,583 - shader - INFO - 所有处理结果已保存至：./results_n20_v3/json/shaded/shaded_20251118_194027_456.jsonl
+2025-11-18 19:40:30,585 - main - INFO - === 处理完成 ===
+- 结果JSONL路径：./results_n20_v3/json/shaded/shaded_20251118_194027_456.jsonl
+2025-11-18 19:40:30,585 - main - INFO - === 开始计算几何参数（符号表达式化简） ===
+2025-11-18 19:40:31,439 - gt - ERROR - 第 8 行 表达式过于复杂（线条起点(M0)的x坐标，长度=242）：{"expr":"3*sqrt(2)*(-sqrt(5)-1)/(4*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:40:31,595 - gt - ERROR - 第 9 行 表达式过于复杂（线条起点(M0)的x坐标，长度=242）：{"expr":"3*sqrt(2)*(-sqrt(5)-1)/(4*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:40:31,597 - gt - INFO - 处理完成，结果保存至: ./results_n20_v3/json/final/shaded_with_gt_20251118_194027_456.jsonl
+2025-11-18 19:40:31,598 - main - INFO - 几何参数计算完成，结果保存至: ./results_n20_v3/json/final/shaded_with_gt_20251118_194027_456.jsonl
+2025-11-18 19:40:31,599 - main - INFO - 共处理 7 条数据，每条数据已添加线条/圆弧长度信息
+2025-11-18 19:40:31,599 - main - INFO - 使用GT结果文件: ./results_n20_v3/json/final/shaded_with_gt_20251118_194027_456.jsonl
+2025-11-18 19:40:31,601 - main - INFO - === 开始生成问答数据 ===
+2025-11-18 19:40:31,601 - main - INFO - QA配置参数: {
+  "question_types": [
+    "length",
+    "angle"
+  ],
+  "type_weights": {
+    "length": 0.7,
+    "angle": 0.3
+  },
+  "num_questions_per_group": 3,
+  "output_dir": "./results_n20_v3/json/qa",
+  "seed": 2259
+}
+2025-11-18 19:40:38,137 - main - INFO - === 问答生成完成 ===
+2025-11-18 19:40:38,137 - main - INFO - 有效处理几何数据: 7 条
+2025-11-18 19:40:38,138 - main - INFO - 生成问答对总数: 16 个
+2025-11-18 19:40:38,138 - main - INFO - 问答结果保存至: ./results_n20_v3/json/qa/qa_shaded_with_gt_20251118_194027_456.jsonl
+2025-11-18 19:40:38,138 - main - INFO - === 全流程执行完成 ===
+2025-11-18 19:45:33,043 - main - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:45:33,044 - main - INFO - 主随机种子: 2255
+2025-11-18 19:45:33,044 - main - INFO - 各模块随机种子初始化完成
+2025-11-18 19:45:33,044 - main - INFO - === 开始生成基础图形 ===
+2025-11-18 19:45:33,381 - main - INFO - 已生成基础图形样本 1/20（种子：2256）
+2025-11-18 19:45:33,436 - main - INFO - 已生成基础图形样本 2/20（种子：2298）
+2025-11-18 19:45:33,777 - main - INFO - 已生成基础图形样本 3/20（种子：2340）
+2025-11-18 19:45:34,102 - main - INFO - 已生成基础图形样本 4/20（种子：2382）
+2025-11-18 19:45:34,125 - main - INFO - 已生成基础图形样本 5/20（种子：2424）
+2025-11-18 19:45:34,393 - main - INFO - 已生成基础图形样本 6/20（种子：2466）
+2025-11-18 19:45:34,659 - main - INFO - 已生成基础图形样本 7/20（种子：2508）
+2025-11-18 19:45:35,095 - main - INFO - 已生成基础图形样本 8/20（种子：2550）
+2025-11-18 19:45:35,178 - main - INFO - 已生成基础图形样本 9/20（种子：2592）
+2025-11-18 19:45:35,572 - main - INFO - 已生成基础图形样本 10/20（种子：2634）
+2025-11-18 19:45:35,591 - main - INFO - 已生成基础图形样本 11/20（种子：2676）
+2025-11-18 19:45:35,608 - main - INFO - 已生成基础图形样本 12/20（种子：2718）
+2025-11-18 19:45:35,692 - main - INFO - 已生成基础图形样本 13/20（种子：2760）
+2025-11-18 19:45:36,703 - main - INFO - 已生成基础图形样本 14/20（种子：2802）
+2025-11-18 19:45:37,196 - main - INFO - 已生成基础图形样本 15/20（种子：2844）
+2025-11-18 19:45:37,283 - main - INFO - 已生成基础图形样本 16/20（种子：2886）
+2025-11-18 19:45:37,368 - main - INFO - 已生成基础图形样本 17/20（种子：2928）
+2025-11-18 19:45:37,760 - main - INFO - 已生成基础图形样本 18/20（种子：2970）
+2025-11-18 19:45:37,780 - main - INFO - 已生成基础图形样本 19/20（种子：3012）
+2025-11-18 19:45:45,588 - main - INFO - 已生成基础图形样本 20/20（种子：3054）
+2025-11-18 19:45:45,589 - main - INFO - 基础图形JSONL保存至: ./results_n20_v3/json/base/base_20251118_194533_044.jsonl
+2025-11-18 19:45:45,589 - main - INFO - === 开始生成增强图形 ===
+2025-11-18 19:45:45,592 - main - INFO - 处理基础图形 #1
+2025-11-18 19:45:45,607 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:45,608 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:45,613 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:45,614 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:45,619 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:45,619 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:45,619 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:45,620 - main - INFO - 处理基础图形 #2
+2025-11-18 19:45:45,633 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:45,692 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:45,692 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:45,697 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:45,749 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:45,750 - main - INFO - 处理基础图形 #3
+2025-11-18 19:45:45,764 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:45,790 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:45,806 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:45,810 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:45,817 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:45,817 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:45,818 - main - INFO - 处理基础图形 #4
+2025-11-18 19:45:45,819 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:45,819 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:45,819 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:46,068 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:46,206 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:46,207 - main - INFO - 处理基础图形 #5
+2025-11-18 19:45:46,210 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:45:46,212 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:45:46,213 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:45:46,213 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:45:46,213 - main - INFO - 处理基础图形 #6
+2025-11-18 19:45:46,214 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:46,214 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,214 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:46,214 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,215 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:46,215 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,215 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:46,216 - main - INFO - 处理基础图形 #7
+2025-11-18 19:45:46,255 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:46,448 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:46,449 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,462 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:46,561 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:46,563 - main - INFO - 处理基础图形 #8
+2025-11-18 19:45:46,627 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:46,627 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,645 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:46,645 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,663 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:46,663 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,663 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:46,664 - main - INFO - 处理基础图形 #9
+2025-11-18 19:45:46,677 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:46,678 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,682 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:46,749 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:46,749 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,749 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:46,750 - main - INFO - 处理基础图形 #10
+2025-11-18 19:45:46,805 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:46,806 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,824 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:46,986 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:46,987 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:46,987 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:46,988 - main - INFO - 处理基础图形 #11
+2025-11-18 19:45:46,991 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:45:46,992 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:45:46,993 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:45:46,993 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:45:46,994 - main - INFO - 处理基础图形 #12
+2025-11-18 19:45:46,997 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:45:46,999 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:45:47,001 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:45:47,001 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:45:47,001 - main - INFO - 处理基础图形 #13
+2025-11-18 19:45:47,016 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:47,016 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,021 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:47,088 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:47,147 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:47,148 - main - INFO - 处理基础图形 #14
+2025-11-18 19:45:47,148 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:47,149 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,149 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:47,149 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,149 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:47,149 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,150 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:47,151 - main - INFO - 处理基础图形 #15
+2025-11-18 19:45:47,151 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:47,392 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:47,392 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,392 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:47,393 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,393 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:47,394 - main - INFO - 处理基础图形 #16
+2025-11-18 19:45:47,410 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:47,410 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,417 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:47,418 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,423 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:47,423 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,423 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:47,424 - main - INFO - 处理基础图形 #17
+2025-11-18 19:45:47,438 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:47,438 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,442 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:47,494 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:47,494 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,495 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:47,497 - main - INFO - 处理基础图形 #18
+2025-11-18 19:45:47,558 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:45:47,558 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,575 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:45:47,576 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,595 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:45:47,596 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:45:47,596 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:45:47,600 - main - INFO - 处理基础图形 #19
+2025-11-18 19:45:47,605 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:45:47,607 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:45:47,608 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:45:47,609 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:45:47,609 - main - INFO - 处理基础图形 #20
+2025-11-18 19:45:48,574 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:46:04,909 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:46:21,129 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:46:21,250 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:46:21,254 - main - INFO - 增强图形JSONL保存至: ./results_n20_v3/json/enhanced/enhanced_20251118_194545_589.jsonl（共68个）
+2025-11-18 19:46:21,268 - shader - INFO - 加载 68 条enhanced数据
+2025-11-18 19:46:21,269 - shader - INFO - 已设置 68 条增强JSON数据
+2025-11-18 19:46:21,269 - shader - INFO - === 开始处理图像 ===
+2025-11-18 19:46:23,435 - shader - INFO - 成功标注第0张图像，原始版本
+2025-11-18 19:46:23,680 - shader - INFO - 成功标注第1张图像，原始版本
+2025-11-18 19:46:23,906 - shader - INFO - 成功标注第2张图像，原始版本
+2025-11-18 19:46:24,132 - shader - INFO - 成功标注第3张图像，原始版本
+2025-11-18 19:46:24,351 - shader - INFO - 成功标注第4张图像，原始版本
+2025-11-18 19:46:24,648 - shader - INFO - 成功标注第5张图像，原始版本
+2025-11-18 19:46:24,861 - shader - INFO - 成功标注第6张图像，原始版本
+2025-11-18 19:46:25,169 - shader - INFO - 成功标注第7张图像，原始版本
+2025-11-18 19:46:25,386 - shader - INFO - 成功标注第8张图像，原始版本
+2025-11-18 19:46:25,640 - shader - INFO - 成功标注第9张图像，原始版本
+2025-11-18 19:46:25,854 - shader - INFO - 成功标注第10张图像，原始版本
+2025-11-18 19:46:26,062 - shader - INFO - 成功标注第11张图像，原始版本
+2025-11-18 19:46:26,276 - shader - INFO - 成功标注第12张图像，原始版本
+2025-11-18 19:46:26,567 - shader - INFO - 成功标注第13张图像，原始版本
+2025-11-18 19:46:26,874 - shader - INFO - 成功标注第14张图像，原始版本
+2025-11-18 19:46:27,250 - shader - INFO - 成功标注第15张图像，原始版本
+2025-11-18 19:46:27,367 - shader - INFO - 成功标注第16张图像，原始版本
+2025-11-18 19:46:27,585 - shader - INFO - 成功标注第17张图像，原始版本
+2025-11-18 19:46:27,822 - shader - INFO - 成功标注第18张图像，原始版本
+2025-11-18 19:46:28,036 - shader - INFO - 成功标注第19张图像，原始版本
+2025-11-18 19:46:28,256 - shader - INFO - 成功标注第20张图像，原始版本
+2025-11-18 19:46:28,441 - shader - INFO - 成功标注第21张图像，原始版本
+2025-11-18 19:46:28,725 - shader - INFO - 成功标注第22张图像，原始版本
+2025-11-18 19:46:28,918 - shader - INFO - 成功标注第23张图像，原始版本
+2025-11-18 19:46:29,133 - shader - INFO - 成功标注第24张图像，原始版本
+2025-11-18 19:46:29,372 - shader - INFO - 成功标注第25张图像，原始版本
+2025-11-18 19:46:29,591 - shader - INFO - 成功标注第26张图像，原始版本
+2025-11-18 19:46:29,924 - shader - INFO - 成功标注第27张图像，原始版本
+2025-11-18 19:46:30,163 - shader - INFO - 成功标注第28张图像，原始版本
+2025-11-18 19:46:30,380 - shader - INFO - 成功标注第29张图像，原始版本
+2025-11-18 19:46:30,595 - shader - INFO - 成功标注第30张图像，原始版本
+2025-11-18 19:46:30,906 - shader - INFO - 成功标注第31张图像，原始版本
+2025-11-18 19:46:31,120 - shader - INFO - 成功标注第32张图像，原始版本
+2025-11-18 19:46:31,388 - shader - INFO - 成功标注第33张图像，原始版本
+2025-11-18 19:46:31,620 - shader - INFO - 成功标注第34张图像，原始版本
+2025-11-18 19:46:31,953 - shader - INFO - 成功标注第35张图像，原始版本
+2025-11-18 19:46:32,190 - shader - INFO - 成功标注第36张图像，原始版本
+2025-11-18 19:46:32,320 - shader - INFO - 成功标注第37张图像，原始版本
+2025-11-18 19:46:32,416 - shader - INFO - 成功标注第38张图像，原始版本
+2025-11-18 19:46:32,657 - shader - INFO - 成功标注第39张图像，原始版本
+2025-11-18 19:46:32,916 - shader - INFO - 成功标注第40张图像，原始版本
+2025-11-18 19:46:33,362 - shader - INFO - 成功标注第41张图像，原始版本
+2025-11-18 19:46:33,691 - shader - INFO - 成功标注第42张图像，原始版本
+2025-11-18 19:46:33,937 - shader - INFO - 成功标注第43张图像，原始版本
+2025-11-18 19:46:34,183 - shader - INFO - 成功标注第44张图像，原始版本
+2025-11-18 19:46:34,415 - shader - INFO - 成功标注第45张图像，原始版本
+2025-11-18 19:46:34,637 - shader - INFO - 成功标注第46张图像，原始版本
+2025-11-18 19:46:34,880 - shader - INFO - 成功标注第47张图像，原始版本
+2025-11-18 19:46:35,192 - shader - INFO - 成功标注第48张图像，原始版本
+2025-11-18 19:46:35,417 - shader - INFO - 成功标注第49张图像，原始版本
+2025-11-18 19:46:35,665 - shader - INFO - 成功标注第50张图像，原始版本
+2025-11-18 19:46:35,905 - shader - INFO - 成功标注第51张图像，原始版本
+2025-11-18 19:46:36,128 - shader - INFO - 成功标注第52张图像，原始版本
+2025-11-18 19:46:36,386 - shader - INFO - 成功标注第53张图像，原始版本
+2025-11-18 19:46:36,651 - shader - INFO - 成功标注第54张图像，原始版本
+2025-11-18 19:46:36,878 - shader - INFO - 成功标注第55张图像，原始版本
+2025-11-18 19:46:37,134 - shader - INFO - 成功标注第56张图像，原始版本
+2025-11-18 19:46:37,456 - shader - INFO - 成功标注第57张图像，原始版本
+2025-11-18 19:46:37,694 - shader - INFO - 成功标注第58张图像，原始版本
+2025-11-18 19:46:37,955 - shader - INFO - 成功标注第59张图像，原始版本
+2025-11-18 19:46:38,182 - shader - INFO - 成功标注第60张图像，原始版本
+2025-11-18 19:46:38,412 - shader - INFO - 成功标注第61张图像，原始版本
+2025-11-18 19:46:38,666 - shader - INFO - 成功标注第62张图像，原始版本
+2025-11-18 19:46:38,760 - shader - INFO - 成功标注第63张图像，原始版本
+2025-11-18 19:46:39,033 - shader - INFO - 成功标注第64张图像，原始版本
+2025-11-18 19:46:39,426 - shader - INFO - 成功标注第65张图像，原始版本
+2025-11-18 19:46:39,810 - shader - INFO - 成功标注第66张图像，原始版本
+2025-11-18 19:46:40,162 - shader - INFO - 成功标注第67张图像，原始版本
+2025-11-18 19:46:40,173 - shader - INFO - 所有处理结果已保存至：./results_n20_v3/json/shaded/shaded_20251118_194621_254.jsonl
+2025-11-18 19:46:40,174 - main - INFO - === 处理完成 ===
+- 结果JSONL路径：./results_n20_v3/json/shaded/shaded_20251118_194621_254.jsonl
+2025-11-18 19:46:40,175 - main - INFO - === 开始计算几何参数（符号表达式化简） ===
+2025-11-18 19:46:40,279 - gt - INFO - 已处理 10 条数据
+2025-11-18 19:46:40,432 - gt - INFO - 已处理 20 条数据
+2025-11-18 19:46:40,521 - gt - INFO - 已处理 30 条数据
+2025-11-18 19:46:40,604 - gt - INFO - 已处理 40 条数据
+2025-11-18 19:46:41,294 - gt - INFO - 已处理 50 条数据
+2025-11-18 19:46:41,520 - gt - INFO - 已处理 60 条数据
+2025-11-18 19:46:42,045 - gt - ERROR - 第 66 行 表达式过于复杂（线条终点(F0)的x坐标，长度=1254）：{"expr":"3*sqrt(2)*(-1+sqrt(5))/(2*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:46:42,213 - gt - ERROR - 第 67 行 表达式过于复杂（线条终点(F0)的x坐标，长度=1254）：{"expr":"3*sqrt(2)*(-1+sqrt(5))/(2*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:46:42,448 - gt - INFO - 处理完成，结果保存至: ./results_n20_v3/json/final/shaded_with_gt_20251118_194621_254.jsonl
+2025-11-18 19:46:42,454 - main - INFO - 几何参数计算完成，结果保存至: ./results_n20_v3/json/final/shaded_with_gt_20251118_194621_254.jsonl
+2025-11-18 19:46:42,454 - main - INFO - 共处理 66 条数据，每条数据已添加线条/圆弧长度信息
+2025-11-18 19:46:42,455 - main - INFO - 使用GT结果文件: ./results_n20_v3/json/final/shaded_with_gt_20251118_194621_254.jsonl
+2025-11-18 19:46:42,455 - main - INFO - === 开始生成问答数据 ===
+2025-11-18 19:46:42,455 - main - INFO - QA配置参数: {
+  "question_types": [
+    "length",
+    "angle"
+  ],
+  "type_weights": {
+    "length": 0.7,
+    "angle": 0.3
+  },
+  "num_questions_per_group": 3,
+  "output_dir": "./results_n20_v3/json/qa",
+  "seed": 2259
+}
+2025-11-18 19:46:43,257 - main - INFO - 已处理 10 条几何数据，累计生成 26 个问答对
+2025-11-18 19:46:43,815 - main - INFO - 已处理 20 条几何数据，累计生成 44 个问答对
+2025-11-18 19:46:44,770 - main - INFO - 已处理 30 条几何数据，累计生成 70 个问答对
+2025-11-18 19:46:45,503 - main - INFO - 已处理 40 条几何数据，累计生成 89 个问答对
+2025-11-18 19:46:52,957 - main - INFO - 已处理 50 条几何数据，累计生成 112 个问答对
+2025-11-18 19:46:54,285 - main - INFO - 已处理 60 条几何数据，累计生成 138 个问答对
+2025-11-18 19:46:58,401 - main - INFO - === 问答生成完成 ===
+2025-11-18 19:46:58,401 - main - INFO - 有效处理几何数据: 66 条
+2025-11-18 19:46:58,402 - main - INFO - 生成问答对总数: 151 个
+2025-11-18 19:46:58,402 - main - INFO - 问答结果保存至: ./results_n20_v3/json/qa/qa_shaded_with_gt_20251118_194621_254.jsonl
+2025-11-18 19:46:58,402 - main - INFO - === 全流程执行完成 ===

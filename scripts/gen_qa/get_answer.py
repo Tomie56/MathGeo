@@ -32,7 +32,7 @@ def log_message(message):
     sys.stdout.flush()
 
 # 基础配置（可通过命令行参数覆盖部分配置）
-ips = ['10.119.26.128', '10.119.27.8'] # 
+ips = ['10.119.23.0'] # 注意修改
 URLS = [f"http://{ip}:8000" for ip in ips]
 MAX_CONCURRENT_PER_SERVER = 80
 max_retry = 3
@@ -99,7 +99,6 @@ class APIOptimizer:
             "Solve the following geometric math problem step by step. "
             "First, analyze the geometric elements and relationships from the image and question. "
             "Show all formulas, calculations, and logical deductions clearly — do not skip any steps. "
-            "Ensure your solution aligns with the geometric context provided. "
             "At the end of your response, place the final numerical answer inside a LaTeX box using \\boxed{}.\n\n"
             "Make sure that the final answer uses LaTeX-style expressions and is wrapped in \\boxed{}."
         )

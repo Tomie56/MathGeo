@@ -391,7 +391,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         type=str,
-        default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/config.json",
+        default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/config_test.json",
         help="总配置文件路径"
     )
     args = parser.parse_args()

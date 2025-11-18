@@ -42144,3 +42144,728 @@ RuntimeError: 未加载enhanced数据，无法处理
 2025-11-04 15:42:13,900 - main_mt_v1 - INFO - 生成问答对总数: 647 个
 2025-11-04 15:42:13,900 - main_mt_v1 - INFO - 问答结果保存至: ./results_n20_v2/json/qa/qa_shaded_with_gt_20251104_153144_535.jsonl
 2025-11-04 15:42:13,900 - main_mt_v1 - INFO - === 全流程执行完成 ===
+2025-11-18 19:27:26,131 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:27:26,132 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:27:26,132 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:27:26,132 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:27:26,133 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:27:26,133 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:27:26,134 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:27:26,134 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:27:26,143 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:27:26,157 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 2 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,159 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:27:26,159 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:27:26,159 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:27:26,164 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:27:26,164 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:27:26,165 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:27:26,170 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:27:26,177 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:27:26,180 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:27:26,182 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:27:26,185 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:27:26,185 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:27:26,186 - main_mt_v1_test - INFO - 线程[Template-Worker-17] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:27:26,188 - main_mt_v1_test - INFO - 线程[Template-Worker-18] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:27:26,190 - main_mt_v1_test - INFO - 线程[Template-Worker-19] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:27:26,552 - main_mt_v1_test - ERROR - 线程[Template-Worker-12] 样本 13 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,554 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 样本 9 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,554 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 1 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,657 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 样本 16 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,668 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 样本 17 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,746 - main_mt_v1_test - ERROR - 线程[Template-Worker-5] 样本 5 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,746 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 样本 11 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,781 - main_mt_v1_test - ERROR - 线程[Template-Worker-11] 样本 12 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:26,791 - main_mt_v1_test - ERROR - 线程[Template-Worker-18] 样本 19 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,266 - main_mt_v1_test - ERROR - 线程[Template-Worker-17] 样本 18 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,446 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 样本 10 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,512 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 6 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,521 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,532 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 7 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,546 - main_mt_v1_test - ERROR - 线程[Template-Worker-3] 样本 3 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,601 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 样本 15 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,613 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 8 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:27,966 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 样本 14 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:28,668 - main_mt_v1_test - ERROR - 线程[Template-Worker-19] 样本 20 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:27:28,698 - main_mt_v1_test - INFO - 基础图形生成完成：成功 0/20 个样本
+2025-11-18 19:27:28,700 - main_mt_v1_test - ERROR - 流程执行失败: 未生成任何有效的基础图形JSONL文件
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 511, in run
+    self.run_template()      # 生成基础图形（多线程+超时）
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 196, in run_template
+    raise RuntimeError("未生成任何有效的基础图形JSONL文件")
+RuntimeError: 未生成任何有效的基础图形JSONL文件
+2025-11-18 19:32:22,875 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:32:22,875 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:32:22,875 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:32:22,875 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:32:22,876 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:32:22,876 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:32:22,877 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:32:22,877 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:32:22,879 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:32:22,890 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:32:22,893 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 2 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:22,898 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:32:22,899 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:32:22,913 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:32:22,914 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:32:22,914 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:32:22,915 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:32:22,915 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:32:22,916 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:32:22,928 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:32:22,930 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:32:22,931 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:32:22,933 - main_mt_v1_test - INFO - 线程[Template-Worker-17] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:32:22,934 - main_mt_v1_test - INFO - 线程[Template-Worker-18] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:32:22,934 - main_mt_v1_test - INFO - 线程[Template-Worker-19] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:32:22,945 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 样本 14 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:22,947 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 样本 15 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,076 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 1 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,107 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 样本 9 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,132 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 样本 16 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,165 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 样本 17 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,170 - main_mt_v1_test - ERROR - 线程[Template-Worker-12] 样本 13 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,264 - main_mt_v1_test - ERROR - 线程[Template-Worker-5] 样本 5 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,280 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 样本 11 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,280 - main_mt_v1_test - ERROR - 线程[Template-Worker-11] 样本 12 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,403 - main_mt_v1_test - ERROR - 线程[Template-Worker-18] 样本 19 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,517 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 6 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,711 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 7 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,723 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,910 - main_mt_v1_test - ERROR - 线程[Template-Worker-3] 样本 3 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,932 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 10 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,938 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 样本 8 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:23,956 - main_mt_v1_test - ERROR - 线程[Template-Worker-17] 样本 18 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:24,756 - main_mt_v1_test - ERROR - 线程[Template-Worker-19] 样本 20 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:24,757 - main_mt_v1_test - INFO - 基础图形生成完成：成功 0/20 个样本
+2025-11-18 19:32:24,758 - main_mt_v1_test - ERROR - 流程执行失败: 未生成任何有效的基础图形JSONL文件
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 511, in run
+    self.run_template()      # 生成基础图形（多线程+超时）
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 196, in run_template
+    raise RuntimeError("未生成任何有效的基础图形JSONL文件")
+RuntimeError: 未生成任何有效的基础图形JSONL文件
+2025-11-18 19:32:56,178 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:32:56,178 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:32:56,178 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:32:56,179 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:32:56,179 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:32:56,179 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:32:56,180 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:32:56,181 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:32:56,187 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:32:56,199 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 2 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,200 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:32:56,200 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:32:56,201 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:32:56,201 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:32:56,206 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:32:56,206 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:32:56,207 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:32:56,207 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:32:56,208 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 6 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:32:56,208 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:32:56,209 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:32:56,219 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:32:56,220 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:32:56,221 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:32:56,223 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:32:56,230 - main_mt_v1_test - INFO - 线程[Template-Worker-17] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:32:56,230 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:32:56,236 - main_mt_v1_test - ERROR - 线程[Template-Worker-12] 样本 14 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:32:56,236 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 样本 15 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:32:56,413 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 1 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,425 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 9 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,469 - main_mt_v1_test - ERROR - 线程[Template-Worker-11] 样本 13 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,478 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 样本 17 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,523 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 样本 16 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,559 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 11 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,560 - main_mt_v1_test - ERROR - 线程[Template-Worker-5] 样本 5 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,571 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 样本 12 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,662 - main_mt_v1_test - ERROR - 线程[Template-Worker-17] 样本 19 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:56,929 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 7 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:57,003 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 样本 18 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:57,052 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 样本 10 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:57,145 - main_mt_v1_test - ERROR - 线程[Template-Worker-3] 样本 3 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:57,194 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 样本 8 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:58,010 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 20 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:32:58,010 - main_mt_v1_test - INFO - 基础图形生成完成：成功 0/20 个样本
+2025-11-18 19:32:58,013 - main_mt_v1_test - ERROR - 流程执行失败: 未生成任何有效的基础图形JSONL文件
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 511, in run
+    self.run_template()      # 生成基础图形（多线程+超时）
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 196, in run_template
+    raise RuntimeError("未生成任何有效的基础图形JSONL文件")
+RuntimeError: 未生成任何有效的基础图形JSONL文件
+2025-11-18 19:33:06,783 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:33:06,784 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:33:06,784 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:33:06,784 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:33:06,784 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:33:06,785 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:33:06,785 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:33:06,787 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:33:06,787 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:33:06,788 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 2 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:06,792 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:33:06,793 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:33:06,793 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:33:06,793 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:06,797 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:33:06,798 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:33:06,798 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:33:06,804 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:33:06,805 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:33:06,805 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 6 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:06,806 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:33:06,806 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:33:06,807 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:33:06,823 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:33:06,830 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:33:06,833 - main_mt_v1_test - INFO - 线程[Template-Worker-17] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:33:06,833 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:33:06,946 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 样本 14 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:06,947 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 15 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:07,114 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 1 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,141 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 9 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,175 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 样本 16 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,213 - main_mt_v1_test - ERROR - 线程[Template-Worker-12] 样本 13 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,214 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 样本 17 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,290 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 样本 11 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,307 - main_mt_v1_test - ERROR - 线程[Template-Worker-11] 样本 12 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,325 - main_mt_v1_test - ERROR - 线程[Template-Worker-17] 样本 19 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,332 - main_mt_v1_test - ERROR - 线程[Template-Worker-5] 样本 5 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,670 - main_mt_v1_test - ERROR - 线程[Template-Worker-3] 样本 3 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,690 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 7 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,898 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 样本 8 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,950 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 样本 10 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:07,951 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 样本 18 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:08,708 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 20 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:08,708 - main_mt_v1_test - INFO - 基础图形生成完成：成功 0/20 个样本
+2025-11-18 19:33:08,709 - main_mt_v1_test - ERROR - 流程执行失败: 未生成任何有效的基础图形JSONL文件
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 511, in run
+    self.run_template()      # 生成基础图形（多线程+超时）
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 196, in run_template
+    raise RuntimeError("未生成任何有效的基础图形JSONL文件")
+RuntimeError: 未生成任何有效的基础图形JSONL文件
+2025-11-18 19:33:18,164 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:33:18,164 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:33:18,165 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:33:18,165 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:33:18,165 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:33:18,165 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:33:18,166 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:33:18,166 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:33:18,168 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 2 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:18,169 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:33:18,174 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:33:18,174 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:33:18,174 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:18,174 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:33:18,175 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:33:18,182 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:33:18,182 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:33:18,187 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 6 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:18,187 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:33:18,187 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:33:18,188 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 8 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:18,188 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:33:18,190 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:33:18,190 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 10 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:18,190 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:33:18,190 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:33:18,193 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:33:18,194 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:33:18,194 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:33:18,200 - main_mt_v1_test - ERROR - 线程[Template-Worker-12] 样本 14 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:18,202 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 样本 15 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:18,208 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 样本 18 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:18,365 - main_mt_v1_test - ERROR - 线程[Template-Worker-11] 样本 13 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,380 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 1 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,390 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 样本 16 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,391 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 样本 9 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,447 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 17 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,482 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 样本 11 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,494 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 样本 12 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,530 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 样本 19 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,548 - main_mt_v1_test - ERROR - 线程[Template-Worker-5] 样本 5 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,706 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 7 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:18,736 - main_mt_v1_test - ERROR - 线程[Template-Worker-3] 样本 3 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:19,540 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 20 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:19,541 - main_mt_v1_test - INFO - 基础图形生成完成：成功 0/20 个样本
+2025-11-18 19:33:19,542 - main_mt_v1_test - ERROR - 流程执行失败: 未生成任何有效的基础图形JSONL文件
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 511, in run
+    self.run_template()      # 生成基础图形（多线程+超时）
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 196, in run_template
+    raise RuntimeError("未生成任何有效的基础图形JSONL文件")
+RuntimeError: 未生成任何有效的基础图形JSONL文件
+2025-11-18 19:33:34,284 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:33:34,285 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:33:34,285 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:33:34,285 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:33:34,285 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:33:34,285 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:33:34,286 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:33:34,286 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:33:34,287 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 1 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,287 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 2 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,287 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:33:34,288 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:33:34,288 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:33:34,292 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:33:34,293 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,293 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:33:34,293 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:33:34,293 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:33:34,293 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:33:34,294 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:33:34,306 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:33:34,307 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:33:34,312 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:33:34,314 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:33:34,315 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:33:34,315 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 6 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,317 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:33:34,324 - main_mt_v1_test - INFO - 线程[Template-Worker-17] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:33:34,324 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 样本 9 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,325 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 8 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,328 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 10 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,335 - main_mt_v1_test - ERROR - 线程[Template-Worker-11] 样本 13 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,337 - main_mt_v1_test - ERROR - 线程[Template-Worker-12] 样本 14 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,338 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 样本 15 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,339 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 样本 16 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,339 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 样本 17 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,340 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 18 生成失败：local variable 'entity_id' referenced before assignment，跳过
+2025-11-18 19:33:34,549 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 样本 11 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:34,563 - main_mt_v1_test - ERROR - 线程[Template-Worker-5] 样本 5 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:34,595 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 样本 19 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:34,615 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 样本 12 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:34,752 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 7 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:34,807 - main_mt_v1_test - ERROR - 线程[Template-Worker-3] 样本 3 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:35,628 - main_mt_v1_test - ERROR - 线程[Template-Worker-17] 样本 20 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:33:35,629 - main_mt_v1_test - INFO - 基础图形生成完成：成功 0/20 个样本
+2025-11-18 19:33:35,630 - main_mt_v1_test - ERROR - 流程执行失败: 未生成任何有效的基础图形JSONL文件
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 511, in run
+    self.run_template()      # 生成基础图形（多线程+超时）
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 196, in run_template
+    raise RuntimeError("未生成任何有效的基础图形JSONL文件")
+RuntimeError: 未生成任何有效的基础图形JSONL文件
+2025-11-18 19:35:43,696 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:35:43,696 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:35:43,696 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:35:43,696 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:35:43,697 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:35:43,697 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:35:43,697 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:35:43,699 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:35:43,704 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:35:43,715 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 2 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:43,715 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:35:43,716 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:35:43,720 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:35:43,722 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:35:43,722 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:35:43,730 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:35:43,731 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:35:43,732 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:35:43,738 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:35:43,742 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:35:43,743 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:35:43,745 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:35:43,746 - main_mt_v1_test - INFO - 线程[Template-Worker-17] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:35:43,749 - main_mt_v1_test - INFO - 线程[Template-Worker-18] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:35:43,751 - main_mt_v1_test - INFO - 线程[Template-Worker-19] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:35:43,934 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 1 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,039 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 9 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,055 - main_mt_v1_test - ERROR - 线程[Template-Worker-12] 样本 13 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,091 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 样本 16 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,116 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 样本 17 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,226 - main_mt_v1_test - ERROR - 线程[Template-Worker-5] 样本 5 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,295 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 样本 11 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,320 - main_mt_v1_test - ERROR - 线程[Template-Worker-11] 样本 12 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,371 - main_mt_v1_test - ERROR - 线程[Template-Worker-18] 样本 19 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,721 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:44,731 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 样本 10 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:45,029 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 6 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:45,048 - main_mt_v1_test - ERROR - 线程[Template-Worker-17] 样本 18 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:45,059 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 样本 15 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:45,116 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 7 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:45,130 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 样本 8 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:45,279 - main_mt_v1_test - ERROR - 线程[Template-Worker-3] 样本 3 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:45,358 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 样本 14 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:46,117 - main_mt_v1_test - ERROR - 线程[Template-Worker-19] 样本 20 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:35:46,118 - main_mt_v1_test - INFO - 基础图形生成完成：成功 0/20 个样本
+2025-11-18 19:35:46,150 - main_mt_v1_test - ERROR - 流程执行失败: 未生成任何有效的基础图形JSONL文件
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 511, in run
+    self.run_template()      # 生成基础图形（多线程+超时）
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 196, in run_template
+    raise RuntimeError("未生成任何有效的基础图形JSONL文件")
+RuntimeError: 未生成任何有效的基础图形JSONL文件
+2025-11-18 19:36:18,223 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:36:18,224 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:36:18,230 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:36:18,230 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:36:18,231 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:36:18,231 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:36:18,232 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:36:18,232 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:36:18,232 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:36:18,233 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:36:18,235 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:36:18,236 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:36:18,247 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:36:18,251 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 2 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,255 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:36:18,260 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:36:18,264 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:36:18,264 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:36:18,268 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:36:18,269 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:36:18,273 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:36:18,276 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:36:18,288 - main_mt_v1_test - INFO - 线程[Template-Worker-17] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:36:18,289 - main_mt_v1_test - INFO - 线程[Template-Worker-18] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:36:18,290 - main_mt_v1_test - INFO - 线程[Template-Worker-19] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:36:18,591 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 样本 1 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,605 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 样本 9 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,654 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 样本 16 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,682 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 样本 17 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,686 - main_mt_v1_test - ERROR - 线程[Template-Worker-12] 样本 13 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,771 - main_mt_v1_test - ERROR - 线程[Template-Worker-11] 样本 11 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,771 - main_mt_v1_test - ERROR - 线程[Template-Worker-5] 样本 5 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,788 - main_mt_v1_test - ERROR - 线程[Template-Worker-18] 样本 19 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,797 - main_mt_v1_test - ERROR - 线程[Template-Worker-2] 样本 12 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:18,856 - main_mt_v1_test - ERROR - 线程[Template-Worker-7] 样本 7 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:19,321 - main_mt_v1_test - ERROR - 线程[Template-Worker-3] 样本 3 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:19,466 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 样本 4 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:19,609 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 样本 6 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:19,636 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 样本 10 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:19,760 - main_mt_v1_test - ERROR - 线程[Template-Worker-17] 样本 18 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:19,780 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 样本 8 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:19,795 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 样本 14 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:20,086 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 样本 15 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:20,816 - main_mt_v1_test - ERROR - 线程[Template-Worker-19] 样本 20 生成失败：randint() missing 1 required positional argument: 'b'，跳过
+2025-11-18 19:36:20,816 - main_mt_v1_test - INFO - 基础图形生成完成：成功 0/20 个样本
+2025-11-18 19:36:20,818 - main_mt_v1_test - ERROR - 流程执行失败: 未生成任何有效的基础图形JSONL文件
+Traceback (most recent call last):
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 511, in run
+    self.run_template()      # 生成基础图形（多线程+超时）
+  File "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/scripts/main_mt_v1_test.py", line 196, in run_template
+    raise RuntimeError("未生成任何有效的基础图形JSONL文件")
+RuntimeError: 未生成任何有效的基础图形JSONL文件
+2025-11-18 19:37:12,212 - main_mt_v1_test - INFO - 工作目录初始化完成: ./results_n20_v3
+2025-11-18 19:37:12,219 - main_mt_v1_test - INFO - 主随机种子: 2255
+2025-11-18 19:37:12,220 - main_mt_v1_test - INFO - 各模块随机种子初始化完成
+2025-11-18 19:37:12,220 - main_mt_v1_test - INFO - === 开始生成基础图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:37:12,221 - main_mt_v1_test - INFO - 线程[Template-Worker-1] 处理基础图形样本 1/20（种子：2256）
+2025-11-18 19:37:12,221 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 处理基础图形样本 2/20（种子：2298）
+2025-11-18 19:37:12,222 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 处理基础图形样本 3/20（种子：2340）
+2025-11-18 19:37:12,223 - main_mt_v1_test - INFO - 线程[Template-Worker-4] 处理基础图形样本 4/20（种子：2382）
+2025-11-18 19:37:12,225 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 处理基础图形样本 5/20（种子：2424）
+2025-11-18 19:37:12,225 - main_mt_v1_test - INFO - 线程[Template-Worker-6] 处理基础图形样本 6/20（种子：2466）
+2025-11-18 19:37:12,238 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 处理基础图形样本 7/20（种子：2508）
+2025-11-18 19:37:12,252 - main_mt_v1_test - INFO - 线程[Template-Worker-8] 处理基础图形样本 8/20（种子：2550）
+2025-11-18 19:37:12,262 - main_mt_v1_test - INFO - 线程[Template-Worker-9] 处理基础图形样本 9/20（种子：2592）
+2025-11-18 19:37:12,286 - main_mt_v1_test - INFO - 线程[Template-Worker-10] 处理基础图形样本 10/20（种子：2634）
+2025-11-18 19:37:12,301 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 处理基础图形样本 11/20（种子：2676）
+2025-11-18 19:37:12,306 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 处理基础图形样本 12/20（种子：2718）
+2025-11-18 19:37:12,319 - main_mt_v1_test - INFO - 线程[Template-Worker-13] 处理基础图形样本 13/20（种子：2760）
+2025-11-18 19:37:12,329 - main_mt_v1_test - INFO - 线程[Template-Worker-14] 处理基础图形样本 14/20（种子：2802）
+2025-11-18 19:37:12,338 - main_mt_v1_test - INFO - 线程[Template-Worker-15] 处理基础图形样本 15/20（种子：2844）
+2025-11-18 19:37:12,344 - main_mt_v1_test - INFO - 线程[Template-Worker-16] 处理基础图形样本 16/20（种子：2886）
+2025-11-18 19:37:12,351 - main_mt_v1_test - INFO - 线程[Template-Worker-17] 处理基础图形样本 17/20（种子：2928）
+2025-11-18 19:37:12,351 - main_mt_v1_test - INFO - 线程[Template-Worker-18] 处理基础图形样本 18/20（种子：2970）
+2025-11-18 19:37:12,359 - main_mt_v1_test - INFO - 线程[Template-Worker-19] 处理基础图形样本 19/20（种子：3012）
+2025-11-18 19:37:12,360 - main_mt_v1_test - INFO - 线程[Template-Worker-20] 处理基础图形样本 20/20（种子：3054）
+2025-11-18 19:37:12,451 - main_mt_v1_test - INFO - 线程[Template-Worker-2] 样本 2 生成成功
+2025-11-18 19:37:13,804 - main_mt_v1_test - INFO - 线程[Template-Worker-11] 样本 11 生成成功
+2025-11-18 19:37:14,311 - main_mt_v1_test - INFO - 线程[Template-Worker-5] 样本 5 生成成功
+2025-11-18 19:37:14,570 - main_mt_v1_test - INFO - 线程[Template-Worker-19] 样本 19 生成成功
+2025-11-18 19:37:14,846 - main_mt_v1_test - INFO - 线程[Template-Worker-12] 样本 12 生成成功
+2025-11-18 19:37:15,020 - main_mt_v1_test - ERROR - 线程[Template-Worker-10] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:15,093 - main_mt_v1_test - ERROR - 线程[Template-Worker-13] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:15,253 - main_mt_v1_test - ERROR - 线程[Template-Worker-9] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:15,598 - main_mt_v1_test - ERROR - 线程[Template-Worker-1] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:15,930 - main_mt_v1_test - ERROR - 线程[Template-Worker-16] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:16,150 - main_mt_v1_test - ERROR - 线程[Template-Worker-17] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:17,518 - main_mt_v1_test - ERROR - 线程[Template-Worker-14] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:19,436 - main_mt_v1_test - ERROR - 线程[Template-Worker-4] 处理任务异常：Object of type Pow is not JSON serializable，跳过
+2025-11-18 19:37:20,415 - main_mt_v1_test - ERROR - 线程[Template-Worker-8] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:20,488 - main_mt_v1_test - ERROR - 线程[Template-Worker-18] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:20,842 - main_mt_v1_test - ERROR - 线程[Template-Worker-6] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:21,583 - main_mt_v1_test - ERROR - 线程[Template-Worker-15] 处理任务异常：Object of type Mul is not JSON serializable，跳过
+2025-11-18 19:37:41,619 - main_mt_v1_test - INFO - 线程[Template-Worker-7] 样本 7 生成成功
+2025-11-18 19:37:42,792 - main_mt_v1_test - INFO - 线程[Template-Worker-20] 样本 20 生成成功
+2025-11-18 19:37:43,998 - main_mt_v1_test - INFO - 线程[Template-Worker-3] 样本 3 生成成功
+2025-11-18 19:37:43,998 - main_mt_v1_test - INFO - 基础图形生成完成：成功 8/20 个样本
+2025-11-18 19:37:43,999 - main_mt_v1_test - INFO - 基础图形JSONL保存至: ./results_n20_v3/json/base/base_20251118_193712_220.jsonl
+2025-11-18 19:37:43,999 - main_mt_v1_test - INFO - === 开始生成增强图形（多线程：20个，超时：320秒） ===
+2025-11-18 19:37:44,004 - main_mt_v1_test - INFO - 线程[Builder-Worker-1] 处理基础图形 #1
+2025-11-18 19:37:44,004 - main_mt_v1_test - INFO - 线程[Builder-Worker-2] 处理基础图形 #2
+2025-11-18 19:37:44,004 - main_mt_v1_test - INFO - 线程[Builder-Worker-3] 处理基础图形 #3
+2025-11-18 19:37:44,005 - main_mt_v1_test - INFO - 线程[Builder-Worker-4] 处理基础图形 #4
+2025-11-18 19:37:44,020 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:37:44,020 - main_mt_v1_test - INFO - 线程[Builder-Worker-5] 处理基础图形 #5
+2025-11-18 19:37:44,031 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:37:44,035 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:37:44,035 - main_mt_v1_test - INFO - 线程[Builder-Worker-6] 处理基础图形 #6
+2025-11-18 19:37:44,039 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:37:44,039 - main_mt_v1_test - INFO - 线程[Builder-Worker-7] 处理基础图形 #7
+2025-11-18 19:37:44,041 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:37:44,042 - main_mt_v1_test - INFO - 线程[Builder-Worker-8] 处理基础图形 #8
+2025-11-18 19:37:44,047 - builder - WARNING - 增强结果2无可行操作，跳过
+2025-11-18 19:37:44,047 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:37:44,049 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:37:44,050 - main_mt_v1_test - ERROR - 线程[Builder-Worker-6] 基础图形 #6 增强失败：Expecting ',' delimiter: line 1 column 22534 (char 22533)，跳过
+2025-11-18 19:37:44,052 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:37:44,079 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:37:44,140 - builder - WARNING - 增强结果3无可行操作，跳过
+2025-11-18 19:37:44,177 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:37:44,207 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:37:44,233 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:37:44,253 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:37:44,281 - builder - WARNING - 增强结果4无可行操作，跳过
+2025-11-18 19:37:44,300 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:37:44,326 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:37:44,347 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:37:44,383 - builder - INFO - 生成 1 个独立增强图形（预期 4 个）
+2025-11-18 19:37:44,427 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:37:44,452 - main_mt_v1_test - INFO - 线程[Builder-Worker-2] 基础图形 #2 增强成功（1个结果）
+2025-11-18 19:37:44,515 - main_mt_v1_test - INFO - 线程[Builder-Worker-3] 基础图形 #3 增强成功（1个结果）
+2025-11-18 19:37:44,541 - builder - WARNING - 操作超过最大重试次数，终止生成
+2025-11-18 19:37:44,608 - main_mt_v1_test - INFO - 线程[Builder-Worker-4] 基础图形 #4 增强成功（1个结果）
+2025-11-18 19:37:44,655 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:37:44,718 - main_mt_v1_test - INFO - 线程[Builder-Worker-5] 基础图形 #5 增强成功（1个结果）
+2025-11-18 19:37:44,854 - main_mt_v1_test - INFO - 线程[Builder-Worker-1] 基础图形 #1 增强成功（4个结果）
+2025-11-18 19:37:45,276 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:37:46,311 - builder - INFO - 增强结果2：执行第 1/1 轮操作
+2025-11-18 19:37:46,413 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:37:56,604 - builder - INFO - 增强结果3：执行第 1/1 轮操作
+2025-11-18 19:37:57,667 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:38:04,987 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:38:05,040 - main_mt_v1_test - INFO - 线程[Builder-Worker-7] 基础图形 #7 增强成功（4个结果）
+2025-11-18 19:38:07,817 - builder - INFO - 增强结果4：执行第 1/1 轮操作
+2025-11-18 19:38:10,744 - builder - INFO - 生成 4 个独立增强图形（预期 4 个）
+2025-11-18 19:38:10,752 - main_mt_v1_test - INFO - 线程[Builder-Worker-8] 基础图形 #8 增强成功（4个结果）
+2025-11-18 19:38:10,752 - main_mt_v1_test - INFO - 增强图形生成完成：成功处理 7/8 个基础图形
+2025-11-18 19:38:10,752 - main_mt_v1_test - INFO - 增强图形JSONL保存至: ./results_n20_v3/json/enhanced/enhanced_20251118_193743_999.jsonl（共16个增强图形）
+2025-11-18 19:38:10,759 - shader - INFO - 加载 16 条enhanced数据
+2025-11-18 19:38:10,760 - shader - INFO - 已设置 16 条增强JSON数据
+2025-11-18 19:38:10,760 - shader - INFO - === 开始处理图像 ===
+2025-11-18 19:38:11,518 - shader - INFO - 成功标注第0张图像，原始版本
+2025-11-18 19:38:12,393 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-18 19:38:12,394 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-18 19:38:12,833 - shader - INFO - 成功标注第0张第0次阴影图像
+2025-11-18 19:38:12,834 - shader - INFO - 第0条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_0_attempt_0_geometry_line_0001.png
+2025-11-18 19:38:12,913 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:12,914 - shader - WARNING - 第0次尝试无可用未选区域，跳过
+2025-11-18 19:38:12,995 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:12,995 - shader - WARNING - 第0次尝试无可用未选区域，跳过
+2025-11-18 19:38:13,078 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:13,078 - shader - WARNING - 第0次尝试无可用未选区域，跳过
+2025-11-18 19:38:13,167 - shader - INFO - 成功标注第1张图像，原始版本
+2025-11-18 19:38:13,368 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-18 19:38:13,368 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-18 19:38:13,442 - shader - INFO - 成功标注第1张第0次阴影图像
+2025-11-18 19:38:13,442 - shader - INFO - 第1条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_1_attempt_0_geometry_line_0002.png
+2025-11-18 19:38:13,568 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:13,568 - shader - WARNING - 第1次尝试无可用未选区域，跳过
+2025-11-18 19:38:13,647 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:13,647 - shader - WARNING - 第1次尝试无可用未选区域，跳过
+2025-11-18 19:38:13,726 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:13,726 - shader - WARNING - 第1次尝试无可用未选区域，跳过
+2025-11-18 19:38:13,838 - shader - INFO - 成功标注第2张图像，原始版本
+2025-11-18 19:38:14,182 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-18 19:38:14,183 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-18 19:38:14,252 - shader - INFO - 成功标注第2张第0次阴影图像
+2025-11-18 19:38:14,253 - shader - INFO - 第2条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_2_attempt_0_geometry_line_0003.png
+2025-11-18 19:38:14,351 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:14,351 - shader - WARNING - 第2次尝试无可用未选区域，跳过
+2025-11-18 19:38:14,435 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:14,435 - shader - WARNING - 第2次尝试无可用未选区域，跳过
+2025-11-18 19:38:14,515 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:14,516 - shader - WARNING - 第2次尝试无可用未选区域，跳过
+2025-11-18 19:38:14,603 - shader - INFO - 成功标注第3张图像，原始版本
+2025-11-18 19:38:14,772 - shader - WARNING - 未匹配到任何点，建议降低point_tolerance阈值
+2025-11-18 19:38:14,772 - shader - WARNING - 未匹配到任何点，跳过该区域的线和弧匹配
+2025-11-18 19:38:14,841 - shader - INFO - 成功标注第3张第0次阴影图像
+2025-11-18 19:38:14,841 - shader - INFO - 第3条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_3_attempt_0_geometry_line_0004.png
+2025-11-18 19:38:14,955 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:14,955 - shader - WARNING - 第3次尝试无可用未选区域，跳过
+2025-11-18 19:38:15,036 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:15,036 - shader - WARNING - 第3次尝试无可用未选区域，跳过
+2025-11-18 19:38:15,114 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:15,114 - shader - WARNING - 第3次尝试无可用未选区域，跳过
+2025-11-18 19:38:15,344 - shader - INFO - 成功标注第4张图像，原始版本
+2025-11-18 19:38:15,546 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.72px (配置阈值: 10.0px)
+2025-11-18 19:38:15,916 - shader - INFO - 成功标注第4张第0次阴影图像
+2025-11-18 19:38:15,916 - shader - INFO - 第4条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_4_attempt_0_geometry_line_0005.png
+2025-11-18 19:38:15,965 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:15,965 - shader - WARNING - 第4次尝试无可用未选区域，跳过
+2025-11-18 19:38:16,014 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:16,014 - shader - WARNING - 第4次尝试无可用未选区域，跳过
+2025-11-18 19:38:16,062 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:16,062 - shader - WARNING - 第4次尝试无可用未选区域，跳过
+2025-11-18 19:38:16,318 - shader - INFO - 成功标注第5张图像，原始版本
+2025-11-18 19:38:16,547 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.72px (配置阈值: 10.0px)
+2025-11-18 19:38:17,025 - shader - INFO - 成功标注第5张第0次阴影图像
+2025-11-18 19:38:17,026 - shader - INFO - 第5条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_5_attempt_0_geometry_line_0006.png
+2025-11-18 19:38:17,073 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:17,073 - shader - WARNING - 第5次尝试无可用未选区域，跳过
+2025-11-18 19:38:17,120 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:17,121 - shader - WARNING - 第5次尝试无可用未选区域，跳过
+2025-11-18 19:38:17,175 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:17,175 - shader - WARNING - 第5次尝试无可用未选区域，跳过
+2025-11-18 19:38:17,419 - shader - INFO - 成功标注第6张图像，原始版本
+2025-11-18 19:38:17,664 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.72px (配置阈值: 10.0px)
+2025-11-18 19:38:18,670 - shader - INFO - 成功标注第6张第0次阴影图像
+2025-11-18 19:38:18,670 - shader - INFO - 第6条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_6_attempt_0_geometry_line_0007.png
+2025-11-18 19:38:18,767 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:18,768 - shader - WARNING - 第6次尝试无可用未选区域，跳过
+2025-11-18 19:38:18,823 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:18,824 - shader - WARNING - 第6次尝试无可用未选区域，跳过
+2025-11-18 19:38:18,871 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:18,871 - shader - WARNING - 第6次尝试无可用未选区域，跳过
+2025-11-18 19:38:19,101 - shader - INFO - 成功标注第7张图像，原始版本
+2025-11-18 19:38:19,248 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.72px (配置阈值: 10.0px)
+2025-11-18 19:38:19,456 - shader - INFO - 成功标注第7张第0次阴影图像
+2025-11-18 19:38:19,456 - shader - INFO - 第7条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_7_attempt_0_geometry_line_0008.png
+2025-11-18 19:38:19,548 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:19,548 - shader - WARNING - 第7次尝试无可用未选区域，跳过
+2025-11-18 19:38:19,595 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:19,595 - shader - WARNING - 第7次尝试无可用未选区域，跳过
+2025-11-18 19:38:19,649 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:19,649 - shader - WARNING - 第7次尝试无可用未选区域，跳过
+2025-11-18 19:38:19,954 - shader - INFO - 成功标注第8张图像，原始版本
+2025-11-18 19:38:20,414 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.93px (配置阈值: 10.0px)
+2025-11-18 19:38:21,793 - shader - INFO - 成功标注第8张第0次阴影图像
+2025-11-18 19:38:21,793 - shader - INFO - 第8条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_8_attempt_0_geometry_line_0009.png
+2025-11-18 19:38:21,909 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:21,910 - shader - WARNING - 第8次尝试无可用未选区域，跳过
+2025-11-18 19:38:21,984 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:21,984 - shader - WARNING - 第8次尝试无可用未选区域，跳过
+2025-11-18 19:38:22,071 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:22,071 - shader - WARNING - 第8次尝试无可用未选区域，跳过
+2025-11-18 19:38:22,471 - shader - INFO - 成功标注第9张图像，原始版本
+2025-11-18 19:38:22,676 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.12px (配置阈值: 10.0px)
+2025-11-18 19:38:23,056 - shader - INFO - 成功标注第9张第0次阴影图像
+2025-11-18 19:38:23,056 - shader - INFO - 第9条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_9_attempt_0_geometry_line_0010.png
+2025-11-18 19:38:23,354 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.12px (配置阈值: 10.0px)
+2025-11-18 19:38:23,729 - shader - INFO - 成功标注第9张第1次阴影图像
+2025-11-18 19:38:23,729 - shader - INFO - 第9条数据第1次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_9_attempt_1_geometry_line_0010.png
+2025-11-18 19:38:23,859 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:23,860 - shader - WARNING - 第9次尝试无可用未选区域，跳过
+2025-11-18 19:38:23,970 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:23,970 - shader - WARNING - 第9次尝试无可用未选区域，跳过
+2025-11-18 19:38:24,332 - shader - INFO - 成功标注第10张图像，原始版本
+2025-11-18 19:38:25,172 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.74px (配置阈值: 10.0px)
+2025-11-18 19:38:26,362 - shader - INFO - 成功标注第10张第0次阴影图像
+2025-11-18 19:38:26,362 - shader - INFO - 第10条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_10_attempt_0_geometry_line_0011.png
+2025-11-18 19:38:26,734 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.74px (配置阈值: 10.0px)
+2025-11-18 19:38:27,097 - shader - INFO - 成功标注第10张第1次阴影图像
+2025-11-18 19:38:27,098 - shader - INFO - 第10条数据第1次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_10_attempt_1_geometry_line_0011.png
+2025-11-18 19:38:27,254 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:27,254 - shader - WARNING - 第10次尝试无可用未选区域，跳过
+2025-11-18 19:38:27,379 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:27,379 - shader - WARNING - 第10次尝试无可用未选区域，跳过
+2025-11-18 19:38:27,750 - shader - INFO - 成功标注第11张图像，原始版本
+2025-11-18 19:38:28,106 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.75px (配置阈值: 10.0px)
+2025-11-18 19:38:29,843 - shader - INFO - 成功标注第11张第0次阴影图像
+2025-11-18 19:38:29,844 - shader - INFO - 第11条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_11_attempt_0_geometry_line_0012.png
+2025-11-18 19:38:30,198 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.75px (配置阈值: 10.0px)
+2025-11-18 19:38:30,624 - shader - INFO - 成功标注第11张第1次阴影图像
+2025-11-18 19:38:30,624 - shader - INFO - 第11条数据第1次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_11_attempt_1_geometry_line_0012.png
+2025-11-18 19:38:30,745 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:30,746 - shader - WARNING - 第11次尝试无可用未选区域，跳过
+2025-11-18 19:38:30,852 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:30,852 - shader - WARNING - 第11次尝试无可用未选区域，跳过
+2025-11-18 19:38:31,254 - shader - INFO - 成功标注第12张图像，原始版本
+2025-11-18 19:38:31,455 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.23px (配置阈值: 10.0px)
+2025-11-18 19:38:31,790 - shader - INFO - 成功标注第12张第0次阴影图像
+2025-11-18 19:38:31,790 - shader - INFO - 第12条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_12_attempt_0_geometry_line_0013.png
+2025-11-18 19:38:31,918 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:31,918 - shader - WARNING - 第12次尝试无可用未选区域，跳过
+2025-11-18 19:38:32,012 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:32,013 - shader - WARNING - 第12次尝试无可用未选区域，跳过
+2025-11-18 19:38:32,108 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:32,108 - shader - WARNING - 第12次尝试无可用未选区域，跳过
+2025-11-18 19:38:32,538 - shader - INFO - 成功标注第13张图像，原始版本
+2025-11-18 19:38:32,921 - shader - INFO - 轮廓点与原始点的平均坐标差值: 3.86px (配置阈值: 10.0px)
+2025-11-18 19:38:32,951 - shader - INFO - 轮廓点与原始点的平均坐标差值: 5.02px (配置阈值: 10.0px)
+2025-11-18 19:38:33,327 - shader - INFO - 成功标注第13张第0次阴影图像
+2025-11-18 19:38:33,327 - shader - INFO - 第13条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_13_attempt_0_geometry_line_0014.png
+2025-11-18 19:38:33,491 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:33,492 - shader - WARNING - 第13次尝试无可用未选区域，跳过
+2025-11-18 19:38:33,639 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:33,639 - shader - WARNING - 第13次尝试无可用未选区域，跳过
+2025-11-18 19:38:33,786 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:33,786 - shader - WARNING - 第13次尝试无可用未选区域，跳过
+2025-11-18 19:38:34,322 - shader - INFO - 成功标注第14张图像，原始版本
+2025-11-18 19:38:34,807 - shader - INFO - 轮廓点与原始点的平均坐标差值: 3.53px (配置阈值: 10.0px)
+2025-11-18 19:38:36,887 - shader - INFO - 成功标注第14张第0次阴影图像
+2025-11-18 19:38:36,887 - shader - INFO - 第14条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_14_attempt_0_geometry_line_0015.png
+2025-11-18 19:38:37,282 - shader - INFO - 轮廓点与原始点的平均坐标差值: 3.53px (配置阈值: 10.0px)
+2025-11-18 19:38:37,806 - shader - INFO - 成功标注第14张第1次阴影图像
+2025-11-18 19:38:37,806 - shader - INFO - 第14条数据第1次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_14_attempt_1_geometry_line_0015.png
+2025-11-18 19:38:37,954 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:37,954 - shader - WARNING - 第14次尝试无可用未选区域，跳过
+2025-11-18 19:38:38,072 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:38,073 - shader - WARNING - 第14次尝试无可用未选区域，跳过
+2025-11-18 19:38:38,554 - shader - INFO - 成功标注第15张图像，原始版本
+2025-11-18 19:38:38,921 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.12px (配置阈值: 10.0px)
+2025-11-18 19:38:41,512 - shader - INFO - 成功标注第15张第0次阴影图像
+2025-11-18 19:38:41,513 - shader - INFO - 第15条数据第0次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_15_attempt_0_geometry_line_0016.png
+2025-11-18 19:38:42,049 - shader - INFO - 轮廓点与原始点的平均坐标差值: 4.12px (配置阈值: 10.0px)
+2025-11-18 19:38:42,552 - shader - INFO - 成功标注第15张第1次阴影图像
+2025-11-18 19:38:42,552 - shader - INFO - 第15条数据第1次尝试完成，阴影图像路径：./results_n20_v3/images/shaded/shaded_15_attempt_1_geometry_line_0016.png
+2025-11-18 19:38:42,680 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:42,680 - shader - WARNING - 第15次尝试无可用未选区域，跳过
+2025-11-18 19:38:42,800 - shader - WARNING - 无可用未选区域，返回空列表
+2025-11-18 19:38:42,800 - shader - WARNING - 第15次尝试无可用未选区域，跳过
+2025-11-18 19:38:42,812 - shader - INFO - 所有处理结果已保存至：./results_n20_v3/json/shaded/shaded_20251118_193810_753.jsonl
+2025-11-18 19:38:42,813 - main_mt_v1_test - INFO - === 处理完成 ===
+- 结果JSONL路径：./results_n20_v3/json/shaded/shaded_20251118_193810_753.jsonl
+2025-11-18 19:38:42,813 - main_mt_v1_test - INFO - === 开始计算几何参数（符号表达式化简） ===
+2025-11-18 19:38:42,856 - gt - INFO - 已处理 10 条数据
+2025-11-18 19:38:43,668 - gt - ERROR - 第 19 行 表达式过于复杂（线条起点(M0)的x坐标，长度=242）：{"expr":"3*sqrt(2)*(-sqrt(5)-1)/(4*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:38:43,840 - gt - ERROR - 第 20 行 表达式过于复杂（线条起点(M0)的x坐标，长度=242）：{"expr":"3*sqrt(2)*(-sqrt(5)-1)/(4*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:38:44,008 - gt - ERROR - 第 21 行 表达式过于复杂（线条起点(M0)的x坐标，长度=242）：{"expr":"3*sqrt(2)*(-sqrt(5)-1)/(4*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:38:44,803 - gt - ERROR - 第 25 行 表达式过于复杂（线条终点(F0)的x坐标，长度=714）：{"expr":"3*sqrt(2)*(-1+sqrt(5))/(2*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:38:44,971 - gt - ERROR - 第 26 行 表达式过于复杂（线条终点(F0)的x坐标，长度=714）：{"expr":"3*sqrt(2)*(-1+sqrt(5))/(2*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:38:45,141 - gt - ERROR - 第 27 行 表达式过于复杂（线条终点(F0)的x坐标，长度=714）：{"expr":"3*sqrt(2)*(-1+sqrt(5))/(2*sqrt(5-sqrt(5))...，跳过
+2025-11-18 19:38:45,321 - gt - INFO - 已处理 30 条数据
+2025-11-18 19:38:45,414 - gt - ERROR - 第 32 行 表达式过于复杂（线条终点(F0)的x坐标，长度=776）：{"expr":"-5/sqrt(2-sqrt(2))+(-5*sqrt(2)/(2*sqrt(2-...，跳过
+2025-11-18 19:38:45,450 - gt - ERROR - 第 33 行 表达式过于复杂（线条终点(F0)的x坐标，长度=776）：{"expr":"-5/sqrt(2-sqrt(2))+(-5*sqrt(2)/(2*sqrt(2-...，跳过
+2025-11-18 19:38:45,484 - gt - ERROR - 第 34 行 表达式过于复杂（线条终点(F0)的x坐标，长度=776）：{"expr":"-5/sqrt(2-sqrt(2))+(-5*sqrt(2)/(2*sqrt(2-...，跳过
+2025-11-18 19:38:45,637 - gt - INFO - 处理完成，结果保存至: ./results_n20_v3/json/final/shaded_with_gt_20251118_193810_753.jsonl
+2025-11-18 19:38:45,641 - main_mt_v1_test - INFO - 几何参数计算完成，结果保存至: ./results_n20_v3/json/final/shaded_with_gt_20251118_193810_753.jsonl
+2025-11-18 19:38:45,641 - main_mt_v1_test - INFO - 共处理 28 条数据，每条数据已添加线条/圆弧长度信息
+2025-11-18 19:38:45,641 - main_mt_v1_test - INFO - 使用GT结果文件: ./results_n20_v3/json/final/shaded_with_gt_20251118_193810_753.jsonl
+2025-11-18 19:38:45,644 - main_mt_v1_test - INFO - === 开始生成问答数据 ===
+2025-11-18 19:38:45,644 - main_mt_v1_test - INFO - QA配置参数: {
+  "question_types": [
+    "length",
+    "angle"
+  ],
+  "type_weights": {
+    "length": 0.7,
+    "angle": 0.3
+  },
+  "num_questions_per_group": 3,
+  "output_dir": "./results_n20_v3/json/qa",
+  "seed": 2259
+}
+2025-11-18 19:38:45,701 - main_mt_v1_test - INFO - 已处理 10 条几何数据，累计生成 12 个问答对
+2025-11-18 19:38:48,690 - main_mt_v1_test - INFO - 已处理 20 条几何数据，累计生成 28 个问答对
+2025-11-18 19:38:51,353 - main_mt_v1_test - INFO - === 问答生成完成 ===
+2025-11-18 19:38:51,354 - main_mt_v1_test - INFO - 有效处理几何数据: 28 条
+2025-11-18 19:38:51,354 - main_mt_v1_test - INFO - 生成问答对总数: 49 个
+2025-11-18 19:38:51,354 - main_mt_v1_test - INFO - 问答结果保存至: ./results_n20_v3/json/qa/qa_shaded_with_gt_20251118_193810_753.jsonl
+2025-11-18 19:38:51,354 - main_mt_v1_test - INFO - === 全流程执行完成 ===

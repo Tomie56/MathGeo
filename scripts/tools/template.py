@@ -584,40 +584,83 @@ class TemplateGenerator:
         base_type = random.choices(base_types, weights=weights, k=1)[0]
 
         # 基础原点：圆心/中心
-        # 代表数学坐标的原点
-        origin_id = self._add_point(0, 0, is_center=True)
+        # 代表数学坐标的原点，通常是图形的中心或圆心，特殊图形有特殊设计
+        # origin_id = self._add_point(0, 0, is_center=True)
+        temp_origin_id = self._add_point(0, 0, is_center=True)
 
+        # if base_type == "polygon":
+        #     n = random.choice(self.config["base"]["polygon"]["n_choices"])
+        #     side_min, side_max = self.config["base"]["polygon"]["side_range"]
+        #     side_length = sp.Integer(random.randint(side_min, side_max))
+        #     rot_type = self.config["base"]["polygon"]["rotation_choices_type"]
+        #     rotations = [0, sp.pi/(n)] if rot_type == "pi_over_2n" else [0]
+        #     # rotation = random.choice(rotations)
+        #     # sp.pi/(n) 表示底边平行于x轴
+        #     rotation = random.choices(rotations, weights=[0.7, 0.3] if len(rotations) == 2 else [1.0], k=1)[0]
+        #     entity_id = self._get_unique_entity_id(f"base_polygon_n{n}")
+        #     self.generate_regular_polygon(
+        #         n=n,
+        #         side_length=side_length,
+        #         center_id=origin_id,
+        #         rotation=rotation,
+        #         entity_id=entity_id,
+        #         is_base=True
+        #     )
+        #     self.description_parts.append(
+        #         f"Base shape is a regular {n}-sided polygon (center {origin_id}) with side length {side_length}"
+        #     )
+
+        # if base_type == "circle": 
+        #     r_min, r_max = self.config["base"]["circle"]["radius_range"]
+        #     radius = sp.Integer(random.randint(r_min, r_max))
+        #     start_angle = self.config["base"]["circle"]["start_angle"]
+        #     end_angle = 2 * pi
+        #     entity_id = self._get_unique_entity_id("base_circle")
+        #     arc_id = self.generate_circle(
+        #         radius=radius,
+        #         center_id=origin_id,
+        #         start_angle=start_angle,
+        #         end_angle=end_angle,
+        #         entity_id=entity_id,
+        #         is_base=True
+        #     )
+        #     self.complete_circle_arcs.add(arc_id)
+        #     self.description_parts.append(
+        #         f"Base shape is a complete circle (center {origin_id}, init point circle_1) with radius {radius}."
+        #     )
+  
         if base_type == "polygon":
             n = random.choice(self.config["base"]["polygon"]["n_choices"])
             side_min, side_max = self.config["base"]["polygon"]["side_range"]
             side_length = sp.Integer(random.randint(side_min, side_max))
             rot_type = self.config["base"]["polygon"]["rotation_choices_type"]
             rotations = [0, sp.pi/(n)] if rot_type == "pi_over_2n" else [0]
+            rotation = random.choices(rotations, weights=[0.7, 0.3] if len(rotations) == 2 else [1.0], k=1)[0]
             # rotation = random.choice(rotations)
             # sp.pi/(n) 表示底边平行于x轴
-            rotation = random.choices(rotations, weights=[0.7, 0.3] if len(rotations) == 2 else [1.0], k=1)[0]
+            
             entity_id = self._get_unique_entity_id(f"base_polygon_n{n}")
             self.generate_regular_polygon(
                 n=n,
                 side_length=side_length,
-                center_id=origin_id,
+                center_id=temp_origin_id,
                 rotation=rotation,
                 entity_id=entity_id,
                 is_base=True
             )
             self.description_parts.append(
-                f"Base shape is a regular {n}-sided polygon (center {origin_id}) with side length {side_length}"
+                f"Base shape is a regular {n}-sided polygon (center {temp_origin_id}) with side length {side_length}"
             )
 
-        else:  
+        elif base_type == "circle":
             r_min, r_max = self.config["base"]["circle"]["radius_range"]
             radius = sp.Integer(random.randint(r_min, r_max))
             start_angle = self.config["base"]["circle"]["start_angle"]
-            end_angle = 2 * pi
+            end_angle = 2 * sp.pi
             entity_id = self._get_unique_entity_id("base_circle")
             arc_id = self.generate_circle(
                 radius=radius,
-                center_id=origin_id,
+                center_id=temp_origin_id,
                 start_angle=start_angle,
                 end_angle=end_angle,
                 entity_id=entity_id,
@@ -625,9 +668,198 @@ class TemplateGenerator:
             )
             self.complete_circle_arcs.add(arc_id)
             self.description_parts.append(
-                f"Base shape is a complete circle (center {origin_id}, init point circle_1) with radius {radius}."
+                f"Base shape is a complete circle (center {temp_origin_id}) with radius {radius}."
             )
 
+        elif base_type == "special_triangle":
+            tri_subtype = random.choice(["isosceles", "right"])
+            config = self.config["base"]["special_triangle"][tri_subtype]
+
+            if tri_subtype == "isosceles":
+                top_angle = random.choice(config["angle_choices"])
+                length_type = random.choice(["waist", "base"])
+                len_min, len_max = config["length_range"]
+                is_root = random.choice([False, True])
+                if is_root:
+                    root_val = random.randint(len_min, len_max)
+                    length = sp.sympify(f"sqrt({root_val})")
+                else:
+                    length = sp.Integer(random.randint(len_min, len_max)) 
+
+                # Calculate parameters (infer other values from waist/base length)
+                top_angle_rad = sp.rad(top_angle)
+                base_angle_rad = sp.rad((180 - top_angle) / 2)
+                if length_type == "waist":
+                    waist_length = length
+                    base_length = 2 * waist_length * sp.sin(top_angle_rad / 2)
+                else:
+                    base_length = length
+                    waist_length = (base_length / 2) / sp.cos(base_angle_rad)
+
+                # Rotation config (if enabled)
+                rotate_mode = "original"
+                if config["rotate"]["enable"]:
+                    rotate_mode = random.choice(config["rotate"]["modes"])
+
+                # Generate isosceles triangle (origin_id = base midpoint)
+                entity_id = self._get_unique_entity_id(f"base_isosceles_triangle_{top_angle}deg")
+                self.generate_special_triangle(
+                    triangle_type="isosceles",
+                    params={
+                        "top_angle": top_angle,
+                        "waist_length": waist_length,
+                        "base_length": base_length,
+                        "rotate_mode": rotate_mode
+                    },
+                    origin_id=temp_origin_id,  # Midpoint of the base
+                    entity_id=entity_id,
+                    is_base=True
+                )
+                self.description_parts.append(
+                    f"Base shape is an isosceles triangle (base midpoint {temp_origin_id}) with top angle {top_angle}°, "
+                    f"{length_type} length {length}, rotate mode {rotate_mode}"
+                )
+
+            else:  # Right triangle
+                # 1.2 Right triangle: origin_id is the midpoint of the hypotenuse
+                ratio_mode = random.choice(["manual", "random"]) if config["ratio_mode"] == "either" else config["ratio_mode"]
+                if ratio_mode == "manual":
+                    # Select ratio manually
+                    ratio = random.choice(config["manual_ratios"])
+                    # Parse square root expressions in ratio (e.g., "sqrt(3)" → sp.sqrt(3))
+                    ratio = [sp.sympify(x) if isinstance(x, str) else x for x in ratio]
+                    leg1, leg2 = ratio
+                else:
+                    # Random ratio combination (select 2 from integers and square roots)
+                    pool = []
+                    # Integer part: 1-10
+                    pool.extend([sp.Integer(i) for i in range(config["random_pool_range"][0], config["random_pool_range"][1]+1)])
+                    # Square root part: √1-√100
+                    pool.extend([sp.sympify(f"sqrt({i})") for i in range(1, 101)])
+                    leg1, leg2 = random.sample(pool, 2)
+
+                # Calculate hypotenuse and its midpoint (origin_id)
+                hypotenuse = sp.sqrt(leg1**2 + leg2**2)
+                rotate_mode = "original"
+                if config["rotate"]["enable"]:
+                    rotate_mode = random.choice(config["rotate"]["modes"])
+
+                # Generate right triangle (origin_id = hypotenuse midpoint)
+                entity_id = self._get_unique_entity_id(f"base_right_triangle_{leg1}:{leg2}")
+                self.generate_special_triangle(
+                    triangle_type="right",
+                    params={
+                        "leg1": leg1,
+                        "leg2": leg2,
+                        "hypotenuse": hypotenuse,
+                        "rotate_mode": rotate_mode
+                    },
+                    origin_id=temp_origin_id, 
+                    entity_id=entity_id,
+                    is_base=True
+                )
+                self.description_parts.append(
+                    f"Base shape is a right triangle (hypotenuse midpoint {temp_origin_id}) with legs {leg1}, {leg2}, "
+                    f"rotate mode {rotate_mode}"
+                )
+
+        elif base_type == "special_rectangle":
+            # 2. Special rectangle: origin_id is the center
+            config = self.config["base"]["special_rectangle"]
+            ratio_mode = random.choice(["manual", "random"]) if config["ratio_mode"] == "either" else config["ratio_mode"]
+
+            if ratio_mode == "manual":
+                width, length = random.choice(config["manual_ratios"])
+            else:
+                width, length = random.sample(range(config["random_range"][0], config["random_range"][1]+1), 2)
+                width, length = sorted([width, length])
+
+            # Rotation config (swap width/length if enabled)
+            rotate_mode = "original"
+            if config["rotate"]["enable"]:
+                rotate_mode = random.choice(config["rotate"]["modes"])
+                if rotate_mode == "swap_ratio":
+                    width, length = length, width 
+
+            # Generate rectangle (origin_id = center)
+            entity_id = self._get_unique_entity_id(f"base_rectangle_{width}:{length}")
+            self.generate_special_rectangle(
+                width=width,
+                length=length,
+                center_id=temp_origin_id,  # Center
+                rotate_mode=rotate_mode,
+                entity_id=entity_id,
+                is_base=True
+            )
+            self.description_parts.append(
+                f"Base shape is a rectangle (center {temp_origin_id}) with width {width}, length {length}, rotate mode {rotate_mode}"
+            )
+
+        elif base_type == "parallelogram":
+            # 3. Parallelogram: origin_id is the center
+            config = self.config["base"]["parallelogram"]
+            base = random.randint(*config["base_range"])
+            height = random.randint(*config["height_range"])
+            angle_deg = random.choice(config["angle_choices"])
+            angle_rad = sp.rad(angle_deg)
+
+            # Rotation config (horizontal flip if enabled)
+            rotate_mode = "original"
+            if config["rotate"]["enable"]:
+                rotate_mode = random.choice(config["rotate"]["modes"])
+                if rotate_mode == "flip_horizontal":
+                    angle_deg = 180 - angle_deg 
+
+            # Generate parallelogram (origin_id = center)
+            entity_id = self._get_unique_entity_id(f"base_parallelogram_{base}x{height}")
+            self.generate_parallelogram(
+                base=base,
+                height=height,
+                angle=angle_rad,
+                center_id=temp_origin_id, 
+                rotate_mode=rotate_mode,
+                entity_id=entity_id,
+                is_base=True
+            )
+            self.description_parts.append(
+                f"Base shape is a parallelogram (center {temp_origin_id}) with base {base}, height {height}, angle {angle_deg}°, "
+                f"rotate mode {rotate_mode}"
+            )
+
+        elif base_type == "trapezoid":
+            # 4. Isosceles trapezoid: origin_id is the center
+            config = self.config["base"]["trapezoid"]["isosceles"]
+            # Ensure upper base < lower base
+            base1 = random.randint(*config["base1_range"])  # Lower base (longer)
+            base2_max = min(base1 - 1, config["base2_range"][1])
+            base2 = random.randint(config["base2_range"][0], base2_max)  # Upper base (shorter)
+            height = random.randint(*config["height_range"])
+            angle_deg = random.choice(config["angle_choices"])
+            angle_rad = sp.rad(angle_deg)
+
+            # Rotation config (vertical flip if enabled)
+            rotate_mode = "original"
+            if config["rotate"]["enable"]:
+                rotate_mode = random.choice(config["rotate"]["modes"])
+
+            # Generate isosceles trapezoid (origin_id = center)
+            entity_id = self._get_unique_entity_id(f"base_trapezoid_{base1}:{base2}")
+            self.generate_trapezoid(
+                base1=base1,  # Lower base (longer)
+                base2=base2,  # Upper base (shorter)
+                height=height,
+                angle=angle_rad,
+                center_id=temp_origin_id,  # Center
+                rotate_mode=rotate_mode,
+                entity_id=entity_id,
+                is_base=True
+            )
+            self.description_parts.append(
+                f"Base shape is an isosceles trapezoid (center {temp_origin_id}) with bases {base1}, {base2}, height {height}, "
+                f"angle {angle_deg}°, rotate mode {rotate_mode}"
+            )
+
+            
         self.base_entity_id = entity_id
         self.current_entities.append(entity_id)
         return entity_id
@@ -721,6 +953,322 @@ class TemplateGenerator:
             "is_base": is_base
         })
         return arc_id
+
+    def generate_special_triangle(
+        self,
+        triangle_type: str,  # "isosceles" or "right"
+        params: dict,
+        origin_id: str,  # 等腰：底边中点；直角：斜边中点
+        entity_id: Optional[str] = None,
+        is_base: bool = False
+    ) -> str:
+        """生成特殊三角形（等腰/直角），统一参数格式为expr+latex，兼容符号计算"""
+        level = 1 if is_base else 2
+        entity_id = entity_id or self._get_unique_entity_id(f"special_triangle_{triangle_type}")
+        
+        # 解析基础参数
+        rotate_mode = params["rotate_mode"]
+        components = [origin_id]  # 包含原点（底边中点/斜边中点）
+        entity_data = {
+            "id": entity_id,
+            "type": "special_triangle",
+            "subtype": triangle_type,
+            "origin_id": origin_id,
+            "components": components,
+            "rotate_mode": rotate_mode,
+            "is_base": is_base
+        }
+
+        if triangle_type == "isosceles":
+            # 等腰三角形参数处理
+            top_angle = params["top_angle"]
+            waist_length = simplify(params["waist_length"])  # 符号化简
+            base_length = simplify(params["base_length"])
+            
+            # 计算顶点坐标（基于origin_id为底边中点）
+            base_half = base_length / 2
+            point_a = self._add_point(-base_half, 0, level=level)  # 底边左
+            point_b = self._add_point(base_half, 0, level=level)   # 底边右
+            height = simplify(sp.sqrt(waist_length**2 - base_half**2))  # 高
+            y_coord = height if rotate_mode == "original" else -height
+            point_c = self._add_point(0, y_coord, level=level)  # 顶角顶点
+            
+            # 添加边
+            line_ab = self._add_line(point_a, point_b)
+            line_bc = self._add_line(point_b, point_c)
+            line_ca = self._add_line(point_c, point_a)
+            
+            # 更新组件和实体数据
+            components.extend([point_a, point_b, point_c, line_ab, line_bc, line_ca])
+            entity_data.update({
+                "top_angle": top_angle,
+                "waist_length": {
+                    "expr": self._format_expr(waist_length),
+                    "latex": sp.latex(waist_length)
+                },
+                "base_length": {
+                    "expr": self._format_expr(base_length),
+                    "latex": sp.latex(base_length)
+                },
+                "height": {
+                    "expr": self._format_expr(height),
+                    "latex": sp.latex(height)
+                }
+            })
+
+        elif triangle_type == "right":
+            # 直角三角形参数处理
+            leg1 = simplify(params["leg1"])
+            leg2 = simplify(params["leg2"])
+            hypotenuse = simplify(params["hypotenuse"])
+            
+            # 计算顶点坐标（基于origin_id为斜边中点）
+            # 利用斜边中线定理：中线 = 斜边/2，顶点关于中点对称
+            point_a = self._add_point(-leg1/2, leg2/2, level=level)
+            point_b = self._add_point(leg1/2, -leg2/2, level=level)  # 直角顶点
+            point_c = self._add_point(leg1/2, leg2/2, level=level)
+            
+            # 翻转处理（旋转90°/180°/270°）
+            if rotate_mode == "rotate_90":
+                point_a = self._add_point(-leg2/2, -leg1/2, level=level)
+                point_b = self._add_point(leg2/2, leg1/2, level=level)
+                point_c = self._add_point(-leg2/2, leg1/2, level=level)
+            elif rotate_mode == "rotate_180":
+                point_a = self._add_point(leg1/2, -leg2/2, level=level)
+                point_b = self._add_point(-leg1/2, leg2/2, level=level)
+                point_c = self._add_point(-leg1/2, -leg2/2, level=level)
+            elif rotate_mode == "rotate_270":
+                point_a = self._add_point(leg2/2, leg1/2, level=level)
+                point_b = self._add_point(-leg2/2, -leg1/2, level=level)
+                point_c = self._add_point(leg2/2, -leg1/2, level=level)
+            
+            # 添加边
+            line_ab = self._add_line(point_a, point_b)  # 斜边
+            line_bc = self._add_line(point_b, point_c)  # 直角边1
+            line_ca = self._add_line(point_c, point_a)  # 直角边2
+            
+            # 更新组件和实体数据
+            components.extend([point_a, point_b, point_c, line_ab, line_bc, line_ca])
+            entity_data.update({
+                "leg1": {
+                    "expr": self._format_expr(leg1),
+                    "latex": sp.latex(leg1)
+                },
+                "leg2": {
+                    "expr": self._format_expr(leg2),
+                    "latex": sp.latex(leg2)
+                },
+                "hypotenuse": {
+                    "expr": self._format_expr(hypotenuse),
+                    "latex": sp.latex(hypotenuse)
+                }
+            })
+
+        self.data["entities"].append(entity_data)
+        return entity_id
+
+    def generate_special_rectangle(
+        self,
+        width: sp.Expr,
+        length: sp.Expr,
+        center_id: str,
+        rotate_mode: str,
+        entity_id: Optional[str] = None,
+        is_base: bool = False
+    ) -> str:
+        """生成特殊矩形，统一参数格式为expr+latex，基于中心对称"""
+        level = 1 if is_base else 2
+        entity_id = entity_id or self._get_unique_entity_id(f"special_rectangle_{width}:{length}")
+        
+        # 符号化简参数
+        width = simplify(width)
+        length = simplify(length)
+        half_w = simplify(width / 2)
+        half_l = simplify(length / 2)
+        
+        # 顶点坐标（中心对称）
+        point_a = self._add_point(-half_w, -half_l, level=level)  # 左下
+        point_b = self._add_point(half_w, -half_l, level=level)   # 右下
+        point_c = self._add_point(half_w, half_l, level=level)    # 右上
+        point_d = self._add_point(-half_w, half_l, level=level)   # 左上
+        
+        # 添加边
+        line_ab = self._add_line(point_a, point_b)
+        line_bc = self._add_line(point_b, point_c)
+        line_cd = self._add_line(point_c, point_d)
+        line_da = self._add_line(point_d, point_a)
+        
+        # 组件列表（中心+顶点+边）
+        components = [center_id, point_a, point_b, point_c, point_d, line_ab, line_bc, line_cd, line_da]
+        
+        # 实体数据（统一expr+latex格式）
+        self.data["entities"].append({
+            "id": entity_id,
+            "type": "special_rectangle",
+            "center_id": center_id,
+            "components": components,
+            "width": {
+                "expr": self._format_expr(width),
+                "latex": sp.latex(width)
+            },
+            "length": {
+                "expr": self._format_expr(length),
+                "latex": sp.latex(length)
+            },
+            "rotate_mode": rotate_mode,
+            "is_base": is_base
+        })
+        return entity_id
+
+    def generate_parallelogram(
+        self,
+        base: sp.Expr,
+        height: sp.Expr,
+        angle: sp.Expr,
+        center_id: str,
+        rotate_mode: str,
+        entity_id: Optional[str] = None,
+        is_base: bool = False
+    ) -> str:
+        """生成平行四边形，统一参数格式为expr+latex，支持符号计算"""
+        level = 1 if is_base else 2
+        entity_id = entity_id or self._get_unique_entity_id(f"parallelogram_{base}x{height}")
+        
+        # 符号化简参数
+        base = simplify(base)
+        height = simplify(height)
+        angle = simplify(angle)
+        half_base = simplify(base / 2)
+        side_len = simplify(height / sp.sin(angle))  # 侧边长度
+        offset_x = simplify(side_len * sp.cos(angle))  # 水平偏移
+        
+        # 翻转处理（水平翻转时偏移取反）
+        actual_offset = offset_x if rotate_mode == "original" else -offset_x
+        
+        # 顶点坐标（中心对称）
+        point_a = self._add_point(-half_base, -height/2, level=level)  # 左下
+        point_b = self._add_point(half_base, -height/2, level=level)   # 右下
+        point_c = self._add_point(half_base + actual_offset, height/2, level=level)  # 右上
+        point_d = self._add_point(-half_base + actual_offset, height/2, level=level)  # 左上
+        
+        # 添加边
+        line_ab = self._add_line(point_a, point_b)
+        line_bc = self._add_line(point_b, point_c)
+        line_cd = self._add_line(point_c, point_d)
+        line_da = self._add_line(point_d, point_a)
+        
+        # 组件列表
+        components = [center_id, point_a, point_b, point_c, point_d, line_ab, line_bc, line_cd, line_da]
+        
+        # 实体数据（含角度的弧度和角度值）
+        self.data["entities"].append({
+            "id": entity_id,
+            "type": "parallelogram",
+            "center_id": center_id,
+            "components": components,
+            "base": {
+                "expr": self._format_expr(base),
+                "latex": sp.latex(base)
+            },
+            "height": {
+                "expr": self._format_expr(height),
+                "latex": sp.latex(height)
+            },
+            "angle_rad": {  # 弧度制
+                "expr": self._format_expr(angle),
+                "latex": sp.latex(angle)
+            },
+            "angle_deg": {  # 角度制（便于阅读）
+                "expr": self._format_expr(sp.deg(angle)),
+                "latex": sp.latex(sp.deg(angle))
+            },
+            "rotate_mode": rotate_mode,
+            "is_base": is_base
+        })
+        return entity_id
+
+    def generate_trapezoid(
+        self,
+        base1: sp.Expr,  # 下底（长边）
+        base2: sp.Expr,  # 上底（短边）
+        height: sp.Expr,
+        angle: sp.Expr,
+        center_id: str,
+        rotate_mode: str,
+        entity_id: Optional[str] = None,
+        is_base: bool = False
+    ) -> str:
+        """生成等腰梯形，统一参数格式为expr+latex，校验上下底关系"""
+        base1 = simplify(base1)
+        base2 = simplify(base2)
+        if base2 >= base1:
+            raise ValueError(f"Upper base (base2={base2}) must be shorter than lower base (base1={base1})")
+        
+        level = 1 if is_base else 2
+        entity_id = entity_id or self._get_unique_entity_id(f"trapezoid_{base1}:{base2}")
+        
+        # 翻转处理（垂直翻转时交换上下底）
+        if rotate_mode == "flip_vertical":
+            base1, base2 = base2, base1
+        
+        # 符号化简参数
+        height = simplify(height)
+        angle = simplify(angle)
+        half_base1 = simplify(base1 / 2)
+        half_base2 = simplify(base2 / 2)
+        overhang = simplify((base1 - base2) / 2)  # 下底超出上底的长度
+        leg_len = simplify(height / sp.sin(angle))  # 腰长
+        
+        # 顶点坐标（中心对称）
+        point_a = self._add_point(-half_base1, -height/2, level=level)  # 左下
+        point_b = self._add_point(half_base1, -height/2, level=level)   # 右下
+        point_c = self._add_point(half_base2, height/2, level=level)    # 右上
+        point_d = self._add_point(-half_base2, height/2, level=level)   # 左上
+        
+        # 添加边
+        line_ab = self._add_line(point_a, point_b)  # 下底
+        line_bc = self._add_line(point_b, point_c)  # 右腰
+        line_cd = self._add_line(point_c, point_d)  # 上底
+        line_da = self._add_line(point_d, point_a)  # 左腰
+        
+        # 组件列表
+        components = [center_id, point_a, point_b, point_c, point_d, line_ab, line_bc, line_cd, line_da]
+        
+        # 实体数据
+        self.data["entities"].append({
+            "id": entity_id,
+            "type": "trapezoid",
+            "subtype": "isosceles",
+            "center_id": center_id,
+            "components": components,
+            "base1": {  # 下底（长边）
+                "expr": self._format_expr(base1),
+                "latex": sp.latex(base1)
+            },
+            "base2": {  # 上底（短边）
+                "expr": self._format_expr(base2),
+                "latex": sp.latex(base2)
+            },
+            "height": {
+                "expr": self._format_expr(height),
+                "latex": sp.latex(height)
+            },
+            "angle_rad": {
+                "expr": self._format_expr(angle),
+                "latex": sp.latex(angle)
+            },
+            "angle_deg": {
+                "expr": self._format_expr(sp.deg(angle)),
+                "latex": sp.latex(sp.deg(angle))
+            },
+            "leg_length": {  # 腰长
+                "expr": self._format_expr(leg_len),
+                "latex": sp.latex(leg_len)
+            },
+            "rotate_mode": rotate_mode,
+            "is_base": is_base
+        })
+        return entity_id
 
     def _calculate_new_entity_intersections(self, new_id: str):
         """计算新生成entity的边/弧与所有已有元素的交点"""
