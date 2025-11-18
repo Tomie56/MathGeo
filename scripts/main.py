@@ -9,6 +9,8 @@ import sympy as sp
 from sympy import symbols, simplify
 import traceback 
 
+
+# 单线程版本，支持调试
 # 配置日志系统
 logging.basicConfig(
     level=logging.INFO,
