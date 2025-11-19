@@ -343,7 +343,7 @@ class TemplateGenerator:
         """
         for line in self.data["lines"]:
             if line["id"] == line_id:
-                return line["start_point"], line["end_point"]
+                return line["start_point_id"], line["end_point_id"]
         raise ValueError(f"在边列表中未找到ID为 '{line_id}' 的边。")
 
     # ------------------------------ 几何检查与交点计算 ------------------------------
@@ -406,7 +406,6 @@ class TemplateGenerator:
             #         unique_intersections.append((x, y))
             
             return intersections
-
 
     def _circle_circle_intersection(self, 
                                 cx1: sp.Expr, cy1: sp.Expr, r1: sp.Expr,  # 圆1
@@ -995,6 +994,9 @@ class TemplateGenerator:
         level = 1 if is_base else 2
         entity_id = entity_id or self._get_unique_entity_id(f"special_triangle_{triangle_type}")
         
+        # --- 核心修正：获取基准点 origin_id 的世界坐标 ---
+        ox, oy = self.get_point_coords(origin_id)
+        
         # 解析基础参数
         rotate_mode = params["rotate_mode"]
         components = [origin_id]  # 包含原点（底边中点/斜边中点）
@@ -1014,13 +1016,22 @@ class TemplateGenerator:
             waist_length = simplify(params["waist_length"])  # 符号化简
             base_length = simplify(params["base_length"])
             
-            # 计算顶点坐标（基于origin_id为底边中点）
+            # 计算相对于 origin_id 的顶点坐标
             base_half = base_length / 2
-            point_a = self._add_point(-base_half, 0, level=level)  # 底边左
-            point_b = self._add_point(base_half, 0, level=level)   # 底边右
+            # 底边左点相对坐标
+            rx_a, ry_a = -base_half, 0
+            # 底边右点相对坐标
+            rx_b, ry_b = base_half, 0
+            
             height = simplify(sp.sqrt(waist_length**2 - base_half**2))  # 高
-            y_coord = height if rotate_mode == "original" else -height
-            point_c = self._add_point(0, y_coord, level=level)  # 顶角顶点
+            y_coord_rel = height if rotate_mode == "original" else -height
+            # 顶角顶点相对坐标
+            rx_c, ry_c = 0, y_coord_rel
+            
+            # --- 核心修正：计算最终世界坐标 ---
+            point_a = self._add_point(ox + rx_a, oy + ry_a, level=level)
+            point_b = self._add_point(ox + rx_b, oy + ry_b, level=level)
+            point_c = self._add_point(ox + rx_c, oy + ry_c, level=level)
             
             # 添加边
             line_ab = self._add_line(point_a, point_b)
@@ -1031,6 +1042,7 @@ class TemplateGenerator:
             components.extend([point_a, point_b, point_c, line_ab, line_bc, line_ca])
             entity_data.update({
                 "top_angle": top_angle,
+                "top_point": point_c,
                 "waist_length": {
                     "expr": self._format_expr(waist_length),
                     "latex": sp.latex(waist_length)
@@ -1051,25 +1063,30 @@ class TemplateGenerator:
             leg2 = simplify(params["leg2"])
             hypotenuse = simplify(params["hypotenuse"])
             
-            # 计算顶点坐标（基于origin_id为斜边中点）
-            # 利用斜边中线定理：中线 = 斜边/2，顶点关于中点对称
-            point_a = self._add_point(-leg1/2, leg2/2, level=level)
-            point_b = self._add_point(leg1/2, -leg2/2, level=level)  # 直角顶点
-            point_c = self._add_point(leg1/2, leg2/2, level=level)
-            
-            # 翻转处理（旋转90°/180°/270°）
-            if rotate_mode == "rotate_90":
-                point_a = self._add_point(-leg2/2, -leg1/2, level=level)
-                point_b = self._add_point(leg2/2, leg1/2, level=level)
-                point_c = self._add_point(-leg2/2, leg1/2, level=level)
+            # --- 核心修正：所有坐标计算都基于相对坐标 ---
+            rx_a, ry_a, rx_b, ry_b, rx_c, ry_c = 0, 0, 0, 0, 0, 0
+
+            if rotate_mode == "original":
+                rx_a, ry_a = -leg1/2, leg2/2
+                rx_b, ry_b = leg1/2, -leg2/2  # 直角顶点
+                rx_c, ry_c = leg1/2, leg2/2
+            elif rotate_mode == "rotate_90":
+                rx_a, ry_a = -leg2/2, -leg1/2
+                rx_b, ry_b = leg2/2, leg1/2    # 直角顶点
+                rx_c, ry_c = -leg2/2, leg1/2
             elif rotate_mode == "rotate_180":
-                point_a = self._add_point(leg1/2, -leg2/2, level=level)
-                point_b = self._add_point(-leg1/2, leg2/2, level=level)
-                point_c = self._add_point(-leg1/2, -leg2/2, level=level)
+                rx_a, ry_a = leg1/2, -leg2/2
+                rx_b, ry_b = -leg1/2, leg2/2   # 直角顶点
+                rx_c, ry_c = -leg1/2, -leg2/2
             elif rotate_mode == "rotate_270":
-                point_a = self._add_point(leg2/2, leg1/2, level=level)
-                point_b = self._add_point(-leg2/2, -leg1/2, level=level)
-                point_c = self._add_point(leg2/2, -leg1/2, level=level)
+                rx_a, ry_a = leg2/2, leg1/2
+                rx_b, ry_b = -leg2/2, -leg1/2  # 直角顶点
+                rx_c, ry_c = leg2/2, -leg1/2
+            
+            # --- 核心修正：计算最终世界坐标 ---
+            point_a = self._add_point(ox + rx_a, oy + ry_a, level=level)
+            point_b = self._add_point(ox + rx_b, oy + ry_b, level=level)
+            point_c = self._add_point(ox + rx_c, oy + ry_c, level=level)
             
             # 添加边
             line_ab = self._add_line(point_a, point_b)  # 斜边
@@ -1109,17 +1126,30 @@ class TemplateGenerator:
         level = 1 if is_base else 2
         entity_id = entity_id or self._get_unique_entity_id(f"special_rectangle_{width}:{length}")
         
+        # --- 核心修正：获取基准点 center_id 的世界坐标 ---
+        cx, cy = self.get_point_coords(center_id)
+        
         # 符号化简参数
         width = simplify(width)
         length = simplify(length)
         half_w = simplify(width / 2)
         half_l = simplify(length / 2)
         
-        # 顶点坐标（中心对称）
-        point_a = self._add_point(-half_w, -half_l, level=level)  # 左下
-        point_b = self._add_point(half_w, -half_l, level=level)   # 右下
-        point_c = self._add_point(half_w, half_l, level=level)    # 右上
-        point_d = self._add_point(-half_w, half_l, level=level)   # 左上
+        # --- 核心修正：计算相对于中心点的相对坐标 ---
+        # 左下
+        rx_a, ry_a = -half_w, -half_l
+        # 右下
+        rx_b, ry_b = half_w, -half_l
+        # 右上
+        rx_c, ry_c = half_w, half_l
+        # 左上
+        rx_d, ry_d = -half_w, half_l
+        
+        # --- 核心修正：计算最终世界坐标 ---
+        point_a = self._add_point(cx + rx_a, cy + ry_a, level=level)
+        point_b = self._add_point(cx + rx_b, cy + ry_b, level=level)
+        point_c = self._add_point(cx + rx_c, cy + ry_c, level=level)
+        point_d = self._add_point(cx + rx_d, cy + ry_d, level=level)
         
         # 添加边
         line_ab = self._add_line(point_a, point_b)
@@ -1264,6 +1294,8 @@ class TemplateGenerator:
         level = 1 if is_base else 2
         entity_id = entity_id or self._get_unique_entity_id(f"trapezoid_{base1}:{base2}")
         
+        cx, cy = self.get_point_coords(center_id)
+        
         # 翻转处理（垂直翻转时交换上下底）
         if rotate_mode == "flip_vertical":
             base1, base2 = base2, base1
@@ -1276,11 +1308,16 @@ class TemplateGenerator:
         overhang = simplify((base1 - base2) / 2)  # 下底超出上底的长度
         leg_len = simplify(height / sp.sin(angle))  # 腰长
         
-        # 顶点坐标（中心对称）
-        point_a = self._add_point(-half_base1, -height/2, level=level)  # 左下
-        point_b = self._add_point(half_base1, -height/2, level=level)   # 右下
-        point_c = self._add_point(half_base2, height/2, level=level)    # 右上
-        point_d = self._add_point(-half_base2, height/2, level=level)   # 左上
+        rx_a, ry_a = -half_base1, -height/2
+        rx_b, ry_b = half_base1, -height/2
+        rx_c, ry_c = half_base2, height/2
+        rx_d, ry_d = -half_base2, height/2
+        
+        # --- 核心修正：计算最终世界坐标（相对坐标 + 中心点坐标） ---
+        point_a = self._add_point(cx + rx_a, cy + ry_a, level=level)  # 左下
+        point_b = self._add_point(cx + rx_b, cy + ry_b, level=level)  # 右下
+        point_c = self._add_point(cx + rx_c, cy + ry_c, level=level)  # 右上
+        point_d = self._add_point(cx + rx_d, cy + ry_d, level=level)  # 左上
         
         # 添加边
         line_ab = self._add_line(point_a, point_b)  # 下底
@@ -1666,7 +1703,10 @@ class TemplateGenerator:
 
         else:
             r_expr = simplify(sp.sympify(base_entity["radius"]["expr"]))
-            new_n = random.choice(self.config["derivation"]["rules"]["circum_inscribe"]["n_choices"])
+            rule_params = self._get_rule_params(base_entity, "circum_inscribe")
+            n_choices = rule_params.get("n_choices", [1])
+            new_n = random.choice(n_choices)
+            
             is_circum = random.choice([True, False])
             rel_type = "circumscribed" if is_circum else "inscribed"
             new_side = (simplify(2 * r_expr * sin(pi / new_n)) 
@@ -1686,138 +1726,268 @@ class TemplateGenerator:
         return new_id
 
     def _rule_vertex_on_center(self, base_entity: Dict) -> str:
+        """顶点在中心衍生"""
         base_center_id = self._get_center_id(base_entity)
         base_cx, base_cy = self.get_point_coords(base_center_id)
+        
+        
+        rule_params = self._get_rule_params(base_entity, "vertex_on_center")
+        n_choices = rule_params.get("n_choices", [1])
+        param_choices = rule_params.get("param_choices", ["side_length", "radius"])
+
+        # n_choices = self.config["derivation"]["rules"]["vertex_on_center"].get("n_choices", [3, 4, 5, 6])
+        # param_choices = self.config["derivation"]["rules"]["vertex_on_center"].get("param_choices", ["side_length", "radius"])
+        
+        new_n = random.choice(n_choices)
+        param_type = random.choice(param_choices)
+
         base_type = base_entity["type"]
-        
-        rule_params = self._get_rule_params(base_entity, "concentric")
-        new_n_choices = rule_params.get("n_choices", [1])
-        param_type_choices = rule_params.get("param_choices", ["radius"])
-        new_n = Rational(random.choice(new_n_choices))
-        param_type = Rational(random.choice(param_type_choices))
-        
+        base_r = None 
+        base_side = None
 
         if base_type == "polygon":
+            # 对于多边形，我们只能直接获取边长
             base_side = simplify(sp.sympify(base_entity["side_length"]["expr"]))
-            base_r = simplify(sp.sympify(base_entity["radius"]["expr"]))
-            base_n = base_entity["n"]
-            if param_type == "radius":
-                new_r = base_r
-                new_side = simplify(2 * new_r * sin(pi / new_n))
-                param_desc = f"radius equal to base {base_n}-gon radius"
-            else:
-                new_side = base_side
-                new_r = simplify(new_side / (2 * sin(pi / new_n)))
-                param_desc = f"side length equal to base {base_n}-gon side"
-        else:
-            base_r = simplify(sp.sympify(base_entity["radius"]["expr"]))
-            if param_type == "radius":
-                new_r = base_r
-                new_side = simplify(2 * new_r * sin(pi / new_n))
-                param_desc = f"radius equal to base circle radius"
-            else:
-                new_side = base_r
-                new_r = simplify(new_side / (2 * sin(pi / new_n)))
-                param_desc = f"side length equal to base circle radius"
+            base_n = base_entity["n"] # 获取基础多边形的边数
 
+            # 如果 param_type 是 "radius"，我们需要根据边长和边数计算出外接圆半径
+            # 正多边形外接圆半径公式: R = side_length / (2 * sin(π / n))
+            if param_type == "radius":
+                base_r = simplify(base_side / (2 * sp.sin(pi / base_n)))
+                param_desc = f"radius equal to base {base_n}-gon's circumradius"
+            else: # param_type == "side_length"
+                param_desc = f"side length equal to base {base_n}-gon side"
+
+        elif base_type == "circle":
+            # 对于圆，我们可以直接获取半径
+            base_r = simplify(sp.sympify(base_entity["radius"]["expr"]))
+            if param_type == "radius":
+                param_desc = f"radius equal to base circle radius"
+            else: # param_type == "side_length"
+                param_desc = f"side length equal to base circle radius"
+        else:
+            # 如果基础实体既不是多边形也不是圆，则抛出错误
+            raise NotImplementedError(f"'vertex_on_center' rule not implemented for base entity type '{base_type}'.")
+        # --- 核心修改部分结束 ---
+
+        # 3. 计算新多边形的尺寸
+        if param_type == "radius" and base_r is not None:
+            new_r = base_r
+            new_side = simplify(2 * new_r * sp.sin(pi / new_n))
+        else: # param_type == "side_length" and base_side is not None
+            # 当 param_type 是 "side_length" 时，对于圆，我们用其半径作为新多边形的边长
+            new_side = base_side if base_side is not None else base_r
+            new_r = simplify(new_side / (2 * sp.sin(pi / new_n)))
+
+        # 4. 计算新多边形的中心位置（确保一个顶点落在基础实体中心）
         rotation = random.choice([0, pi/new_n])
-        new_cx = simplify(base_cx - new_r * cos(rotation))
-        new_cy = simplify(base_cy - new_r * sin(rotation))
+        new_cx = simplify(base_cx - new_r * sp.cos(rotation))
+        new_cy = simplify(base_cy - new_r * sp.sin(rotation))
         new_center_id = self._add_point(new_cx, new_cy, is_center=True)
+
+        # 5. 生成新的正多边形
         entity_id = self._get_unique_entity_id(f"vertex_on_center_polygon_n{new_n}")
         new_id = self.generate_regular_polygon(
             n=new_n, side_length=new_side, center_id=new_center_id, rotation=rotation, entity_id=entity_id, is_base=False
         )
+        
         self.description_parts.append(f"Vertex-on-center derivation: {new_n}-gon (center {new_center_id}) with {param_desc}.")
 
         return new_id
-
+    
     def _rule_special_triangle_circum_inscribe(self, base_entity: Dict) -> str:
-        """特殊三角形的内外接圆衍生（等腰/直角三角形专用）"""
+        """特殊三角形的内外接圆衍生（等腰/直角三角形专用）- 几何构造法"""
         base_subtype = base_entity["subtype"]
-        origin_id = base_entity["origin_id"] # 直角三角形：斜边中点；等腰三角形：底边中点
         is_circum = random.choice([True, False])
         rel_type = "circumscribed" if is_circum else "inscribed"
 
-        if is_circum: # 计算外接圆
+        # --- 提取三角形的三个顶点 ---
+        vertices = [c for c in base_entity["components"] if self._is_point(c) and not c.startswith('O')]
+        if len(vertices) != 3:
+            raise ValueError(f"Special triangle {base_entity['id']} has an incorrect number of vertices: {len(vertices)}.")
+        
+        p1_id, p2_id, p3_id = vertices
+        
+        if(base_entity["subtype"] == "isosceles")
+            if p1_id == base_entity["top_point"]:
+                p1_id, p3_id = p3_id, p1_id
+            elif p2_id == base_entity["top_point"]:
+                p2_id, p3_id = p3_id, p2_id
+        
+        # 获取顶点坐标
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+        p3x, p3y = self.get_point_coords(p3_id)
+
+        center_id = None
+        radius_expr = None
+
+        if is_circum: # --- 计算外接圆 (Circumcircle) ---
+            
             if base_subtype == "right":
-                # 直角三角形：外心在斜边中点（origin_id），半径为斜边的一半
-                hypotenuse = simplify(sp.sympify(base_entity["hypotenuse"]["expr"]))
-                radius = simplify(hypotenuse / 2)
-                center_id = origin_id # 圆心就是斜边中点
-            else: # isosceles
-                # 等腰三角形：外心在底边中垂线上（origin_id的正上方）
-                waist = simplify(sp.sympify(base_entity["waist_length"]["expr"]))
-                half_base = simplify(sp.sympify(base_entity["base_length"]["expr"]) / 2)
+                # 直角三角形：外心在斜边的中点。
+                # 1. 确定哪条边是斜边（最长的边）
+                def distance_sq(p1, p2):
+                    return (p1[0]-p2[0])**2 + (p1[1]-p2[1])**2
                 
-                # 计算外心到origin_id的距离 (d)
-                # R^2 = d^2 + (base/2)^2
-                # R = waist (因为腰是从外心到顶点的距离)
-                # waist^2 = d^2 + (base/2)^2
-                d_squared = simplify(waist**2 - half_base**2)
-                d = simplify(sp.sqrt(d_squared))
+                d12_sq = distance_sq((p1x,p1y), (p2x,p2y))
+                d13_sq = distance_sq((p1x,p1y), (p3x,p3y))
+                d23_sq = distance_sq((p2x,p2y), (p3x,p3y))
 
-                # 外心在origin_id的正上方，距离为d
-                ox, oy = self.get_point_coords(origin_id)
-                center_y = simplify(oy + d)
-                center_id = self._add_point(ox, center_y, is_center=True)
-                radius = waist # 外接圆半径等于腰长
+                max_d_sq = max(d12_sq, d13_sq, d23_sq)
+                
+                if max_d_sq == d12_sq:
+                    hypotenuse_p1, hypotenuse_p2 = (p1x,p1y,p1_id), (p2x,p2y,p2_id)
+                elif max_d_sq == d13_sq:
+                    hypotenuse_p1, hypotenuse_p2 = (p1x,p1y,p1_id), (p3x,p3y,p3_id)
+                else: # max_d_sq == d23_sq
+                    hypotenuse_p1, hypotenuse_p2 = (p2x,p2y,p2_id), (p3x,p3y,p3_id)
 
-        else: # 计算内切圆
-            # 对于两种三角形，内心都在内部，我们使用通用公式计算
-            # 内心坐标：通过加权平均顶点坐标得到，权重为各边长度
-            # 内切圆半径 r = 面积 / 半周长
-            
-            vertices = [c for c in base_entity["components"] if self._is_point(c) and c != origin_id]
-            all_points_in_entity = [c for c in base_entity["components"] if self._is_point(c)]
-            vertices = [p for p in all_points_in_entity if p != origin_id]
-            if len(vertices) != 3:
-                raise ValueError(f"Special triangle {base_entity['id']} has an incorrect number of vertices.")
-            
-            p1_id, p2_id, p3_id = vertices
-            
-            # 获取顶点坐标
-            p1x, p1y = self.get_point_coords(p1_id)
-            p2x, p2y = self.get_point_coords(p2_id)
-            p3x, p3y = self.get_point_coords(p3_id)
+                # 2. 计算斜边中点（外心）
+                center_x = simplify((hypotenuse_p1[0] + hypotenuse_p2[0]) / 2)
+                center_y = simplify((hypotenuse_p1[1] + hypotenuse_p2[1]) / 2)
+                center_id = self._add_point(center_x, center_y, is_center=True)
 
-            # 获取边长
+                # 3. 半径是斜边的一半（用表达式表示，避免开方）
+                # 我们直接用斜边的一个端点到中心的距离作为半径的表达式
+                radius_expr = simplify(sp.sqrt((hypotenuse_p1[0] - center_x)**2 + (hypotenuse_p1[1] - center_y)**2))
+
+            elif base_subtype == "isosceles":
+                # 等腰三角形：外心在底边的垂直平分线上。
+                # 利用对称性，外心到三个顶点的距离相等 (OA = OB = OC = R)。
+                
+                # 1. 计算底边 p1p2 的中点 M
+                mid_base_x = simplify((p1x + p2x) / 2)
+                mid_base_y = simplify((p1y + p2y) / 2)
+                
+                # 2. 计算顶点到底边中点的距离 (h')，这是等腰三角形的高
+                # 注意：这不是三角形的高 h，除非外心在三角形内部。
+                # h' 是从 M 到 P3 的向量长度
+                h_prime_sq = simplify((p3x - mid_base_x)**2 + (p3y - mid_base_y)**2)
+                
+                # 3. 计算底边一半的长度
+                half_base_len_sq = simplify(((p2x - p1x)/2)**2 + ((p2y - p1y)/2)**2)
+                
+                # 4. 利用勾股定理计算外心 O 到底边中点 M 的距离 d
+                # 在外心 O，有 OA^2 = OM^2 + AM^2
+                # 同时，OA = OP3 (因为 O 在垂直平分线上，且是外心)
+                # OP3^2 = (h' - d)^2 (如果 O 在 M 和 P3 之间) 或 (h' + d)^2 (如果 O 在 M 的另一侧)
+                # 这里我们取绝对值，因为距离是标量
+                # (h' - d)^2 = d^2 + half_base_len_sq
+                # 展开并化简: h'^2 - 2 h' d + d^2 = d^2 + half_base_len_sq
+                # h'^2 - 2 h' d = half_base_len_sq
+                # 解得: d = (h'^2 - half_base_len_sq) / (2 * h')
+                
+                # 为了避免除以零，我们先检查 h_prime 是否为零（此时 P3 在底边线上，构不成三角形）
+                if h_prime_sq == 0:
+                    raise ValueError("The vertex P3 lies on the base line P1P2, cannot form a triangle.")
+                    
+                h_prime = simplify(sp.sqrt(h_prime_sq))
+                numerator = simplify(h_prime_sq - half_base_len_sq)
+                d = simplify(numerator / (2 * h_prime))
+                
+                # 5. 计算外心 O 的坐标
+                # O 在从 M 指向 P3 的方向上，距离 M 点为 d
+                # 单位向量 u = (P3 - M) / |P3 - M|
+                # O = M + d * u
+                if h_prime == 0:
+                    # 避免除以零，但理论上前面已经检查过 h_prime_sq
+                    center_x, center_y = mid_base_x, mid_base_y
+                else:
+                    ux = simplify((p3x - mid_base_x) / h_prime)
+                    uy = simplify((p3y - mid_base_y) / h_prime)
+                    
+                    center_x = simplify(mid_base_x + d * ux)
+                    center_y = simplify(mid_base_y + d * uy)
+                
+                center_id = self._add_point(center_x, center_y, is_center=True)
+
+                # 6. 计算外接圆半径 R (外心到任意顶点的距离)
+                radius_expr = simplify(sp.sqrt((p1x - center_x)**2 + (p1y - center_y)**2))
+
+        else: # --- 计算内切圆 (Incircle) ---
+            
+            # 对于两种三角形，内心都在内部，且到三边距离相等。
+            # 我们可以通过计算面积和半周长来得到半径 r = A/s
+            # 然后利用几何性质确定内心坐标。
+
+            # 1. 计算边长 (用表达式表示)
+            side_a = simplify(sp.sqrt((p2x - p3x)**2 + (p2y - p3y)**2)) # a = |BC|
+            side_b = simplify(sp.sqrt((p1x - p3x)**2 + (p1y - p3y)**2)) # b = |AC|
+            side_c = simplify(sp.sqrt((p1x - p2x)**2 + (p1y - p2y)**2)) # c = |AB|
+            
+            # 2. 计算半周长
+            semi_perim = simplify((side_a + side_b + side_c) / 2)
+
+            # 3. 计算面积 (鞋带公式，避免开方)
+            area = simplify(abs((p1x*(p2y-p3y) + p2x*(p3y-p1y) + p3x*(p1y-p2y)) / 2))
+            
+            # 4. 计算内切圆半径
+            radius_expr = simplify(area / semi_perim)
+
+            # 5. 确定内心坐标
             if base_subtype == "right":
-                leg1 = simplify(sp.sympify(base_entity["leg1"]["expr"]))
-                leg2 = simplify(sp.sympify(base_entity["leg2"]["expr"]))
-                hypotenuse = simplify(sp.sympify(base_entity["hypotenuse"]["expr"]))
-                a, b, c = leg1, leg2, hypotenuse
-            else: # isosceles
-                waist = simplify(sp.sympify(base_entity["waist_length"]["expr"]))
-                base = simplify(sp.sympify(base_entity["base_length"]["expr"]))
-                a, b, c = waist, waist, base
-                
-            # 计算半周长和面积
-            semi_perim = simplify((a + b + c) / 2)
-            area = simplify(sp.sqrt(semi_perim * (semi_perim - a) * (semi_perim - b) * (semi_perim - c)))
-            radius = simplify(area / semi_perim)
+                # 直角三角形的内心坐标有一个简单的公式。
+                # 假设 p3 是直角顶点，p3p1, p3p2 是直角边。
+                # 内心到两直角边的距离都是 r。
+                # 这里我们通过判断哪两条边垂直来确定直角顶点。
+                # 向量点积为0则垂直。
+                dot_p1p2_p1p3 = (p2x-p1x)*(p3x-p1x) + (p2y-p1y)*(p3y-p1y)
+                dot_p1p2_p2p3 = (p1x-p2x)*(p3x-p2x) + (p1y-p2y)*(p3y-p2y)
+                dot_p1p3_p2p3 = (p1x-p3x)*(p2x-p3x) + (p1y-p3y)*(p2y-p3y)
 
-            # 计算内心坐标 (加权平均)
-            center_x = simplify((a*p1x + b*p2x + c*p3x) / (a + b + c))
-            center_y = simplify((a*p1y + b*p2y + c*p3y) / (a + b + c))
+                if dot_p1p3_p2p3 == 0:
+                    right_angle_vertex = (p3x, p3y)
+                    leg1_vec = (p1x-p3x, p1y-p3y)
+                    leg2_vec = (p2x-p3x, p2y-p3y)
+                elif dot_p1p2_p1p3 == 0:
+                    right_angle_vertex = (p1x, p1y)
+                    leg1_vec = (p2x-p1x, p2y-p1y)
+                    leg2_vec = (p3x-p1x, p3y-p1y)
+                elif dot_p1p2_p2p3 == 0:
+                    right_angle_vertex = (p2x, p2y)
+                    leg1_vec = (p1x-p2x, p1y-p2y)
+                    leg2_vec = (p3x-p2x, p3y-p2y)
+
+                # 从直角顶点向两直角边方向移动 r 的距离，即为内心
+                # 首先单位化直角边向量
+                leg1_len = simplify(sp.sqrt(leg1_vec[0]**2 + leg1_vec[1]**2))
+                leg2_len = simplify(sp.sqrt(leg2_vec[0]**2 + leg2_vec[1]**2))
+                
+                if leg1_len == 0 or leg2_len == 0:
+                    raise ValueError("Zero length leg in right triangle.")
+
+                unit_leg1_x, unit_leg1_y = leg1_vec[0]/leg1_len, leg1_vec[1]/leg1_len
+                unit_leg2_x, unit_leg2_y = leg2_vec[0]/leg2_len, leg2_vec[1]/leg2_len
+
+                center_x = simplify(right_angle_vertex[0] + radius_expr * unit_leg1_x + radius_expr * unit_leg2_x)
+                center_y = simplify(right_angle_vertex[1] + radius_expr * unit_leg1_y + radius_expr * unit_leg2_y)
+
+            elif base_subtype == "isosceles":
+                # 等腰三角形的内心在底边的垂直平分线上。
+                # 我们可以用加权平均法，这本身就是一个几何构造。
+                center_x = simplify((side_a * p1x + side_b * p2x + side_c * p3x) / (side_a + side_b + side_c))
+                center_y = simplify((side_a * p1y + side_b * p2y + side_c * p3y) / (side_a + side_b + side_c))
+
             center_id = self._add_point(center_x, center_y, is_center=True)
 
-        # --- 核心修改部分结束 ---
+        # --- 生成圆 ---
+        if center_id is None or radius_expr is None:
+            raise RuntimeError(f"Failed to compute {rel_type} circle for triangle {base_entity['id']}.")
 
-        # 生成圆
         entity_id = self._get_unique_entity_id(f"{rel_type}circle_triangle_{base_subtype}")
         arc_id = self.generate_circle(
-            radius=radius,
+            radius=radius_expr, # 传入符号表达式
             center_id=center_id,
             start_angle=0,
-            end_angle=2*pi,
+            end_angle=2*sp.pi,
             entity_id=entity_id,
             is_base=False
         )
         self.complete_circle_arcs.add(arc_id)
         
         self.description_parts.append(
-            f"{rel_type.capitalize()} circle for {base_subtype} triangle. Center: {center_id}, Radius: {radius}."
+            f"{rel_type.capitalize()} circle for {base_subtype} triangle. Center: {center_id}, Radius: {radius_expr}."
         )
         return entity_id
 
@@ -2516,7 +2686,7 @@ class TemplateGenerator:
         #     f"Geometry finalized: {len(new_lines)} new lines and {len(new_arcs)} new arcs generated by splitting. "
         #     f"Total lines: {len(self.data['lines'])}, total arcs: {len(self.data['arcs'])}, total points: {len(self.data['points'])}."
         # )
-        # self.data["description"] = " ".join(self.description_parts)
+        self.data["description"] = " ".join(self.description_parts)
 
 
     # ------------------------------ 衍生流程 ------------------------------
@@ -2545,6 +2715,8 @@ class TemplateGenerator:
                 continue
 
             new_id = None
+            
+            self.description_parts.append(f"Round {round_idx+1}: applying '{selected_rule_name}' rule.")
             try:
                 if base_type == "circle" or base_type == "polygon":
                     if selected_rule_name == "concentric":

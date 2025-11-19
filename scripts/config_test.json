@@ -1,14 +1,14 @@
 {
     "global": {
-        "output_root": "./results_n20_v3",
+        "output_root": "./results_n20_v4",
         "main_seed": 2255,
         "thread_num": 20
     },
     "template": {
-        "n": 40,
+        "n": 20,
         "points_limit": 35,
         "lines_limit": 45,
-        "output_dir": "./results_n20_v3/json/base",
+        "output_dir": "./results_n20_v4/json/base",
         "output_filename": "base_templates.jsonl",
         "base": {
             "types": ["polygon", "circle", "special_triangle", "special_rectangle", "parallelogram", "trapezoid"],
@@ -98,7 +98,7 @@
                     {"name": "concentric", "prob": 0.2, "scale_choices": [0.5, 2]},
                     {"name": "translation", "prob": 0.35},
                     {"name": "circum_inscribe", "prob": 0.2, "n_choices": [3, 4, 6]},
-                    {"name": "vertex_on_center", "prob": 0.25, "n_choices": [3, 4, 6], "param_choices": ["radius", "side"]}
+                    {"name": "vertex_on_center", "prob": 0.25, "n_choices": [3, 4, 6], "param_choices" : ["side_length", "radius"]}
                     ]
                 },
                 "polygon": {
@@ -106,13 +106,12 @@
                     {"name": "concentric", "prob": 0.2, "scale_choices": [0.5, 2]},
                     {"name": "translation", "prob": 0.35},
                     {"name": "circum_inscribe", "prob": 0.2, "n_choices": [3, 4, 6]},
-                    {"name": "vertex_on_center", "prob": 0.25, "n_choices": [3, 4, 6], "param_choices": ["radius", "side"]}
+                    {"name": "vertex_on_center", "prob": 0.25, "n_choices": [3, 4, 6], "param_choices" : ["side_length", "radius"]}
                     ]
                 },
                 "special_triangle": {
                     "supported_rules": [
                     {"name": "circum_inscribe", "prob": 0.3},
-                    {"name": "flip", "prob": 0.35},
                     {"name": "translation", "prob": 0.35}
                     ]
                 },
@@ -120,21 +119,18 @@
                     "supported_rules": [
                     {"name": "concentric", "prob": 0.2},
                     {"name": "circum_inscribe", "prob": 0.2},
-                    {"name": "flip", "prob": 0.3},
                     {"name": "translation", "prob": 0.3}
                     ]
                 },
                 "parallelogram": {
                     "supported_rules": [
                     {"name": "concentric", "prob": 0.25},
-                    {"name": "flip", "prob": 0.35},
                     {"name": "translation", "prob": 0.4}
                     ]
                 },
                 "trapezoid": {
                     "supported_rules": [
                     {"name": "concentric", "prob": 0.25},
-                    {"name": "flip", "prob": 0.35},
                     {"name": "translation", "prob": 0.4}
                     ]
                 }
@@ -142,7 +138,7 @@
         }
     },
     "builder": {
-        "output_dir": "./results_n20_v3/json/enhanced",
+        "output_dir": "./results_n20_v4/json/enhanced",
         "output_filename": "enhanced_geometries.jsonl",
         "num_enhancements": 4,
         "rounds_distribution": {
@@ -183,7 +179,7 @@
         }
     },
     "drawer": {
-        "output_dir": "./results_n20_v3/images/raw",
+        "output_dir": "./results_n20_v4/images/raw",
         "canvas_size": [1600, 1200],
         "margin": 50,
         "line_color": "#000000",
@@ -263,6 +259,6 @@
             "angle": 0.3
         },   
         "num_questions_per_group": 3,
-        "output_dir": "./results_n20_v3/json/qa"
+        "output_dir": "./results_n20_v4/json/qa"
     }
 }
