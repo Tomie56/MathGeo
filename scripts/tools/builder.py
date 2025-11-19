@@ -2,7 +2,7 @@ import json
 import random
 import sympy as sp
 import logging
-from sympy import symbols, cos, sin, pi, simplify, sqrt, tan, Eq, solve, Min, Max, Ge, Le, Rational
+from sympy import symbols, cos, sin, pi, simplify, sqrt, tan, Eq, solve, Min, Max, Ge, Le, Rational, ask, Q
 from typing import List, Dict, Tuple, Optional, Union, Set, Generator
 import os
 import threading
@@ -822,9 +822,27 @@ class RandomGeometryBuilder:
             x1, y1 = self.get_point_coords(s)
             x2, y2 = self.get_point_coords(e)
             
-            if (Max(x1, x2) < new_min_x) or (Min(x1, x2) > new_max_x) or \
-               (Max(y1, y2) < new_min_y) or (Min(y1, y2) > new_max_y):
+            all_symbols = set()
+            for expr in [x1, y1, x2, y2, new_min_x, new_max_x, new_min_y, new_max_y]:
+                all_symbols.update(expr.free_symbols)
+            all_symbols = list(all_symbols)
+            
+            # 2. 构建假设：所有符号都是实数
+            assumptions = Q.real(*all_symbols)
+            
+            # 3. 使用 ask() 来判断边界框是否重叠
+            # 如果 ask 返回 True，说明线段在该方向上没有交集，可以直接跳过
+            cond1 = ask(Max(x1, x2) < new_min_x, assumptions)
+            cond2 = ask(Min(x1, x2) > new_max_x, assumptions)
+            cond3 = ask(Max(y1, y2) < new_min_y, assumptions)
+            cond4 = ask(Min(y1, y2) > new_max_y, assumptions)
+            
+            if cond1 or cond2 or cond3 or cond4:
                 continue
+            
+            # if (Max(x1, x2) < new_min_x) or (Min(x1, x2) > new_max_x) or \
+            #    (Max(y1, y2) < new_min_y) or (Min(y1, y2) > new_max_y):
+            #     continue
             
             intersections = self._line_intersection(new_line_id, line_id)
             for x, y, level in intersections:
@@ -850,9 +868,26 @@ class RandomGeometryBuilder:
                 arc_min_y = cy - r
                 arc_max_y = cy + r
                 
-                if (arc_max_x < new_min_x) or (arc_min_x > new_max_x) or \
-                   (arc_max_y < new_min_y) or (arc_min_y > new_max_y):
+                all_symbols = set()
+                for expr in [arc_min_x, arc_max_x, arc_min_y, arc_max_y, new_min_x, new_max_x, new_min_y, new_max_y]:
+                    all_symbols.update(expr.free_symbols)
+                all_symbols = list(all_symbols)
+                
+                # 2. 构建假设
+                assumptions = Q.real(*all_symbols)
+                
+                # 3. 使用 ask() 来判断边界框是否重叠
+                cond1 = ask(arc_max_x < new_min_x, assumptions)
+                cond2 = ask(arc_min_x > new_max_x, assumptions)
+                cond3 = ask(arc_max_y < new_min_y, assumptions)
+                cond4 = ask(arc_min_y > new_max_y, assumptions)
+                
+                if cond1 or cond2 or cond3 or cond4:
                     continue
+                
+                # if (arc_max_x < new_min_x) or (arc_min_x > new_max_x) or \
+                #    (arc_max_y < new_min_y) or (arc_min_y > new_max_y):
+                #     continue
             
             intersections = self._line_arc_intersection(new_line_id, arc_id)
             for x, y, level in intersections:

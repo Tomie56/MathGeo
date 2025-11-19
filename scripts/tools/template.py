@@ -1808,7 +1808,7 @@ class TemplateGenerator:
         
         p1_id, p2_id, p3_id = vertices
         
-        if(base_entity["subtype"] == "isosceles")
+        if(base_entity["subtype"] == "isosceles"):
             if p1_id == base_entity["top_point"]:
                 p1_id, p3_id = p3_id, p1_id
             elif p2_id == base_entity["top_point"]:

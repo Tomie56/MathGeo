@@ -1,13 +1,13 @@
 {
     "global": {
         "output_root": "./results_n20_v4",
-        "main_seed": 2255,
+        "main_seed": 2391,
         "thread_num": 20
     },
     "template": {
-        "n": 20,
-        "points_limit": 35,
-        "lines_limit": 45,
+        "n": 40,
+        "points_limit": 15,
+        "lines_limit": 20,
         "output_dir": "./results_n20_v4/json/base",
         "output_filename": "base_templates.jsonl",
         "base": {
