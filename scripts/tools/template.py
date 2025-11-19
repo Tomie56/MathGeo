@@ -117,6 +117,23 @@ class TemplateGenerator:
 
 
     # ------------------------------ 点工具 ------------------------------
+    def _is_point(self, component_id: str) -> bool:
+        """判断一个组件ID是否为点"""
+        # 点的ID格式: 普通点(A, B, C...), 中心点(O1, O2...), 圆初始点(circle_1, circle_2...)
+        return (component_id.isalpha() or 
+                component_id.startswith('O') and component_id[1:].isdigit() or
+                component_id.startswith('circle_'))
+
+    def _is_line(self, component_id: str) -> bool:
+        """判断一个组件ID是否为线段"""
+        # 线的ID格式: L1, L2, L3...
+        return component_id.startswith('L') and component_id[1:].isdigit()
+
+    def _is_arc(self, component_id: str) -> bool:
+        """判断一个组件ID是否为弧"""
+        # 弧的ID格式: Arc1, Arc2, Arc3...
+        return component_id.startswith('Arc') and component_id[3:].isdigit()
+    
     def _update_references_to_old_point(self, old_pid: str, new_pid: str):
         """更新所有引用老点（circle_x）的边、弧、实体"""
         # 1. 更新边的端点
@@ -316,6 +333,18 @@ class TemplateGenerator:
                 p["related_edges"].append(aid)
         return aid
 
+    def _get_line_vertices(self, line_id: str) -> Tuple[str, str]:
+        """
+        根据边的ID查找并返回其起点和终点的ID。
+        
+        :param line_id: 边的ID (e.g., "L1")
+        :return: 一个包含两个点ID的元组 (start_point_id, end_point_id)
+        :raises ValueError: 如果找不到对应的边
+        """
+        for line in self.data["lines"]:
+            if line["id"] == line_id:
+                return line["start_point"], line["end_point"]
+        raise ValueError(f"在边列表中未找到ID为 '{line_id}' 的边。")
 
     # ------------------------------ 几何检查与交点计算 ------------------------------
     def _is_point_on_segment(self, px: sp.Expr, py: sp.Expr, 
@@ -1138,18 +1167,46 @@ class TemplateGenerator:
         base = simplify(base)
         height = simplify(height)
         angle = simplify(angle)
-        half_base = simplify(base / 2)
-        side_len = simplify(height / sp.sin(angle))  # 侧边长度
-        offset_x = simplify(side_len * sp.cos(angle))  # 水平偏移
+        
+        # 计算侧边长度和水平偏移
+        side_len = simplify(height / sp.sin(angle))
+        offset_x = simplify(side_len * sp.cos(angle))
         
         # 翻转处理（水平翻转时偏移取反）
         actual_offset = offset_x if rotate_mode == "original" else -offset_x
         
-        # 顶点坐标（中心对称）
-        point_a = self._add_point(-half_base, -height/2, level=level)  # 左下
-        point_b = self._add_point(half_base, -height/2, level=level)   # 右下
-        point_c = self._add_point(half_base + actual_offset, height/2, level=level)  # 右上
-        point_d = self._add_point(-half_base + actual_offset, height/2, level=level)  # 左上
+        # 获取中心点坐标
+        cx, cy = self.get_point_coords(center_id)
+        
+        # 重新计算四个顶点坐标（基于对角线交点）
+        # 计算对角线的一半长度
+        half_diag1_x = simplify(base / 2)
+        half_diag1_y = 0
+        
+        half_diag2_x = simplify(actual_offset / 2)
+        half_diag2_y = simplify(height / 2)
+        
+        # 四个顶点坐标（通过对角线中点计算）
+        point_a = self._add_point(
+            cx - half_diag1_x - half_diag2_x,
+            cy - half_diag1_y - half_diag2_y,
+            level=level
+        )
+        point_b = self._add_point(
+            cx + half_diag1_x - half_diag2_x,
+            cy + half_diag1_y - half_diag2_y,
+            level=level
+        )
+        point_c = self._add_point(
+            cx + half_diag1_x + half_diag2_x,
+            cy + half_diag1_y + half_diag2_y,
+            level=level
+        )
+        point_d = self._add_point(
+            cx - half_diag1_x + half_diag2_x,
+            cy - half_diag1_y + half_diag2_y,
+            level=level
+        )
         
         # 添加边
         line_ab = self._add_line(point_a, point_b)
@@ -1373,10 +1430,22 @@ class TemplateGenerator:
                         p["related_edges"].append(old_arc_id)
 
     # ------------------------------ 衍生规则 ------------------------------
+    def _get_rule_params(self, base_entity: Dict, rule_name: str) -> Dict:
+        
+        entity_type = base_entity["type"]
+        supported_rules = self.config["derivation"]["rules"][entity_type]["supported_rules"]
+
+        for rule in supported_rules:
+            if rule["name"] == rule_name:
+                return rule.copy()
+        
     def _rule_concentric(self, base_entity: Dict) -> str:
         base_type = base_entity["type"]
         center_id = self._get_center_id(base_entity)
-        scale = Rational(random.choice(self.config["derivation"]["rules"]["concentric"]["scale_choices"]))
+        
+        rule_params = self._get_rule_params(base_entity, "concentric")
+        scale_choices = rule_params.get("scale_choices", [1])
+        scale = Rational(random.choice(scale_choices))
 
         if base_type == "polygon":
             n = base_entity["n"]
@@ -1619,9 +1688,14 @@ class TemplateGenerator:
     def _rule_vertex_on_center(self, base_entity: Dict) -> str:
         base_center_id = self._get_center_id(base_entity)
         base_cx, base_cy = self.get_point_coords(base_center_id)
-        new_n = random.choice(self.config["derivation"]["rules"]["vertex_on_center"]["n_choices"])
-        param_type = random.choice(self.config["derivation"]["rules"]["vertex_on_center"]["param_choices"])
         base_type = base_entity["type"]
+        
+        rule_params = self._get_rule_params(base_entity, "concentric")
+        new_n_choices = rule_params.get("n_choices", [1])
+        param_type_choices = rule_params.get("param_choices", ["radius"])
+        new_n = Rational(random.choice(new_n_choices))
+        param_type = Rational(random.choice(param_type_choices))
+        
 
         if base_type == "polygon":
             base_side = simplify(sp.sympify(base_entity["side_length"]["expr"]))
@@ -1656,6 +1730,653 @@ class TemplateGenerator:
         )
         self.description_parts.append(f"Vertex-on-center derivation: {new_n}-gon (center {new_center_id}) with {param_desc}.")
 
+        return new_id
+
+    def _rule_special_triangle_circum_inscribe(self, base_entity: Dict) -> str:
+        """特殊三角形的内外接圆衍生（等腰/直角三角形专用）"""
+        base_subtype = base_entity["subtype"]
+        origin_id = base_entity["origin_id"] # 直角三角形：斜边中点；等腰三角形：底边中点
+        is_circum = random.choice([True, False])
+        rel_type = "circumscribed" if is_circum else "inscribed"
+
+        if is_circum: # 计算外接圆
+            if base_subtype == "right":
+                # 直角三角形：外心在斜边中点（origin_id），半径为斜边的一半
+                hypotenuse = simplify(sp.sympify(base_entity["hypotenuse"]["expr"]))
+                radius = simplify(hypotenuse / 2)
+                center_id = origin_id # 圆心就是斜边中点
+            else: # isosceles
+                # 等腰三角形：外心在底边中垂线上（origin_id的正上方）
+                waist = simplify(sp.sympify(base_entity["waist_length"]["expr"]))
+                half_base = simplify(sp.sympify(base_entity["base_length"]["expr"]) / 2)
+                
+                # 计算外心到origin_id的距离 (d)
+                # R^2 = d^2 + (base/2)^2
+                # R = waist (因为腰是从外心到顶点的距离)
+                # waist^2 = d^2 + (base/2)^2
+                d_squared = simplify(waist**2 - half_base**2)
+                d = simplify(sp.sqrt(d_squared))
+
+                # 外心在origin_id的正上方，距离为d
+                ox, oy = self.get_point_coords(origin_id)
+                center_y = simplify(oy + d)
+                center_id = self._add_point(ox, center_y, is_center=True)
+                radius = waist # 外接圆半径等于腰长
+
+        else: # 计算内切圆
+            # 对于两种三角形，内心都在内部，我们使用通用公式计算
+            # 内心坐标：通过加权平均顶点坐标得到，权重为各边长度
+            # 内切圆半径 r = 面积 / 半周长
+            
+            vertices = [c for c in base_entity["components"] if self._is_point(c) and c != origin_id]
+            all_points_in_entity = [c for c in base_entity["components"] if self._is_point(c)]
+            vertices = [p for p in all_points_in_entity if p != origin_id]
+            if len(vertices) != 3:
+                raise ValueError(f"Special triangle {base_entity['id']} has an incorrect number of vertices.")
+            
+            p1_id, p2_id, p3_id = vertices
+            
+            # 获取顶点坐标
+            p1x, p1y = self.get_point_coords(p1_id)
+            p2x, p2y = self.get_point_coords(p2_id)
+            p3x, p3y = self.get_point_coords(p3_id)
+
+            # 获取边长
+            if base_subtype == "right":
+                leg1 = simplify(sp.sympify(base_entity["leg1"]["expr"]))
+                leg2 = simplify(sp.sympify(base_entity["leg2"]["expr"]))
+                hypotenuse = simplify(sp.sympify(base_entity["hypotenuse"]["expr"]))
+                a, b, c = leg1, leg2, hypotenuse
+            else: # isosceles
+                waist = simplify(sp.sympify(base_entity["waist_length"]["expr"]))
+                base = simplify(sp.sympify(base_entity["base_length"]["expr"]))
+                a, b, c = waist, waist, base
+                
+            # 计算半周长和面积
+            semi_perim = simplify((a + b + c) / 2)
+            area = simplify(sp.sqrt(semi_perim * (semi_perim - a) * (semi_perim - b) * (semi_perim - c)))
+            radius = simplify(area / semi_perim)
+
+            # 计算内心坐标 (加权平均)
+            center_x = simplify((a*p1x + b*p2x + c*p3x) / (a + b + c))
+            center_y = simplify((a*p1y + b*p2y + c*p3y) / (a + b + c))
+            center_id = self._add_point(center_x, center_y, is_center=True)
+
+        # --- 核心修改部分结束 ---
+
+        # 生成圆
+        entity_id = self._get_unique_entity_id(f"{rel_type}circle_triangle_{base_subtype}")
+        arc_id = self.generate_circle(
+            radius=radius,
+            center_id=center_id,
+            start_angle=0,
+            end_angle=2*pi,
+            entity_id=entity_id,
+            is_base=False
+        )
+        self.complete_circle_arcs.add(arc_id)
+        
+        self.description_parts.append(
+            f"{rel_type.capitalize()} circle for {base_subtype} triangle. Center: {center_id}, Radius: {radius}."
+        )
+        return entity_id
+
+    def _rule_special_triangle_flip(self, base_entity: Dict) -> str:
+        """特殊三角形沿三条边翻转（对称衍生）"""
+        base_subtype = base_entity["subtype"]
+        origin_id = base_entity["origin_id"]  # 底边中点/斜边中点
+        rotate_mode = base_entity["rotate_mode"]
+
+        # --- 核心修改部分开始 ---
+        # 1. 直接从实体组件中提取所有边
+        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        if len(edges) != 3:
+            raise ValueError(f"Triangle {base_entity['id']} has invalid edges. Expected 3, got {len(edges)}.")
+        
+        # 2. 随机选择一条边
+        edge_idx = random.randint(0, len(edges)-1)
+        selected_edge_id = edges[edge_idx]
+        
+        # 3. 获取所选边的两个顶点
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        # --- 核心修改部分结束 ---
+
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+
+        # 计算原点（origin_id）关于该边的对称点（新形状的origin）
+        dx = simplify(p2x - p1x)
+        dy = simplify(p2y - p1y)
+        ox, oy = self.get_point_coords(origin_id)
+        numerator = simplify(2 * (dx*(p1y - oy) - dy*(p1x - ox)))
+        denominator = simplify(dx**2 + dy**2)
+        new_ox = simplify(ox - (dx * numerator) / denominator)
+        new_oy = simplify(oy - (dy * numerator) / denominator)
+        new_origin_id = self._add_point(new_ox, new_oy, is_center=True)
+
+        # 生成翻转后的三角形（后续逻辑不变）
+        if base_subtype == "isosceles":
+            entity_id = self._get_unique_entity_id(f"flipped_isosceles_triangle_edge{edge_idx}")
+            new_id = self.generate_special_triangle(
+                triangle_type="isosceles",
+                params={
+                    "top_angle": base_entity["top_angle"],
+                    "waist_length": sp.sympify(base_entity["waist_length"]["expr"]),
+                    "base_length": sp.sympify(base_entity["base_length"]["expr"]),
+                    "rotate_mode": rotate_mode
+                },
+                origin_id=new_origin_id,
+                entity_id=entity_id,
+                is_base=False
+            )
+        else:  # 直角三角形
+            entity_id = self._get_unique_entity_id(f"flipped_right_triangle_edge{edge_idx}")
+            new_id = self.generate_special_triangle(
+                triangle_type="right",
+                params={
+                    "leg1": sp.sympify(base_entity["leg1"]["expr"]),
+                    "leg2": sp.sympify(base_entity["leg2"]["expr"]),
+                    "hypotenuse": sp.sympify(base_entity["hypotenuse"]["expr"]),
+                    "rotate_mode": rotate_mode
+                },
+                origin_id=new_origin_id,
+                entity_id=entity_id,
+                is_base=False
+            )
+
+        self.description_parts.append(
+            f"Flipped {base_subtype} triangle over edge {selected_edge_id} (new origin {new_origin_id})."
+        )
+        return new_id
+
+    def _rule_special_triangle_translation(self, base_entity: Dict) -> str:
+        """特殊三角形沿边平移（全边长/半边长）"""
+        base_subtype = base_entity["subtype"]
+        origin_id = base_entity["origin_id"]
+        ox, oy = self.get_point_coords(origin_id)
+
+        # --- 核心修改部分开始 ---
+        # 1. 直接从实体组件中提取所有边
+        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        if len(edges) != 3:
+            raise ValueError(f"Triangle {base_entity['id']} has invalid edges. Expected 3, got {len(edges)}.")
+        
+        # 2. 随机选择一条边
+        edge_idx = random.randint(0, len(edges)-1)
+        selected_edge_id = edges[edge_idx]
+        
+        # 3. 获取所选边的两个顶点
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        # --- 核心修改部分结束 ---
+
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+
+        # 计算边的方向向量和长度（后续逻辑不变）
+        edge_dx = simplify(p2x - p1x)
+        edge_dy = simplify(p2y - p1y)
+        edge_len = simplify(sp.sqrt(edge_dx**2 + edge_dy**2))
+        dir_dx = simplify(edge_dx / edge_len)  # 单位方向向量
+        dir_dy = simplify(edge_dy / edge_len)
+
+        # 平移距离：全边长或半边长
+        translate_mode = random.choice(["full", "half"])
+        dist = edge_len if translate_mode == "full" else simplify(edge_len / 2)
+        tx = simplify(dir_dx * dist)
+        ty = simplify(dir_dy * dist)
+
+        # 新原点坐标
+        new_ox = simplify(ox + tx)
+        new_oy = simplify(oy + ty)
+        new_origin_id = self._add_point(new_ox, new_oy, is_center=True)
+
+        # 生成平移后的三角形（后续逻辑不变）
+        if base_subtype == "isosceles":
+            entity_id = self._get_unique_entity_id(f"translated_isosceles_triangle_edge{edge_idx}")
+            new_id = self.generate_special_triangle(
+                triangle_type="isosceles",
+                params={
+                    "top_angle": base_entity["top_angle"],
+                    "waist_length": sp.sympify(base_entity["waist_length"]["expr"]),
+                    "base_length": sp.sympify(base_entity["base_length"]["expr"]),
+                    "rotate_mode": base_entity["rotate_mode"]
+                },
+                origin_id=new_origin_id,
+                entity_id=entity_id,
+                is_base=False
+            )
+        else:
+            entity_id = self._get_unique_entity_id(f"translated_right_triangle_edge{edge_idx}")
+            new_id = self.generate_special_triangle(
+                triangle_type="right",
+                params={
+                    "leg1": sp.sympify(base_entity["leg1"]["expr"]),
+                    "leg2": sp.sympify(base_entity["leg2"]["expr"]),
+                    "hypotenuse": sp.sympify(base_entity["hypotenuse"]["expr"]),
+                    "rotate_mode": base_entity["rotate_mode"]
+                },
+                origin_id=new_origin_id,
+                entity_id=entity_id,
+                is_base=False
+            )
+
+        self.description_parts.append(
+            f"Translated {base_subtype} triangle along edge {selected_edge_id} by {translate_mode} length (new origin {new_origin_id})."
+        )
+        return new_id
+
+    def _rule_special_rectangle_concentric(self, base_entity: Dict) -> str:
+        """特殊矩形的同心衍生（同中心缩放）"""
+        center_id = base_entity["center_id"]
+        width = simplify(sp.sympify(base_entity["width"]["expr"]))
+        length = simplify(sp.sympify(base_entity["length"]["expr"]))
+        scale = Rational(random.choice([0.5, 2]))  # 缩放比例（同圆的配置）
+
+        # 缩放后长宽保持比例
+        new_width = simplify(width * scale)
+        new_length = simplify(length * scale)
+        entity_id = self._get_unique_entity_id(f"concentric_rectangle")
+        new_id = self.generate_special_rectangle(
+            width=new_width,
+            length=new_length,
+            center_id=center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Concentric rectangle (center {center_id}) scaled by {scale} (new size {new_width}×{new_length})."
+        )
+        return new_id
+
+    def _rule_special_rectangle_circum_inscribe(self, base_entity: Dict) -> str:
+        """特殊矩形的内外接圆（内接圆半径=短边/2，外接圆半径=对角线/2）"""
+        center_id = base_entity["center_id"]
+        width = simplify(sp.sympify(base_entity["width"]["expr"]))
+        length = simplify(sp.sympify(base_entity["length"]["expr"]))
+        is_circum = random.choice([True, False])
+        rel_type = "circumscribed" if is_circum else "inscribed"
+
+        # 计算半径：内接圆（切于四边）取短边/2；外接圆（过四顶点）取对角线/2
+        if is_circum:
+            diagonal = simplify(sp.sqrt(width**2 + length**2))
+            radius = simplify(diagonal / 2)
+        else:
+            short_side = min(width, length)
+            radius = simplify(short_side / 2)
+
+        # 生成圆
+        entity_id = self._get_unique_entity_id(f"{rel_type}circle_rectangle")
+        arc_id = self.generate_circle(
+            radius=radius,
+            center_id=center_id,
+            start_angle=0,
+            end_angle=2*pi,
+            entity_id=entity_id,
+            is_base=False
+        )
+        self.complete_circle_arcs.add(arc_id)
+        self.description_parts.append(
+            f"{rel_type.capitalize()} circle (center {center_id}) for rectangle, radius {radius}."
+        )
+        return entity_id
+
+    def _rule_special_rectangle_flip(self, base_entity: Dict) -> str:
+        """特殊矩形沿四条边翻转（对称衍生）"""
+        center_id = base_entity["center_id"]
+        cx, cy = self.get_point_coords(center_id)
+        width = simplify(sp.sympify(base_entity["width"]["expr"]))
+        length = simplify(sp.sympify(base_entity["length"]["expr"]))
+
+        # --- 核心修改部分开始 ---
+        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        if len(edges) != 4:
+            raise ValueError(f"Rectangle {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
+        
+        edge_idx = random.randint(0, len(edges)-1)
+        selected_edge_id = edges[edge_idx]
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        # --- 核心修改部分结束 ---
+
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+
+        dx = simplify(p2x - p1x)
+        dy = simplify(p2y - p1y)
+        numerator = simplify(2 * (dx*(p1y - cy) - dy*(p1x - cx)))
+        denominator = simplify(dx**2 + dy**2)
+        new_cx = simplify(cx - (dx * numerator) / denominator)
+        new_cy = simplify(cy - (dy * numerator) / denominator)
+        new_center_id = self._add_point(new_cx, new_cy, is_center=True)
+
+        entity_id = self._get_unique_entity_id(f"flipped_rectangle_edge{edge_idx}")
+        new_id = self.generate_special_rectangle(
+            width=width,
+            length=length,
+            center_id=new_center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Flipped rectangle over edge {selected_edge_id} (new center {new_center_id})."
+        )
+        return new_id
+    
+    def _rule_special_rectangle_translation(self, base_entity: Dict) -> str:
+        """特殊矩形沿边平移（全边长/半边长）"""
+        center_id = base_entity["center_id"]
+        cx, cy = self.get_point_coords(center_id)
+        width = simplify(sp.sympify(base_entity["width"]["expr"]))
+        length = simplify(sp.sympify(base_entity["length"]["expr"]))
+
+        # --- 核心修改部分开始 ---
+        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        if len(edges) != 4:
+            raise ValueError(f"Rectangle {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
+        
+        edge_idx = random.randint(0, len(edges)-1)
+        selected_edge_id = edges[edge_idx]
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        # --- 核心修改部分结束 ---
+
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+
+        edge_dx = simplify(p2x - p1x)
+        edge_dy = simplify(p2y - p1y)
+        edge_len = simplify(sp.sqrt(edge_dx**2 + edge_dy**2))
+        dir_dx = simplify(edge_dx / edge_len)
+        dir_dy = simplify(edge_dy / edge_len)
+
+        translate_mode = random.choice(["full", "half"])
+        dist = edge_len if translate_mode == "full" else simplify(edge_len / 2)
+        tx = simplify(dir_dx * dist)
+        ty = simplify(dir_dy * dist)
+
+        new_cx = simplify(cx + tx)
+        new_cy = simplify(cy + ty)
+        new_center_id = self._add_point(new_cx, new_cy, is_center=True)
+
+        entity_id = self._get_unique_entity_id(f"translated_rectangle_edge{edge_idx}")
+        new_id = self.generate_special_rectangle(
+            width=width,
+            length=length,
+            center_id=new_center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Translated rectangle along edge {selected_edge_id} by {translate_mode} length (new center {new_center_id})."
+        )
+        return new_id
+
+    def _rule_parallelogram_concentric(self, base_entity: Dict) -> str:
+        """平行四边形的同心衍生（同中心缩放）"""
+        center_id = base_entity["center_id"]
+        base = simplify(sp.sympify(base_entity["base"]["expr"]))
+        height = simplify(sp.sympify(base_entity["height"]["expr"]))
+        angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
+        scale = Rational(random.choice([0.5, 2]))
+
+        # 缩放后参数
+        new_base = simplify(base * scale)
+        new_height = simplify(height * scale)
+        entity_id = self._get_unique_entity_id(f"concentric_parallelogram")
+        new_id = self.generate_parallelogram(
+            base=new_base,
+            height=new_height,
+            angle=angle,
+            center_id=center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Concentric parallelogram (center {center_id}) scaled by {scale} (new base {new_base}, height {new_height})."
+        )
+        return new_id
+
+    def _rule_parallelogram_flip(self, base_entity: Dict) -> str:
+        """平行四边形沿四条边翻转（对称衍生）"""
+        center_id = base_entity["center_id"]
+        cx, cy = self.get_point_coords(center_id)
+        base = simplify(sp.sympify(base_entity["base"]["expr"]))
+        height = simplify(sp.sympify(base_entity["height"]["expr"]))
+        angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
+
+        # --- 核心修改部分开始 ---
+        # 1. 直接从实体组件中提取所有边
+        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        if len(edges) != 4:
+            raise ValueError(f"Parallelogram {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
+        
+        # 2. 随机选择一条边
+        edge_idx = random.randint(0, len(edges)-1)
+        selected_edge_id = edges[edge_idx]
+        
+        # 3. 获取所选边的两个顶点
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        # --- 核心修改部分结束 ---
+
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+
+        # 计算中心对称点（后续逻辑不变）
+        dx = simplify(p2x - p1x)
+        dy = simplify(p2y - p1y)
+        numerator = simplify(2 * (dx*(p1y - cy) - dy*(p1x - cx)))
+        denominator = simplify(dx**2 + dy**2)
+        new_cx = simplify(cx - (dx * numerator) / denominator)
+        new_cy = simplify(cy - (dy * numerator) / denominator)
+        new_center_id = self._add_point(new_cx, new_cy, is_center=True)
+
+        # 生成翻转后的平行四边形（后续逻辑不变）
+        entity_id = self._get_unique_entity_id(f"flipped_parallelogram_edge{edge_idx}")
+        new_id = self.generate_parallelogram(
+            base=base,
+            height=height,
+            angle=angle,
+            center_id=new_center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Flipped parallelogram over edge {selected_edge_id} (new center {new_center_id})."
+        )
+        return new_id
+
+    def _rule_parallelogram_translation(self, base_entity: Dict) -> str:
+        """平行四边形沿边平移（全边长/半边长）"""
+        center_id = base_entity["center_id"]
+        cx, cy = self.get_point_coords(center_id)
+        base = simplify(sp.sympify(base_entity["base"]["expr"]))
+        height = simplify(sp.sympify(base_entity["height"]["expr"]))
+        angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
+
+        # --- 核心修改部分开始 ---
+        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        if len(edges) != 4:
+            raise ValueError(f"Parallelogram {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
+        
+        edge_idx = random.randint(0, len(edges)-1)
+        selected_edge_id = edges[edge_idx]
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        # --- 核心修改部分结束 ---
+
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+
+        edge_dx = simplify(p2x - p1x)
+        edge_dy = simplify(p2y - p1y)
+        edge_len = simplify(sp.sqrt(edge_dx**2 + edge_dy**2))
+        dir_dx = simplify(edge_dx / edge_len)
+        dir_dy = simplify(edge_dy / edge_len)
+        
+        translate_mode = random.choice(["full", "half"])
+        dist = edge_len if translate_mode == "full" else simplify(edge_len / 2)
+        tx = simplify(dir_dx * dist)
+        ty = simplify(dir_dy * dist)
+
+        new_cx = simplify(cx + tx)
+        new_cy = simplify(cy + ty)
+        new_center_id = self._add_point(new_cx, new_cy, is_center=True)
+
+        entity_id = self._get_unique_entity_id(f"translated_parallelogram_edge{edge_idx}")
+        new_id = self.generate_parallelogram(
+            base=base,
+            height=height,
+            angle=angle,
+            center_id=new_center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Translated parallelogram along edge {selected_edge_id} by {translate_mode} length (new center {new_center_id})."
+        )
+        return new_id
+
+    def _rule_trapezoid_concentric(self, base_entity: Dict) -> str:
+        """等腰梯形的同心衍生（同中心缩放）"""
+        center_id = base_entity["center_id"]
+        base1 = simplify(sp.sympify(base_entity["base1"]["expr"]))  # 下底
+        base2 = simplify(sp.sympify(base_entity["base2"]["expr"]))  # 上底
+        height = simplify(sp.sympify(base_entity["height"]["expr"]))
+        angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
+        scale = Rational(random.choice([0.5, 2]))
+
+        # 缩放后保持比例（上底<下底）
+        new_base1 = simplify(base1 * scale)
+        new_base2 = simplify(base2 * scale)
+        new_height = simplify(height * scale)
+        if new_base2 >= new_base1:
+            new_base2 = simplify(new_base1 * 0.8)  # 确保上底仍较短
+
+        entity_id = self._get_unique_entity_id(f"concentric_trapezoid")
+        new_id = self.generate_trapezoid(
+            base1=new_base1,
+            base2=new_base2,
+            height=new_height,
+            angle=angle,
+            center_id=center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Concentric trapezoid (center {center_id}) scaled by {scale} (new bases {new_base1}, {new_base2}; height {new_height})."
+        )
+        return new_id
+
+    def _rule_trapezoid_flip(self, base_entity: Dict) -> str:
+        """等腰梯形沿四条边翻转（对称衍生）"""
+        center_id = base_entity["center_id"]
+        cx, cy = self.get_point_coords(center_id)
+        base1 = simplify(sp.sympify(base_entity["base1"]["expr"]))
+        base2 = simplify(sp.sympify(base_entity["base2"]["expr"]))
+        height = simplify(sp.sympify(base_entity["height"]["expr"]))
+        angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
+
+        # --- 核心修改部分开始 ---
+        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        if len(edges) != 4:
+            raise ValueError(f"Trapezoid {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
+        
+        edge_idx = random.randint(0, len(edges)-1)
+        selected_edge_id = edges[edge_idx]
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        # --- 核心修改部分结束 ---
+
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+
+        dx = simplify(p2x - p1x)
+        dy = simplify(p2y - p1y)
+        numerator = simplify(2 * (dx*(p1y - cy) - dy*(p1x - cx)))
+        denominator = simplify(dx**2 + dy**2)
+        new_cx = simplify(cx - (dx * numerator) / denominator)
+        new_cy = simplify(cy - (dy * numerator) / denominator)
+        new_center_id = self._add_point(new_cx, new_cy, is_center=True)
+
+        entity_id = self._get_unique_entity_id(f"flipped_trapezoid_edge{edge_idx}")
+        new_id = self.generate_trapezoid(
+            base1=base1,
+            base2=base2,
+            height=height,
+            angle=angle,
+            center_id=new_center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Flipped trapezoid over edge {selected_edge_id} (new center {new_center_id})."
+        )
+        return new_id
+
+    def _rule_trapezoid_translation(self, base_entity: Dict) -> str:
+        """等腰梯形沿边平移（全边长/半边长）"""
+        center_id = base_entity["center_id"]
+        cx, cy = self.get_point_coords(center_id)
+        base1 = simplify(sp.sympify(base_entity["base1"]["expr"]))
+        base2 = simplify(sp.sympify(base_entity["base2"]["expr"]))
+        height = simplify(sp.sympify(base_entity["height"]["expr"]))
+        angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
+
+        # --- 核心修改部分开始 ---
+        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        if len(edges) != 4:
+            raise ValueError(f"Trapezoid {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
+        
+        edge_idx = random.randint(0, len(edges)-1)
+        selected_edge_id = edges[edge_idx]
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        # --- 核心修改部分结束 ---
+
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+
+        edge_dx = simplify(p2x - p1x)
+        edge_dy = simplify(p2y - p1y)
+        edge_len = simplify(sp.sqrt(edge_dx**2 + edge_dy**2))
+        dir_dx = simplify(edge_dx / edge_len)
+        dir_dy = simplify(edge_dy / edge_len)
+        
+        translate_mode = random.choice(["full", "half"])
+        dist = edge_len if translate_mode == "full" else simplify(edge_len / 2)
+        tx = simplify(dir_dx * dist)
+        ty = simplify(dir_dy * dist)
+
+        new_cx = simplify(cx + tx)
+        new_cy = simplify(cy + ty)
+        new_center_id = self._add_point(new_cx, new_cy, is_center=True)
+
+        entity_id = self._get_unique_entity_id(f"translated_trapezoid_edge{edge_idx}")
+        new_id = self.generate_trapezoid(
+            base1=base1,
+            base2=base2,
+            height=height,
+            angle=angle,
+            center_id=new_center_id,
+            rotate_mode=base_entity["rotate_mode"],
+            entity_id=entity_id,
+            is_base=False
+        )
+
+        self.description_parts.append(
+            f"Translated trapezoid along edge {selected_edge_id} by {translate_mode} length (new center {new_center_id})."
+        )
         return new_id
 
 
@@ -1791,45 +2512,92 @@ class TemplateGenerator:
             # entity["components"] = list(set(entity["components"] + all_lines + all_arcs))
 
         # 6. 补充描述
-        self.description_parts.append(
-            f"Geometry finalized: {len(new_lines)} new lines and {len(new_arcs)} new arcs generated by splitting. "
-            f"Total lines: {len(self.data['lines'])}, total arcs: {len(self.data['arcs'])}, total points: {len(self.data['points'])}."
-        )
-        self.data["description"] = " ".join(self.description_parts)
+        # self.description_parts.append(
+        #     f"Geometry finalized: {len(new_lines)} new lines and {len(new_arcs)} new arcs generated by splitting. "
+        #     f"Total lines: {len(self.data['lines'])}, total arcs: {len(self.data['arcs'])}, total points: {len(self.data['points'])}."
+        # )
+        # self.data["description"] = " ".join(self.description_parts)
 
 
     # ------------------------------ 衍生流程 ------------------------------
     def generate_derivations(self) -> None:
         num_rounds = random.randint(*self.config["derivation"]["round_range"])
-        self.description_parts.append(f"Total {num_rounds} derivation rounds.")
-        
-        rules = list(self.config["derivation"]["rules"].items())
-        rule_probs = [cfg["prob"] for _, cfg in rules]
-        rule_list = [rule for rule, _ in rules]
 
         for round_idx in range(num_rounds):
+            if not self.current_entities:
+                break
+
             base_entity_id = random.choice(self.current_entities)
             base_entity = self.get_entity(base_entity_id)
-            rule = random.choices(rule_list, weights=rule_probs)[0]
-            self.description_parts.append(f"Round {round_idx+1}: applying '{rule}' rule.")
+            base_type = base_entity["type"]
 
-            if rule == "concentric":
-                new_id = self._rule_concentric(base_entity)
-            elif rule == "translation":
-                new_id = self._rule_translation(base_entity)
-            elif rule == "circum_inscribe":
-                new_id = self._rule_circum_inscribe(base_entity)
-            elif rule == "vertex_on_center":
-                new_id = self._rule_vertex_on_center(base_entity)
-            else:
-                raise ValueError(f"未知规则：{rule}")
+            # 检查配置中是否存在当前实体类型的规则
+            if base_type not in self.config["derivation"]["rules"]:
+                continue
 
-            if new_id not in self.current_entities:
-                self.current_entities.append(new_id)
+            supported_rules = self.config["derivation"]["rules"][base_type]["supported_rules"]
+            rule_names = [rule["name"] for rule in supported_rules]
+            rule_probs = [rule["prob"] for rule in supported_rules]
+
+            try:
+                selected_rule_name = random.choices(rule_names, weights=rule_probs, k=1)[0]
+            except ValueError:
+                continue
+
+            new_id = None
+            try:
+                if base_type == "circle" or base_type == "polygon":
+                    if selected_rule_name == "concentric":
+                        new_id = self._rule_concentric(base_entity)
+                    elif selected_rule_name == "translation":
+                        new_id = self._rule_translation(base_entity)
+                    elif selected_rule_name == "circum_inscribe":
+                        new_id = self._rule_circum_inscribe(base_entity)
+                    elif selected_rule_name == "vertex_on_center":
+                        new_id = self._rule_vertex_on_center(base_entity)
                 
-            self._calculate_new_entity_intersections(new_id)
-            
-        self._finalize_geometry()
+                elif base_type == "special_triangle":
+                    if selected_rule_name == "circum_inscribe":
+                        new_id = self._rule_special_triangle_circum_inscribe(base_entity)
+                    elif selected_rule_name == "flip":
+                        new_id = self._rule_special_triangle_flip(base_entity)
+                    elif selected_rule_name == "translation":
+                        new_id = self._rule_special_triangle_translation(base_entity)
+                    
+                elif base_type == "special_rectangle":
+                    if selected_rule_name == "concentric":
+                        new_id = self._rule_special_rectangle_concentric(base_entity)
+                    elif selected_rule_name == "circum_inscribe":
+                        new_id = self._rule_special_rectangle_circum_inscribe(base_entity)
+                    elif selected_rule_name == "flip":
+                        new_id = self._rule_special_rectangle_flip(base_entity)
+                    elif selected_rule_name == "translation":
+                        new_id = self._rule_special_rectangle_translation(base_entity)
+                    
+                elif base_type == "parallelogram":
+                    if selected_rule_name == "concentric":
+                        new_id = self._rule_parallelogram_concentric(base_entity)
+                    elif selected_rule_name == "flip":
+                        new_id = self._rule_parallelogram_flip(base_entity)
+                    elif selected_rule_name == "translation":
+                        new_id = self._rule_parallelogram_translation(base_entity)
+                    
+                elif base_type == "trapezoid":
+                    if selected_rule_name == "concentric":
+                        new_id = self._rule_trapezoid_concentric(base_entity)
+                    elif selected_rule_name == "flip":
+                        new_id = self._rule_trapezoid_flip(base_entity)
+                    elif selected_rule_name == "translation":
+                        new_id = self._rule_trapezoid_translation(base_entity)
+                        
+            except Exception as e:
+                print(f"Error applying rule '{selected_rule_name}': {e}")
 
+            if new_id and new_id not in self.current_entities:
+                self.current_entities.append(new_id)
+                self._calculate_new_entity_intersections(new_id)
+
+        self._finalize_geometry()
+    
     def export_json(self) -> Dict:
         return self.data.copy()
