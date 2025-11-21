@@ -2,7 +2,7 @@ import json
 import random
 import os
 import sympy as sp
-from sympy import symbols, cos, sin, pi, simplify, sqrt, Eq, atan2, tan, nsimplify, Rational, Min, Max, solve, Ge, Le
+from sympy import S, symbols, cos, sin, pi, simplify, sqrt, Eq, atan2, tan, nsimplify, Rational, Min, Max, solve, Ge, Le
 from typing import List, Dict, Tuple, Optional, Set, Iterable
 import re
 
@@ -719,10 +719,10 @@ class TemplateGenerator:
                 base_angle_rad = sp.rad((180 - top_angle) / 2)
                 if length_type == "waist":
                     waist_length = length
-                    base_length = 2 * waist_length * sp.sin(top_angle_rad / 2)
+                    base_length = sp.sympify(2 * waist_length * sp.sin(top_angle_rad / 2))
                 else:
                     base_length = length
-                    waist_length = (base_length / 2) / sp.cos(base_angle_rad)
+                    waist_length = sp.sympify((base_length / 2) / sp.cos(base_angle_rad))
 
                 # Rotation config (if enabled)
                 rotate_mode = "original"
@@ -808,6 +808,9 @@ class TemplateGenerator:
                 rotate_mode = random.choice(config["rotate"]["modes"])
                 if rotate_mode == "swap_ratio":
                     width, length = length, width 
+            
+            # width = sp.simplify(width)
+            # length = sp.simplify(length)
 
             # Generate rectangle (origin_id = center)
             entity_id = self._get_unique_entity_id(f"base_rectangle_{width}:{length}")
@@ -986,7 +989,7 @@ class TemplateGenerator:
         self,
         triangle_type: str,  # "isosceles" or "right"
         params: dict,
-        origin_id: str,  # 等腰：底边中点；直角：斜边中点
+        origin_id: str, 
         entity_id: Optional[str] = None,
         is_base: bool = False
     ) -> str:
@@ -997,7 +1000,6 @@ class TemplateGenerator:
         # --- 核心修正：获取基准点 origin_id 的世界坐标 ---
         ox, oy = self.get_point_coords(origin_id)
         
-        # 解析基础参数
         rotate_mode = params["rotate_mode"]
         components = [origin_id]  # 包含原点（底边中点/斜边中点）
         entity_data = {
@@ -1013,11 +1015,11 @@ class TemplateGenerator:
         if triangle_type == "isosceles":
             # 等腰三角形参数处理
             top_angle = params["top_angle"]
-            waist_length = simplify(params["waist_length"])  # 符号化简
+            waist_length = simplify(params["waist_length"]) 
             base_length = simplify(params["base_length"])
             
             # 计算相对于 origin_id 的顶点坐标
-            base_half = base_length / 2
+            base_half = simplify(S(base_length) / 2)
             # 底边左点相对坐标
             rx_a, ry_a = -base_half, 0
             # 底边右点相对坐标
@@ -1065,23 +1067,27 @@ class TemplateGenerator:
             
             # --- 核心修正：所有坐标计算都基于相对坐标 ---
             rx_a, ry_a, rx_b, ry_b, rx_c, ry_c = 0, 0, 0, 0, 0, 0
+            
+            leg1_half = simplify(S(leg1) / 2)
+            leg2_half = simplify(S(leg2) / 2)
 
             if rotate_mode == "original":
-                rx_a, ry_a = -leg1/2, leg2/2
-                rx_b, ry_b = leg1/2, -leg2/2  # 直角顶点
-                rx_c, ry_c = leg1/2, leg2/2
+                rx_a, ry_a = -leg1_half, leg2_half
+                rx_b, ry_b = leg1_half, -leg2_half  # 直角顶点
+                rx_c, ry_c = leg1_half, leg2_half
             elif rotate_mode == "rotate_90":
-                rx_a, ry_a = -leg2/2, -leg1/2
-                rx_b, ry_b = leg2/2, leg1/2    # 直角顶点
-                rx_c, ry_c = -leg2/2, leg1/2
+                rx_a, ry_a = -leg2_half, -leg1_half
+                rx_b, ry_b = leg2_half, leg1_half    # 直角顶点
+                rx_c, ry_c = -leg2_half, leg1_half
             elif rotate_mode == "rotate_180":
-                rx_a, ry_a = leg1/2, -leg2/2
-                rx_b, ry_b = -leg1/2, leg2/2   # 直角顶点
-                rx_c, ry_c = -leg1/2, -leg2/2
+                rx_a, ry_a = leg1_half, -leg2_half
+                rx_b, ry_b = -leg1_half, leg2_half   # 直角顶点
+                rx_c, ry_c = -leg1_half, -leg2_half
             elif rotate_mode == "rotate_270":
-                rx_a, ry_a = leg2/2, leg1/2
-                rx_b, ry_b = -leg2/2, -leg1/2  # 直角顶点
-                rx_c, ry_c = leg2/2, -leg1/2
+                rx_a, ry_a = leg2_half, leg1_half
+                rx_b, ry_b = -leg2_half, -leg1_half  # 直角顶点
+                rx_c, ry_c = leg2_half, -leg1_half
+            
             
             # --- 核心修正：计算最终世界坐标 ---
             point_a = self._add_point(ox + rx_a, oy + ry_a, level=level)
