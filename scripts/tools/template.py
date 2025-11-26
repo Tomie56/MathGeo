@@ -705,7 +705,8 @@ class TemplateGenerator:
 
             if tri_subtype == "isosceles":
                 top_angle = random.choice(config["angle_choices"])
-                length_type = random.choice(["waist", "base"])
+                length_type = random.choice(["waist", "base"]) if config["length_type"] == "either" else config["length_type"]
+                # length_type = random.choice(["waist", "base"])
                 len_min, len_max = config["length_range"]
                 is_root = random.choice([False, True])
                 if is_root:
@@ -716,7 +717,10 @@ class TemplateGenerator:
 
                 # Calculate parameters (infer other values from waist/base length)
                 top_angle_rad = sp.rad(top_angle)
-                base_angle_rad = sp.rad((180 - top_angle) / 2)
+                # base_angle_rad = sp.rad((180 - top_angle) / 2)
+                base_angle_deg_sym = (S(180) - top_angle) / 2
+                base_angle_rad = sp.rad(base_angle_deg_sym)
+                
                 if length_type == "waist":
                     waist_length = length
                     base_length = sp.sympify(2 * waist_length * sp.sin(top_angle_rad / 2))
