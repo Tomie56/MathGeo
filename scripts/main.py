@@ -132,10 +132,10 @@ class GeoChainPipeline:
 
     def run_builder(self) -> None:
         """步骤2：读取基础图形JSONL，为每个图形生成增强图形"""
-        # if not self.base_jsonl_path or not os.path.exists(self.base_jsonl_path):
-        #     raise RuntimeError("未找到基础图形JSONL文件，无法执行增强步骤")
+        if not self.base_jsonl_path or not os.path.exists(self.base_jsonl_path):
+            raise RuntimeError("未找到基础图形JSONL文件，无法执行增强步骤")
         
-        self.base_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n20_v4/json/base/base_20251126_095002_573.jsonl"
+        # self.base_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n20_v4/json/base/base_20251126_095002_573.jsonl"
         
         logger.info("=== 开始生成增强图形 ===")
         builder_cfg = self.config['builder']
@@ -376,7 +376,7 @@ class GeoChainPipeline:
     def run(self) -> None:
         """执行全流程"""
         try:
-            # self.run_template()      # 生成基础图形
+            self.run_template()      # 生成基础图形
             self.run_builder()       # 增强图形
             # self.run_drawer()        # 绘制原始图像
             self.run_shader()        # 区域阴影与标注

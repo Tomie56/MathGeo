@@ -75,21 +75,24 @@ class RandomGeometryBuilder:
         cache = {}
         for e in self.entities:
             eid = e["id"]
-            cache[eid] = [c for c in e["components"] if c in self.point_id_map]
+            if "vertices" in e:
+                cache[eid] = [c for c in e["vertices"] if c in self.point_id_map]
         return cache
 
     def _cache_entity_lines(self) -> Dict[str, List[str]]:
         cache = {}
         for e in self.entities:
             eid = e["id"]
-            cache[eid] = [c for c in e["components"] if c in self.line_id_map]
+            if "lines" in e:
+                cache[eid] = [c for c in e["lines"] if c in self.line_id_map]
         return cache
 
     def _cache_entity_arcs(self) -> Dict[str, List[str]]:
         cache = {}
         for e in self.entities:
             eid = e["id"]
-            cache[eid] = [c for c in e["components"] if c in self.arc_id_map]
+            if "arcs" in e:
+                cache[eid] = [c for c in e["arcs"] if c in self.arc_id_map]
         return cache
 
     def _cache_on_segment_points(self) -> List[str]:
@@ -341,7 +344,7 @@ class RandomGeometryBuilder:
         
         valid_circles = []
         for entity in circle_entities:
-            for comp_id in entity["components"]:
+            for comp_id in entity["arcs"]:
                 if comp_id in self.arc_id_map:
                     circle = self.arc_id_map[comp_id]
                     if ("center_id" in circle and "radius_expr" in circle and 
@@ -376,7 +379,7 @@ class RandomGeometryBuilder:
                     return False
                 
                 for entity in circle_entities:
-                    for comp_id in entity["components"]:
+                    for comp_id in entity["arcs"]:
                         if comp_id in self.arc_id_map:
                             circle = self.arc_id_map[comp_id]
                             if ("center_id" in circle and "radius" in circle and 
@@ -429,7 +432,7 @@ class RandomGeometryBuilder:
     def _generate_random_operation(self, op_type: str, op_constraints: Dict) -> Dict:
         if op_type == "connect_points":
             constraints = op_constraints.get("connect_points", {})
-            target_entity_types = constraints.get("entity_types", ["polygon", "composite"])
+            target_entity_types = constraints.get("entity_types", ["polygon", "special_rectangle", "special_triangle", "parallelogram", "trapezoid"])
             allow_isolated = constraints.get("allow_isolated", False)
             for retry in range(self.MAX_RETRIES):
                 try:
@@ -1394,25 +1397,30 @@ class RandomGeometryBuilder:
         if composite_id not in self.entity_id_map:
             self.entities.append({
                 "id": composite_id,
-                "type": "composite",
-                "components": []
+                "type": "composite"
             })
             self.entity_id_map[composite_id] = self.entities[-1]
         
         composite = self.entity_id_map[composite_id]
         
         all_components = []
-        for p in self.points:
-            if p["id"] not in composite["components"]:
-                composite["components"].append(p["id"])
-        for l in self.lines:
-            if l["id"] not in composite["components"]:
-                composite["components"].append(l["id"])
-        for a in self.arcs:
-            if a["id"] not in composite["components"]:
-                composite["components"].append(a["id"])
         
-        composite["components"] = all_components
+        if "vertices" in composite:
+            for p in self.points:
+                if p["id"] not in composite["vertices"]:
+                    composite["vertices"].append(p["id"])
+                    
+        if "lines" in composite:
+            for l in self.lines:
+                if l["id"] not in composite["lines"]:
+                    composite["lines"].append(l["id"])
+                    
+        if "arcs" in composite:
+            for a in self.arcs:
+                if a["id"] not in composite["arcs"]:
+                    composite["arcs"].append(a["id"])
+        
+        # composite["components"] = all_components
 
         self.entity_vertices_cache[composite_id] = [
             c for c in all_components if c in self.point_id_map

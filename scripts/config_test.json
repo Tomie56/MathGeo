@@ -1,14 +1,14 @@
 {
     "global": {
-        "output_root": "./results_n20_v4",
-        "main_seed": 10000,
+        "output_root": "./results_n20_v5",
+        "main_seed": 2200,
         "thread_num": 20
     },
     "template": {
-        "n": 5,
+        "n": 40,
         "points_limit": 30,
         "lines_limit": 40,
-        "output_dir": "./results_n20_v4/json/base",
+        "output_dir": "./results_n20_v5/json/base",
         "output_filename": "base_templates.jsonl",
         "base": {
             "types": ["polygon", "circle", "special_triangle", "special_rectangle", "parallelogram", "trapezoid"],
@@ -91,7 +91,8 @@
             }
         },
         "derivation": {
-            "round_range": [1, 3],
+            "round_range": [1, 2],
+            "mode": "sequential",
             "rules": {
                 "circle": {
                     "supported_rules": [
@@ -138,7 +139,7 @@
         }
     },
     "builder": {
-        "output_dir": "./results_n20_v4/json/enhanced",
+        "output_dir": "./results_n20_v5/json/enhanced",
         "output_filename": "enhanced_geometries.jsonl",
         "num_enhancements": 5,
         "rounds_distribution": {
@@ -180,7 +181,7 @@
         }
     },
     "drawer": {
-        "output_dir": "./results_n20_v4/images/raw",
+        "output_dir": "./results_n20_v5/images/raw",
         "canvas_size": [1600, 1200],
         "margin": 50,
         "line_color": "#000000",
@@ -216,7 +217,7 @@
         "point": {
             "enabled": true, 
             "radius": 5,
-            "color": [0, 0, 0], 
+            "color": [0, 0, 255], 
             "text": {
                 "enabled": true,
                 "size": 18,
@@ -260,6 +261,6 @@
             "angle": 0.3
         },   
         "num_questions_per_group": 3,
-        "output_dir": "./results_n20_v4/json/qa"
+        "output_dir": "./results_n20_v5/json/qa"
     }
 }

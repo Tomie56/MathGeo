@@ -699,7 +699,7 @@ class EnhancedDrawer:
             
             if entity_data["validity"] == False:
                 logger.warning(f"区域 {region['label']} 轮廓匹配失败，跳过阴影生成")
-                continue
+                # continue
 
             # 构建阴影实体信息（与原有格式一致）
             shadow_entity = {
@@ -708,11 +708,7 @@ class EnhancedDrawer:
                 "points": entity_data["points"],
                 "lines": entity_data["lines"],
                 "arcs": entity_data["arcs"],
-                "stats": {
-                    "total_points": len(entity_data["points"]),
-                    "total_lines": len(entity_data["lines"]),
-                    "total_arcs": len(entity_data["arcs"])
-                }
+                "validity": entity_data["validity"]
             }
             shadow_entities.append(shadow_entity)
             shaded_img = shader.apply(shaded_img, region["mask"],** shader_params)
@@ -1170,6 +1166,7 @@ class EnhancedDrawer:
         return matched_point_list
 
     def _check_geometric_validity(
+        self,
         matched_line_ids: List[str],
         matched_arc_ids: List[str],
         original_lines: List[Dict],
@@ -1396,7 +1393,7 @@ class EnhancedDrawer:
         
         except Exception as e:
             logger.error(f"基元匹配流程出错：{str(e)}，返回空结果")
-            return {"points": [], "lines": [], "arcs": []}
+            return {"points": [], "lines": [], "arcs": [], "validity": False}
 
     def process(self) -> None:
         """处理所有增强JSON数据，生成阴影图像和标注"""

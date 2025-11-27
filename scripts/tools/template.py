@@ -50,7 +50,6 @@ class TemplateGenerator:
         os.makedirs(config["output_dir"], exist_ok=True)
         return config
 
-
     # ------------------------------ 表达式格式化 ------------------------------
     def _format_expr(self, expr: sp.Expr) -> str:
         simplified = simplify(expr)
@@ -68,7 +67,7 @@ class TemplateGenerator:
         return expr_str
 
 
-    # ------------------------------ ID生成工具（增强：新增中心点O系列） ------------------------------
+    # ------------------------------ ID生成工具 ------------------------------
     def _get_letter_id(self) -> str:
         """生成普通点ID（A,B,C...）"""
         counter = self.letter_counter
@@ -115,7 +114,6 @@ class TemplateGenerator:
         self.entity_ids.add(new_id)
         return new_id
 
-
     # ------------------------------ 点工具 ------------------------------
     def _is_point(self, component_id: str) -> bool:
         """判断一个组件ID是否为点"""
@@ -149,12 +147,18 @@ class TemplateGenerator:
                 arc["start_point_id"] = new_pid
             if arc["end_point_id"] == old_pid:
                 arc["end_point_id"] = new_pid
+            if arc["center_point_id"] == old_pid:
+                arc["center_point_id"] = new_pid
 
         # 3. 更新实体组件
         for entity in self.data["entities"]:
-            for component in entity["components"]:
-                if component == old_pid:
-                    component = new_pid
+            if "vertices" in entity:
+                for component in entity["vertices"]:
+                    if component == old_pid:
+                        component = new_pid
+            
+            if "center_id" in entity and entity["center_id"] == old_pid:
+                entity["center_id"] = new_pid
 
     def _add_point(self, x_expr: sp.Expr, y_expr: sp.Expr, is_center: bool = False, is_circle_init: bool = False, level: int = 1) -> str:
  
@@ -175,8 +179,9 @@ class TemplateGenerator:
             
             x_diff = sp.simplify(old_x - x_expr)
             y_diff = sp.simplify(old_y - y_expr)
-            x_equal = x_diff.is_zero  # 返回True/False，避免Relational对象
+            x_equal = x_diff.is_zero
             y_equal = y_diff.is_zero
+            update_tag = old_point.get("is_circle_init") or old_point.get("is_center")
             
             if x_equal and y_equal:
                 old_pid = old_point["id"]
@@ -184,7 +189,7 @@ class TemplateGenerator:
                 if old_point["level"] != new_level:
                     self.data["points"][idx]["level"] = new_level
                     
-                if old_point.get("is_circle_init") and not is_circle_init:
+                if update_tag and not is_circle_init and not is_center:
                     old_related_edges = old_point["related_edges"].copy()
                     del self.data["points"][idx]
                     self.point_ids.remove(old_pid)
@@ -241,10 +246,10 @@ class TemplateGenerator:
         return next(e for e in self.data["entities"] if e["id"] == entity_id)
 
     def _get_center_id(self, entity: Dict) -> str:
-        if entity["type"] == "polygon":
-            return next(c for c in entity["components"] if any(p["id"] == c and p["is_center"] for p in self.data["points"]))
-        else:
-            return next(c for c in entity["components"] if any(p["id"] == c and p["is_center"] for p in self.data["points"]))
+        center_id = entity.get("center_id")
+        if center_id is None:
+            raise ValueError(f"实体 {entity['id']} 缺少 center_id")
+        return center_id
 
 
     # ------------------------------ 边/弧查重工具 ------------------------------
@@ -268,7 +273,7 @@ class TemplateGenerator:
         return None
 
     def _add_line(self, start_pid: str, end_pid: str) -> str:
-        """添加线段（先查重，重复则返回已有ID）"""
+        """添加线段"""
         
         start_point = next(p for p in self.data["points"] if p["id"] == start_pid)
         end_point = next(p for p in self.data["points"] if p["id"] == end_pid)
@@ -301,7 +306,7 @@ class TemplateGenerator:
         return lid
 
     def _add_arc(self, start_pid: str, end_pid: str, center_pid: str, radius_expr: sp.Expr, angle_expr: sp.Expr, is_complete: bool) -> str:
-        """添加弧（先查重，重复则返回已有ID）"""
+        """添加弧"""
         
         start_point = next(p for p in self.data["points"] if p["id"] == start_pid)
         end_point = next(p for p in self.data["points"] if p["id"] == end_pid)
@@ -517,9 +522,8 @@ class TemplateGenerator:
         
         return unique_intersections
 
-
     def _find_all_intersections(self):
-        """查找所有线段与圆、圆与圆的交点"""
+        """查找所有线段与弧、弧与弧的交点"""
         # 1. 收集所有圆（弧）和线段
         circles = [] 
         for arc in self.data["arcs"]:
@@ -931,7 +935,8 @@ class TemplateGenerator:
             "id": entity_id,
             "type": "polygon",
             "center_id": center_id,
-            "components": [center_id] + vertices + lines,
+            "vertices": vertices,
+            "lines": lines,
             "n": n,
             "side_length": {"expr": self._format_expr(side_length), "latex": sp.latex(side_length)},
             "radius": {"expr": self._format_expr(r_expr), "latex": sp.latex(r_expr)},
@@ -980,7 +985,9 @@ class TemplateGenerator:
             "id": entity_id,
             "type": "circle",
             "center_id": center_id,
-            "components": [center_id, start_id, end_id, arc_id],
+            "start_id": start_id,
+            "end_id": end_id,
+            "arcs": arc_id,
             "radius": {"expr": self._format_expr(r_expr), "latex": sp.latex(r_expr)},
             "start_angle": {"expr": self._format_expr(start_angle), "latex": sp.latex(start_angle)},
             "end_angle": {"expr": self._format_expr(end_angle), "latex": sp.latex(end_angle)},
@@ -1005,13 +1012,11 @@ class TemplateGenerator:
         ox, oy = self.get_point_coords(origin_id)
         
         rotate_mode = params["rotate_mode"]
-        components = [origin_id]  # 包含原点（底边中点/斜边中点）
         entity_data = {
             "id": entity_id,
             "type": "special_triangle",
             "subtype": triangle_type,
-            "origin_id": origin_id,
-            "components": components,
+            "center_id": origin_id,
             "rotate_mode": rotate_mode,
             "is_base": is_base
         }
@@ -1045,8 +1050,9 @@ class TemplateGenerator:
             line_ca = self._add_line(point_c, point_a)
             
             # 更新组件和实体数据
-            components.extend([point_a, point_b, point_c, line_ab, line_bc, line_ca])
             entity_data.update({
+                "vertices": [point_a, point_b, point_c],
+                "lines": [line_ab, line_bc, line_ca],
                 "top_angle": top_angle,
                 "top_point": point_c,
                 "waist_length": {
@@ -1104,8 +1110,9 @@ class TemplateGenerator:
             line_ca = self._add_line(point_c, point_a)  # 直角边2
             
             # 更新组件和实体数据
-            components.extend([point_a, point_b, point_c, line_ab, line_bc, line_ca])
             entity_data.update({
+                "vertices": [point_a, point_b, point_c],
+                "lines": [line_ab, line_bc, line_ca],
                 "leg1": {
                     "expr": self._format_expr(leg1),
                     "latex": sp.latex(leg1)
@@ -1167,15 +1174,13 @@ class TemplateGenerator:
         line_cd = self._add_line(point_c, point_d)
         line_da = self._add_line(point_d, point_a)
         
-        # 组件列表（中心+顶点+边）
-        components = [center_id, point_a, point_b, point_c, point_d, line_ab, line_bc, line_cd, line_da]
-        
         # 实体数据（统一expr+latex格式）
         self.data["entities"].append({
             "id": entity_id,
             "type": "special_rectangle",
             "center_id": center_id,
-            "components": components,
+            "vertices": [point_a, point_b, point_c, point_d],
+            "lines": [line_ab, line_bc, line_cd, line_da],
             "width": {
                 "expr": self._format_expr(width),
                 "latex": sp.latex(width)
@@ -1254,15 +1259,13 @@ class TemplateGenerator:
         line_cd = self._add_line(point_c, point_d)
         line_da = self._add_line(point_d, point_a)
         
-        # 组件列表
-        components = [center_id, point_a, point_b, point_c, point_d, line_ab, line_bc, line_cd, line_da]
-        
-        # 实体数据（含角度的弧度和角度值）
+        # 实体数据
         self.data["entities"].append({
             "id": entity_id,
             "type": "parallelogram",
             "center_id": center_id,
-            "components": components,
+            "vertices": [point_a, point_b, point_c, point_d],
+            "lines": [line_ab, line_bc, line_cd, line_da],
             "base": {
                 "expr": self._format_expr(base),
                 "latex": sp.latex(base)
@@ -1335,16 +1338,14 @@ class TemplateGenerator:
         line_cd = self._add_line(point_c, point_d)  # 上底
         line_da = self._add_line(point_d, point_a)  # 左腰
         
-        # 组件列表
-        components = [center_id, point_a, point_b, point_c, point_d, line_ab, line_bc, line_cd, line_da]
-        
         # 实体数据
         self.data["entities"].append({
             "id": entity_id,
             "type": "trapezoid",
             "subtype": "isosceles",
             "center_id": center_id,
-            "components": components,
+            "vertices": [point_a, point_b, point_c, point_d],
+            "lines": [line_ab, line_bc, line_cd, line_da],
             "base1": {  # 下底（长边）
                 "expr": self._format_expr(base1),
                 "latex": sp.latex(base1)
@@ -1379,8 +1380,13 @@ class TemplateGenerator:
         # 提取新entity的所有边和弧ID
         line_id_pattern = re.compile(r'^L\d+$')
         new_entity = self.get_entity(new_id)
-        new_lines = [cid for cid in new_entity["components"] if line_id_pattern.match(cid)]
-        new_arcs = [cid for cid in new_entity["components"] if cid.startswith("Arc")]
+        new_arcs = []
+        new_lines = []
+        
+        if "lines" in new_entity:
+            new_lines = [cid for cid in new_entity["lines"] if line_id_pattern.match(cid)]
+        if "arcs" in new_entity:
+            new_arcs = [cid for cid in new_entity["arcs"] if cid.startswith("Arc")]
         
         # 收集所有已有元素
         all_existing_lines = [
@@ -1550,7 +1556,7 @@ class TemplateGenerator:
             
             if direction.startswith("perp_side_"):
                 side_idx = int(direction.split("_")[-1])
-                vertices = [c for c in base_entity["components"] if any(p["id"] == c and not p["is_center"] for p in self.data["points"])]
+                vertices = [c for c in base_entity["vertices"] if any(p["id"] == c and not p["is_center"] for p in self.data["points"])]
                 p1_id, p2_id = vertices[side_idx], vertices[(side_idx + 1) % n]
                 x1, y1 = self.get_point_coords(p1_id)
                 x2, y2 = self.get_point_coords(p2_id)
@@ -1576,7 +1582,7 @@ class TemplateGenerator:
             
             elif direction.startswith("along_side_"):
                 side_idx = int(direction.split("_")[-1])
-                vertices = [c for c in base_entity["components"] if any(p["id"] == c and not p["is_center"] for p in self.data["points"])]
+                vertices = [c for c in base_entity["vertices"] if any(p["id"] == c and not p["is_center"] for p in self.data["points"])]
                 p1_id, p2_id = vertices[side_idx], vertices[(side_idx + 1) % n]
                 x1, y1 = self.get_point_coords(p1_id)
                 x2, y2 = self.get_point_coords(p2_id)
@@ -1812,7 +1818,7 @@ class TemplateGenerator:
         rel_type = "circumscribed" if is_circum else "inscribed"
 
         # --- 提取三角形的三个顶点 ---
-        vertices = [c for c in base_entity["components"] if self._is_point(c) and not c.startswith('O')]
+        vertices = [c for c in base_entity["vertices"] if self._is_point(c) and not c.startswith('O')]
         if len(vertices) != 3:
             raise ValueError(f"Special triangle {base_entity['id']} has an incorrect number of vertices: {len(vertices)}.")
         
@@ -2004,12 +2010,12 @@ class TemplateGenerator:
     def _rule_special_triangle_flip(self, base_entity: Dict) -> str:
         """特殊三角形沿三条边翻转（对称衍生）"""
         base_subtype = base_entity["subtype"]
-        origin_id = base_entity["origin_id"]  # 底边中点/斜边中点
+        origin_id = base_entity["center_id"]  # 底边中点/斜边中点
         rotate_mode = base_entity["rotate_mode"]
 
         # --- 核心修改部分开始 ---
         # 1. 直接从实体组件中提取所有边
-        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        edges = [c for c in base_entity["lines"] if self._is_line(c)]
         if len(edges) != 3:
             raise ValueError(f"Triangle {base_entity['id']} has invalid edges. Expected 3, got {len(edges)}.")
         
@@ -2072,12 +2078,11 @@ class TemplateGenerator:
     def _rule_special_triangle_translation(self, base_entity: Dict) -> str:
         """特殊三角形沿边平移（全边长/半边长）"""
         base_subtype = base_entity["subtype"]
-        origin_id = base_entity["origin_id"]
+        origin_id = base_entity["center_id"]
         ox, oy = self.get_point_coords(origin_id)
 
-        # --- 核心修改部分开始 ---
         # 1. 直接从实体组件中提取所有边
-        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        edges = [c for c in base_entity["lines"] if self._is_line(c)]
         if len(edges) != 3:
             raise ValueError(f"Triangle {base_entity['id']} has invalid edges. Expected 3, got {len(edges)}.")
         
@@ -2087,8 +2092,6 @@ class TemplateGenerator:
         
         # 3. 获取所选边的两个顶点
         p1_id, p2_id = self._get_line_vertices(selected_edge_id)
-        # --- 核心修改部分结束 ---
-
         p1x, p1y = self.get_point_coords(p1_id)
         p2x, p2y = self.get_point_coords(p2_id)
 
@@ -2210,7 +2213,7 @@ class TemplateGenerator:
         length = simplify(sp.sympify(base_entity["length"]["expr"]))
 
         # --- 核心修改部分开始 ---
-        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        edges = [c for c in base_entity["lines"] if self._is_line(c)]
         if len(edges) != 4:
             raise ValueError(f"Rectangle {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
         
@@ -2251,16 +2254,14 @@ class TemplateGenerator:
         cx, cy = self.get_point_coords(center_id)
         width = simplify(sp.sympify(base_entity["width"]["expr"]))
         length = simplify(sp.sympify(base_entity["length"]["expr"]))
-
-        # --- 核心修改部分开始 ---
-        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        
+        edges = [c for c in base_entity["lines"] if self._is_line(c)]
         if len(edges) != 4:
             raise ValueError(f"Rectangle {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
         
         edge_idx = random.randint(0, len(edges)-1)
         selected_edge_id = edges[edge_idx]
         p1_id, p2_id = self._get_line_vertices(selected_edge_id)
-        # --- 核心修改部分结束 ---
 
         p1x, p1y = self.get_point_coords(p1_id)
         p2x, p2y = self.get_point_coords(p2_id)
@@ -2332,7 +2333,7 @@ class TemplateGenerator:
 
         # --- 核心修改部分开始 ---
         # 1. 直接从实体组件中提取所有边
-        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        edges = [c for c in base_entity["lines"] if self._is_line(c)]
         if len(edges) != 4:
             raise ValueError(f"Parallelogram {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
         
@@ -2382,7 +2383,7 @@ class TemplateGenerator:
         angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
 
         # --- 核心修改部分开始 ---
-        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        edges = [c for c in base_entity["lines"] if self._is_line(c)]
         if len(edges) != 4:
             raise ValueError(f"Parallelogram {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
         
@@ -2468,7 +2469,7 @@ class TemplateGenerator:
         angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
 
         # --- 核心修改部分开始 ---
-        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        edges = [c for c in base_entity["lines"] if self._is_line(c)]
         if len(edges) != 4:
             raise ValueError(f"Trapezoid {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
         
@@ -2515,7 +2516,7 @@ class TemplateGenerator:
         angle = simplify(sp.sympify(base_entity["angle_rad"]["expr"]))
 
         # --- 核心修改部分开始 ---
-        edges = [c for c in base_entity["components"] if self._is_line(c)]
+        edges = [c for c in base_entity["lines"] if self._is_line(c)]
         if len(edges) != 4:
             raise ValueError(f"Trapezoid {base_entity['id']} has invalid edges. Expected 4, got {len(edges)}.")
         
@@ -2590,47 +2591,81 @@ class TemplateGenerator:
                 if sp.simplify(dist_sq) == sp.simplify(r_expr**2):
                     point["related_edges"].append(aid)
 
-        # 3. 处理线段分割（依赖_add_line确保新线level=端点max）
-        lines_to_process = self.data["lines"].copy()
-        new_lines = []
-        for line in lines_to_process:
-            lid = line["id"]
-            s_id = line["start_point_id"]
-            e_id = line["end_point_id"]
+        # 3. 处理线段分割：提取最小单元并标注
+        # 为了高效查找，建立一个从线段ID到线段对象的映射
+        line_id_map = {line["id"]: line for line in self.data["lines"]}
+        
+        # 用于存储所有已生成的最小单元线段的ID，防止重复添加
+        minimal_segment_ids = set()
+
+        # 遍历所有原始线段
+        for original_line_id in line_id_map.keys():
+            original_line = line_id_map[original_line_id]
+            s_id = original_line["start_point_id"]
+            e_id = original_line["end_point_id"]
             sx, sy = self.get_point_coords(s_id)
             ex, ey = self.get_point_coords(e_id)
 
+            # 收集这条原始线段上的所有点
             points_on_line = []
             for point in self.data["points"]:
                 pid = point["id"]
-                if lid in point["related_edges"]:
+                # 检查点是否在当前原始线段上
+                if original_line_id in point["related_edges"]:
                     px, py = self.get_point_coords(pid)
+                    # 计算点在线段参数方程上的t值，用于排序
                     if not sp.Eq(sx, ex):
                         t = sp.simplify((px - sx) / (ex - sx))
                     elif not sp.Eq(sy, ey):
                         t = sp.simplify((py - sy) / (ey - sy))
                     else:
-                        t = 0
-                    points_on_line.append((t, pid))
+                        t = 0  # 处理单点线段的特殊情况
+                    
+                    # 过滤掉t值明显在[0, 1]范围外的点（可能是计算误差）
+                    if sp.simplify(t >= 0) and sp.simplify(t <= 1):
+                        points_on_line.append((t, pid))
 
+            # 按t值排序，确保点在线段上的顺序是从起点到终点
             points_on_line.sort(key=lambda x: x[0])
-            unique_points = []
-            seen_t = set()
+            
+            # 提取排序后的点ID列表，并去重（避免因计算精度导致的重复点）
+            unique_point_ids = []
+            seen_t_values = set()
             for t, pid in points_on_line:
                 t_str = str(sp.simplify(t))
-                if t_str not in seen_t:
-                    seen_t.add(t_str)
-                    unique_points.append(pid)
+                if t_str not in seen_t_values:
+                    seen_t_values.add(t_str)
+                    unique_point_ids.append(pid)
+            
+            # 从排序后的点列表中生成最小单元线段 (AB, BC, CD...)
+            if len(unique_point_ids) >= 2:
+                for i in range(len(unique_point_ids) - 1):
+                    start_pid = unique_point_ids[i]
+                    end_pid = unique_point_ids[i + 1]
+                    
+                    # 关键：检查由 (start_pid, end_pid) 组成的线段是否已存在
+                    # 我们利用 _check_line_duplicate 来判断
+                    existing_line_id = self._check_line_duplicate(start_pid, end_pid)
 
-            if len(unique_points) > 2:
-                for i in range(len(unique_points) - 1):
-                    start_pid = unique_points[i]
-                    end_pid = unique_points[i + 1]
-                    new_lid = self._add_line(start_pid, end_pid)
-                    if new_lid not in [l["id"] for l in lines_to_process + new_lines]:
-                        new_lines.append(next(l for l in self.data["lines"] if l["id"] == new_lid))
+                    if existing_line_id:
+                        # 如果已存在，直接给它打上最小单元的标记
+                        existing_line = line_id_map[existing_line_id]
+                        existing_line["is_minimal"] = True
+                        minimal_segment_ids.add(existing_line_id)
+                    else:
+                        # 如果不存在，创建它并打上标记
+                        new_lid = self._add_line(start_pid, end_pid)
+                        # _add_line 会将新线添加到 self.data["lines"]，我们需要找到它并更新
+                        new_line = next(l for l in self.data["lines"] if l["id"] == new_lid)
+                        new_line["is_minimal"] = True
+                        # 同时更新我们的本地映射
+                        line_id_map[new_lid] = new_line
+                        minimal_segment_ids.add(new_lid)
 
-        # 4. 处理弧分割（依赖_add_arc确保新弧level=端点max）
+        # =====================================================================
+
+        # 4. 处理弧分割（这部分你的逻辑可以保持不变）
+        # ... (此处省略你原有的弧分割代码) ...
         arcs_to_process = self.data["arcs"].copy()
         new_arcs = []
         for arc in arcs_to_process:
@@ -2685,29 +2720,24 @@ class TemplateGenerator:
                     if new_aid not in [a["id"] for a in arcs_to_process + new_arcs]:
                         new_arcs.append(next(a for a in self.data["arcs"] if a["id"] == new_aid))
 
-        # 5. 更新实体组件
-        # for entity in self.data["entities"]:
-            # all_lines = [l["id"] for l in self.data["lines"]]
-            # all_arcs = [a["id"] for a in self.data["arcs"]]
-            # entity["components"] = list(set(entity["components"] + all_lines + all_arcs))
 
-        # 6. 补充描述
-        # self.description_parts.append(
-        #     f"Geometry finalized: {len(new_lines)} new lines and {len(new_arcs)} new arcs generated by splitting. "
-        #     f"Total lines: {len(self.data['lines'])}, total arcs: {len(self.data['arcs'])}, total points: {len(self.data['points'])}."
-        # )
         self.data["description"] = " ".join(self.description_parts)
 
 
     # ------------------------------ 衍生流程 ------------------------------
     def generate_derivations(self) -> None:
         num_rounds = random.randint(*self.config["derivation"]["round_range"])
-
+        derivation_mode = self.config["derivation"]["mode"]
+        
         for round_idx in range(num_rounds):
             if not self.current_entities:
                 break
-
-            base_entity_id = random.choice(self.current_entities)
+            
+            if derivation_mode == "sequential":
+                base_entity_id = self.current_entities[-1]
+            else:
+                base_entity_id = random.choice(self.current_entities)
+            
             base_entity = self.get_entity(base_entity_id)
             base_type = base_entity["type"]
 
@@ -2728,6 +2758,7 @@ class TemplateGenerator:
             
             self.description_parts.append(f"Round {round_idx+1}: applying '{selected_rule_name}' rule.")
             try:
+            # if True:
                 if base_type == "circle" or base_type == "polygon":
                     if selected_rule_name == "concentric":
                         new_id = self._rule_concentric(base_entity)
@@ -2779,7 +2810,7 @@ class TemplateGenerator:
                 self.current_entities.append(new_id)
                 self._calculate_new_entity_intersections(new_id)
 
-        self._finalize_geometry()
+        # self._finalize_geometry()
     
     def export_json(self) -> Dict:
         return self.data.copy()
