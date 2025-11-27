@@ -5,7 +5,7 @@
         "thread_num": 20
     },
     "template": {
-        "n": 50,
+        "n": 5,
         "points_limit": 30,
         "lines_limit": 40,
         "output_dir": "./results_n20_v4/json/base",
@@ -203,10 +203,9 @@
         "crosshatch_spacing": 6,
         "adjacent_threshold": 5.0,
         "intensity_range": [0.3, 0.7],
-        "line_match_threshold": 0.7,
-        "arc_match_threshold": 0.7,
-        "line_error_thresh": 5.0,
-        "arc_error_thresh": 8.0
+        "distance_threshold": 10,
+        "match_threshold": 0.97,
+        "min_sample_points": 20
     },
     "gt": {
         "simplify_level": "full",

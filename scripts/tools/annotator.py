@@ -11,6 +11,7 @@ from datetime import datetime
 import sympy as sp
 import re
 from .drawer import GeometryDrawer
+from .shader import CoordTransformer
 from PIL import Image, ImageDraw, ImageFont
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,8 +31,7 @@ COLOR_NAME_MAP = {
     "white": (255, 255, 255), "black": (0, 0, 0), "yellow": (255, 255, 0)
 }
 
-
-class GeometryAnnotator:
+class GeometryAnnotator_test:
     """几何标注工具：修正min_dist计算范围，严格确保无冲突优先"""
     def __init__(self, annotator_config: Dict):
         self.config = self._validate_annotator_config(annotator_config)
@@ -627,3 +627,503 @@ class GeometryAnnotator:
         
         img[:] = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
         return existing_shape_pixels
+    
+    
+class GeometryAnnotator:
+    """几何标注工具：按优先级优化文本位置（无冲突>小offset>大距离>正四方向）"""
+    def __init__(self, annotator_config: Dict):
+        self.config = self._validate_annotator_config(annotator_config)
+        self.point_id_pattern = re.compile(r'^(?!circle_\d+$).+$')
+
+        self.point_font = self.config["point"]["text"]["font"]
+        self.line_font = self.config["line"]["text"]["font"]
+
+    def _validate_annotator_config(self, cfg: Dict) -> Dict:
+        default = {
+            "point": {
+                "enabled": True,
+                "radius": 4,
+                "color": (0, 0, 255),
+                "text": {
+                    "enabled": True,
+                    "size": 12,
+                    "color": (0, 0, 0),
+                    "offset": 8,
+                    "edge_margin": 5,
+                    "min_pixel_dist": 3,
+                    "scale": 0.5,
+                    "thickness": 1,
+                    "font": cv2.FONT_HERSHEY_SIMPLEX
+                }
+            },
+            "line": {
+                "enabled": False,
+                "color": (0, 255, 0),
+                "width": 2,
+                "text": {
+                    "enabled": True,
+                    "size": 12,
+                    "color": (0, 0, 0),
+                    "offset": 12,
+                    "edge_margin": 5,
+                    "min_pixel_dist": 3,
+                    "scale": 0.5,
+                    "thickness": 1,
+                    "font": cv2.FONT_HERSHEY_SIMPLEX
+                }
+            },
+            "perpendicular": {
+                "enabled": False,
+                "color": (255, 0, 0),
+                "width": 2,
+                "symbol_size": 10
+            }
+        }
+
+        def fix_color(color) -> Tuple[int, int, int]:
+            if isinstance(color, str) and color.lower() in COLOR_NAME_MAP:
+                return COLOR_NAME_MAP[color.lower()]
+            if isinstance(color, str):
+                try:
+                    color_str = color.replace(" ", "").strip('()')
+                    channels = list(map(int, color_str.split(',')))[:3]
+                except:
+                    return (255, 0, 0)
+            elif isinstance(color, (list, tuple)):
+                channels = list(color)[:3]
+            else:
+                return (255, 0, 0)
+            return tuple(max(0, min(255, int(c))) for c in channels) if len(channels) == 3 else (255, 0, 0)
+
+        config = {
+            "enabled": cfg.get("enabled", True),
+            "point": {**default["point"],** cfg.get("point", {})},
+            "line": {**default["line"],** cfg.get("line", {})},
+            "perpendicular": {**default["perpendicular"],** cfg.get("perpendicular", {})}
+        }
+
+        if "bg_color" in config["point"]["text"]:
+            del config["point"]["text"]["bg_color"]
+        if "bg_color" in config["line"]["text"]:
+            del config["line"]["text"]["bg_color"]
+
+        config["point"]["color"] = fix_color(config["point"]["color"])
+        config["point"]["text"]["color"] = fix_color(config["point"]["text"]["color"])
+        config["line"]["color"] = fix_color(config["line"]["color"])
+        config["line"]["text"]["color"] = fix_color(config["line"]["text"]["color"])
+        config["perpendicular"]["color"] = fix_color(config["perpendicular"]["color"])
+
+        if not isinstance(config["point"]["text"]["font"], int):
+            config["point"]["text"]["font"] = cv2.FONT_HERSHEY_SIMPLEX
+        if not isinstance(config["line"]["text"]["font"], int):
+            config["line"]["text"]["font"] = cv2.FONT_HERSHEY_SIMPLEX
+
+        return config
+
+    def _parse_math_expr(self, expr_str: str) -> float:
+        try:
+            return float(sp.sympify(expr_str.replace(" ", "")).evalf())
+        except Exception as e:
+            logger.warning(f"表达式解析失败: {expr_str}，错误: {e}")
+            raise
+
+    def _get_text_pixels(self, text: str, font: int, scale: float, thickness: int, pos: Tuple[int, int]) -> Set[Tuple[int, int]]:
+        (text_width, text_height), baseline = cv2.getTextSize(text, font, scale, thickness)
+        tx, ty = pos
+        
+        temp_img = np.zeros((text_height + baseline, text_width, 3), dtype=np.uint8)
+        cv2.putText(temp_img, text, (0, text_height), font, scale, (255, 255, 255), thickness)
+        
+        text_mask = np.any(temp_img > 0, axis=2)
+        y_coords, x_coords = np.where(text_mask)
+        
+        text_pixels = set()
+        for x, y in zip(x_coords, y_coords):
+            abs_x = tx + x
+            abs_y = ty - text_height + y
+            text_pixels.add((abs_x, abs_y))
+        
+        return text_pixels
+    
+    def get_image_contour_pixels(self, img: np.ndarray, min_contour_area: int = 5) -> Set[Tuple[int, int]]:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        _, binary = cv2.threshold(
+            gray, 
+            0, 255, 
+            cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU 
+        )
+        
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel) 
+        binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+        
+        contours, _ = cv2.findContours(
+            binary, 
+            cv2.RETR_TREE, 
+            cv2.CHAIN_APPROX_NONE
+        )
+        
+        contour_pixels = set()
+        for cnt in contours:
+            for point in cnt.reshape(-1, 2):
+                x, y = int(point[0]), int(point[1])
+                contour_pixels.add((x, y))
+        
+        return contour_pixels
+
+
+    def _check_pixel_collision(self, text_pixels: Set[Tuple[int, int]], 
+                            existing_text_pixels: List[Set[Tuple[int, int]]],
+                            contour_pixels: Set[Tuple[int, int]],
+                            img_shape: Tuple[int, int], 
+                            edge_margin: int,
+                            min_pixel_dist: int = 3) -> bool:
+        h, w = img_shape[:2]
+
+        for (x, y) in text_pixels:
+            if x < edge_margin or x >= (w - edge_margin) or y < edge_margin or y >= (h - edge_margin):
+                return True
+
+        if contour_pixels and (text_pixels & contour_pixels):
+            return True
+
+        for exist_pixels in existing_text_pixels:
+            if text_pixels & exist_pixels:
+                return True
+
+        return False
+
+    def _find_best_text_pos(self, img: np.ndarray, base_px: Tuple[int, int], text: str, 
+                        existing_text_pixels: List[Set[Tuple[int, int]]], font: int, 
+                        scale: float, thickness: int, 
+                        base_offset: int, img_shape: Tuple[int, int], edge_margin: int, 
+                        min_pixel_dist: int) -> Tuple[Tuple[int, int], Set[Tuple[int, int]]]:
+        candidates = []
+
+        priority_dirs = [
+            ("正右", 1, 0), ("正左", -2, 0),
+            ("正下", 0, -2), ("正上", 0, 1),
+            ("右下", 1, -2), ("左下", -2, -2),
+            ("右上", 1, 1), ("左上", -2, 1)
+        ]
+
+        offset_levels = [
+            base_offset - 8, base_offset - 4, base_offset - 2,
+            base_offset + 0, base_offset + 2,
+            base_offset + 4
+        ]
+        offset_levels = [o for o in offset_levels if o >= 3] 
+        
+        min_contour_area = 5
+        contour_pixels = self.get_image_contour_pixels(img, min_contour_area) 
+        text_cfg = self.config["point"]["text"]
+        min_pixel_dist = text_cfg.get("min_pixel_dist", 3)
+
+        for dir_name, dx_coef, dy_coef in priority_dirs:
+            for offset in offset_levels:
+                dx = dx_coef * offset
+                dy = dy_coef * offset
+                tx, ty = base_px[0] + dx, base_px[1] + dy
+
+                text_pixels = self._get_text_pixels(text, font, scale, thickness, (tx, ty))
+                has_collision = self._check_pixel_collision(
+                    text_pixels, existing_text_pixels, contour_pixels, img_shape, edge_margin, min_pixel_dist
+                )
+                
+                v = 2
+                if(dx_coef == 0):
+                    if(dy_coef == -1):
+                        v = 0
+                    else:
+                        v = 1
+                
+                candidates.append({
+                    "pos": (tx, ty),
+                    "pixels": text_pixels,
+                    "has_collision": has_collision,
+                    "offset": offset,
+                    "is_priority_dir": v,
+                })
+
+        candidates.sort(
+            key=lambda x: (
+                x["has_collision"],
+                x["is_priority_dir"],
+                -x["offset"]
+            )
+        )
+
+        best = candidates[0]
+        (nx, ny) = best["pos"]
+        nx = nx + 3
+        return (nx, ny), best["pixels"]
+
+    def draw_annotations(self, img: np.ndarray, data: Dict, transformer: Any) -> np.ndarray:
+        if not self.config["enabled"]:
+            return img.copy()
+            
+        img_copy = img.copy()
+        existing_text_pixels = []
+        non_text_bboxes = []
+        points = data.get("points", [])
+        lines = data.get("lines", [])
+        
+        valid_points = [p for p in points if self.point_id_pattern.match(p["id"])]
+        points_dict = {p["id"]: p for p in valid_points}
+        
+        existing_text_pixels, non_text_bboxes = self.draw_point_annotations(
+            img_copy, valid_points, transformer, existing_text_pixels, non_text_bboxes
+        )
+        
+        existing_text_pixels, non_text_bboxes = self.draw_line_annotations(
+            img_copy, lines, points_dict, transformer, existing_text_pixels, non_text_bboxes
+        )
+        
+        self.draw_perpendicular_annotations(
+            img_copy, lines, points_dict, transformer, non_text_bboxes, data.get("lines", [])
+        )
+        
+        return img_copy
+
+    def draw_point_annotations(self, img: np.ndarray, points: List[Dict], transformer: Any,
+                              existing_text_pixels: List[Set[Tuple[int, int]]], non_text_bboxes: List[Tuple[int, int, int, int]]) -> Tuple[List[Set[Tuple[int, int]]], List[Tuple[int, int, int, int]]]:
+        cfg = self.config["point"]
+        text_cfg = cfg["text"]
+        if not cfg["enabled"] or not text_cfg["enabled"]:
+            return existing_text_pixels, non_text_bboxes
+        
+        img_shape = img.shape
+        base_offset = text_cfg["offset"]
+        font = self.point_font
+        font_scale = text_cfg["scale"]
+        font_thickness = text_cfg["thickness"]
+
+        for point in points:
+            try:
+                pid = point["id"]
+                x = self._parse_math_expr(point["x"]["expr"])
+                y = self._parse_math_expr(point["y"]["expr"])
+                px, py = transformer.math_to_pixel((x, y))
+                
+                # 用cv2绘制点
+                point_color = cfg["color"]
+                radius = cfg["radius"]
+                cv2.circle(img, (px, py), radius, point_color, -1)
+                non_text_bboxes.append((px - radius, py - radius, px + radius, py + radius))
+                
+                # 用cv2绘制文本
+                label = point.get("label", pid)
+                if label:
+                    best_pos, text_pixels = self._find_best_text_pos(
+                        img,
+                        base_px=(px, py),
+                        text=label,
+                        existing_text_pixels=existing_text_pixels,
+                        font=font,
+                        scale=font_scale,
+                        thickness=font_thickness,
+                        base_offset=base_offset,
+                        img_shape=img_shape,
+                        edge_margin=text_cfg["edge_margin"],
+                        min_pixel_dist=text_cfg["min_pixel_dist"]
+                    )
+                    
+                    cv2.putText(
+                        img, label, best_pos, font, font_scale,
+                        text_cfg["color"], font_thickness, cv2.LINE_AA
+                    )
+                    
+                    existing_text_pixels.append(text_pixels)
+            except Exception as e:
+                logger.warning(f"点标注失败 (id: {pid}): {e}")
+                continue
+        
+        return existing_text_pixels, non_text_bboxes
+
+    def draw_line_annotations(self, img: np.ndarray, lines: List[Dict], points: Dict, transformer: Any,
+                             existing_text_pixels: List[Set[Tuple[int, int]]], non_text_bboxes: List[Tuple[int, int, int, int]]) -> Tuple[List[Set[Tuple[int, int]]], List[Tuple[int, int, int, int]]]:
+        cfg = self.config["line"]
+        text_cfg = cfg["text"]
+        if not cfg["enabled"] or not text_cfg["enabled"]:
+            return existing_text_pixels, non_text_bboxes
+        
+        img_shape = img.shape
+        base_offset = text_cfg["offset"]
+        font = self.line_font
+        font_scale = text_cfg["scale"]
+        font_thickness = text_cfg["thickness"]
+
+        for line in lines:
+            if line.get("type") == "perpendicular":
+                continue
+            
+            try:
+                start_id = line["start_point_id"]
+                end_id = line["end_point_id"]
+                if start_id not in points or end_id not in points:
+                    logger.debug(f"线标注跳过（无效端点）: {line.get('id')}")
+                    continue
+                
+                start_p = points[start_id]
+                end_p = points[end_id]
+                s_x = self._parse_math_expr(start_p["x"]["expr"])
+                s_y = self._parse_math_expr(start_p["y"]["expr"])
+                e_x = self._parse_math_expr(end_p["x"]["expr"])
+                e_y = self._parse_math_expr(end_p["y"]["expr"])
+                
+                s_px, s_py = transformer.math_to_pixel((s_x, s_y))
+                e_px, e_py = transformer.math_to_pixel((e_x, e_y))
+                
+                # 用cv2绘制线段
+                line_color = cfg["color"]
+                cv2.line(
+                    img, (s_px, s_py), (e_px, e_py),
+                    line_color, cfg["width"], cv2.LINE_AA
+                )
+                line_bbox = (
+                    min(s_px, e_px) - cfg["width"],
+                    min(s_py, e_py) - cfg["width"],
+                    max(s_px, e_px) + cfg["width"],
+                    max(s_py, e_py) + cfg["width"]
+                )
+                non_text_bboxes.append(line_bbox)
+                
+                # 用cv2绘制线文本
+                label = line.get("label", line.get("id"))
+                if label:
+                    mid_px, mid_py = (s_px + e_px) // 2, (s_py + e_py) // 2
+                    
+                    best_pos, text_pixels = self._find_best_text_pos(
+                        img,
+                        base_px=(mid_px, mid_py),
+                        text=label,
+                        existing_text_pixels=existing_text_pixels,
+                        font=font,
+                        scale=font_scale,
+                        thickness=font_thickness,
+                        base_offset=base_offset,
+                        img_shape=img_shape,
+                        edge_margin=text_cfg["edge_margin"],
+                        min_pixel_dist=text_cfg["min_pixel_dist"]
+                    )
+                    
+                    cv2.putText(
+                        img, label, best_pos, font, font_scale,
+                        text_cfg["color"], font_thickness, cv2.LINE_AA
+                    )
+                    
+                    existing_text_pixels.append(text_pixels)
+            except Exception as e:
+                logger.warning(f"线标注失败 (id: {line.get('id')}): {e}")
+                continue
+        
+        return existing_text_pixels, non_text_bboxes
+
+
+    def draw_perpendicular_annotations(self, img: np.ndarray, lines: List[Dict], points: Dict, 
+                                    transformer: Any, non_text_bboxes: List[Tuple[int, int, int, int]],
+                                    all_lines: List[Dict]) -> None:
+        cfg = self.config["perpendicular"]
+        if not cfg["enabled"]:
+            return
+        
+        square_side = cfg["symbol_size"] 
+        line_id_map = {line["id"]: line for line in all_lines}
+        line_color = cfg["color"]
+        line_width = cfg["width"]
+
+        for line in lines:
+            if line.get("type") != "perpendicular":
+                continue
+            
+            try:
+                foot_id = line["end_point_id"]
+                vert_start_id = line["start_point_id"]
+                desc = line.get("description", "")
+                
+                if foot_id not in points or vert_start_id not in points:
+                    logger.debug(f"垂足/垂线起点无效: 垂足{foot_id}，起点{vert_start_id}")
+                    continue
+                
+                vert_start_p = points[vert_start_id]
+                vs_x = self._parse_math_expr(vert_start_p["x"]["expr"])
+                vs_y = self._parse_math_expr(vert_start_p["y"]["expr"])
+                vs_px, vs_py = transformer.math_to_pixel((vs_x, vs_y))
+                
+                foot_p = points[foot_id]
+                foot_x = self._parse_math_expr(foot_p["x"]["expr"])
+                foot_y = self._parse_math_expr(foot_p["y"]["expr"])
+                foot_px, foot_py = transformer.math_to_pixel((foot_x, foot_y))
+
+                line_match = re.search(r'to line (\w+\d*)', desc)
+                if not line_match:
+                    dir_host = (1, 0)
+                    dir_vert = (0, 1)
+                else:
+                    host_line_id = line_match.group(1)
+                    if host_line_id not in line_id_map:
+                        dir_host = (1, 0)
+                        dir_vert = (0, 1)
+                    else:
+                        host_line = line_id_map[host_line_id]
+                        h_start_id = host_line["start_point_id"]
+                        h_end_id = host_line["end_point_id"]
+                        if h_start_id not in points or h_end_id not in points:
+                            dir_host = (1, 0)
+                            dir_vert = (0, 1)
+                        else:
+                            h_start_p = points[h_start_id]
+                            h_end_p = points[h_end_id]
+                            hs_x = self._parse_math_expr(h_start_p["x"]["expr"])
+                            hs_y = self._parse_math_expr(h_start_p["y"]["expr"])
+                            he_x = self._parse_math_expr(h_end_p["x"]["expr"])
+                            he_y = self._parse_math_expr(h_end_p["y"]["expr"])
+                            
+                            host_vec = (he_x - hs_x, he_y - hs_y)
+                            host_len = math.hypot(host_vec[0], host_vec[1])
+                            if host_len < 1e-3:
+                                dir_host = (1, 0)
+                            else:
+                                dir_host = (host_vec[0]/host_len, host_vec[1]/host_len)
+                            
+                            foot_to_hstart = math.hypot(foot_x - hs_x, foot_y - hs_y)
+                            foot_to_hend = math.hypot(foot_x - he_x, foot_y - he_y)
+                            if foot_to_hend < foot_to_hstart:
+                                dir_host = (-dir_host[0], -dir_host[1])
+                            
+                            vert_vec = (foot_x - vs_x, foot_y - vs_y)
+                            vert_len = math.hypot(vert_vec[0], vert_vec[1])
+                            if vert_len < 1e-3:
+                                dir_vert = (0, 1)
+                            else:
+                                dir_vert = (vert_vec[0]/vert_len, vert_vec[1]/vert_len)
+                            
+                            dot_product = dir_host[0] * dir_vert[0] + dir_host[1] * dir_vert[1]
+                            if abs(dot_product) > 1e-3:
+                                dir_vert = (dir_host[1], -dir_host[0])
+
+                host_end_px = foot_px + dir_host[0] * square_side
+                host_end_py = foot_py + dir_host[1] * square_side
+                
+                vert_end_px = foot_px + dir_vert[0] * square_side
+                vert_end_py = foot_py + dir_vert[1] * square_side
+
+                # 用cv2绘制L形垂直符号
+                cv2.line(
+                    img, (int(foot_px), int(foot_py)), (int(host_end_px), int(host_end_py)),
+                    line_color, line_width, cv2.LINE_AA
+                )
+                cv2.line(
+                    img, (int(foot_px), int(foot_py)), (int(vert_end_px), int(vert_end_py)),
+                    line_color, line_width, cv2.LINE_AA
+                )
+
+                sym_min_px = min(foot_px, host_end_px, vert_end_px) - line_width
+                sym_min_py = min(foot_py, host_end_py, vert_end_py) - line_width
+                sym_max_px = max(foot_px, host_end_px, vert_end_px) + line_width
+                sym_max_py = max(foot_py, host_end_py, vert_end_py) + line_width
+                non_text_bboxes.append((int(sym_min_px), int(sym_min_py), int(sym_max_px), int(sym_max_py)))
+                
+            except Exception as e:
+                logger.warning(f"垂线标注失败 (id: {line.get('id')}): {e}")
+                continue

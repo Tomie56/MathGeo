@@ -37,8 +37,8 @@ class MathGeoPipeline:
         self._init_workspace()
         self._set_random_seeds()
         
-        self.thread_num = self.config['global'].get('thread_num', 4)  # 多线程数量（默认4）
-        self.task_timeout = 16 * self.config['global'].get('thread_num', 4)  # 防止卡死，时间感觉和样本数、线程数相关
+        self.thread_num = self.config['global'].get('thread_num', 4) 
+        self.task_timeout = 16 * self.config['global'].get('thread_num', 4)  
         
         self.base_jsonl_path: Optional[str] = None
         self.enhanced_jsons: List[Dict[str, Any]] = []
