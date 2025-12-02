@@ -7,7 +7,7 @@ from typing import List, Dict, Tuple, Optional, Union, Set, Generator
 import os
 import threading
 import time
-
+from collections import defaultdict
 logger = logging.getLogger('builder')
 
 
@@ -434,18 +434,30 @@ class RandomGeometryBuilder:
             constraints = op_constraints.get("connect_points", {})
             target_entity_types = constraints.get("entity_types", ["polygon", "special_rectangle", "special_triangle", "parallelogram", "trapezoid"])
             allow_isolated = constraints.get("allow_isolated", False)
+            
+            candidate_points = list(self.on_segment_points_set) if not allow_isolated else list(self.point_id_map.keys())
+            if len(candidate_points) < 2:
+                raise ValueError("可用的点不足，无法执行connect_points操作")
+            
             for retry in range(self.MAX_RETRIES):
                 try:
-                    entity_id = self._randomly_select_entity(target_entity_types) if (retry < 5) else None
-                    p1_id, p2_id = self._randomly_select_points(
-                        entity_id=entity_id,
-                        count=2,
-                        filter_isolated=not allow_isolated
-                    )
-                    
-                    a, b = (p1_id, p2_id) if p1_id < p2_id else (p2_id, p1_id)
-                    if (a, b) not in self.line_pairs and (b, a) not in self.line_pairs:
+                    # 直接从候选点中随机选择两个不同的点
+                    p1_id, p2_id = random.sample(candidate_points, 2)
+                    pair = tuple(sorted((p1_id, p2_id)))
+                    if pair not in self.connected_pairs_set:
                         logger.debug(f"connect_points重试{retry}次成功：连接点{p1_id}和{p2_id}")
+                        entity_id = None
+                        if retry < 3: # 只在前几次重试时尝试匹配实体，失败也无妨
+                            try:
+                                # 简单的启发式：如果两点都属于同一个实体，则选择该实体
+                                p1_entities = self._get_entity_ids_for_point(p1_id)
+                                p2_entities = self._get_entity_ids_for_point(p2_id)
+                                common_entities = p1_entities.intersection(p2_entities)
+                                if common_entities:
+                                    entity_id = random.choice(list(common_entities))
+                            except Exception:
+                                pass
+
                         return {
                             "type": op_type,
                             "entity_id": entity_id,
@@ -460,6 +472,11 @@ class RandomGeometryBuilder:
         elif op_type == "connect_midpoints":
             constraints = op_constraints.get("connect_midpoints", {})
             target_entity_types = constraints.get("entity_types", ["polygon", "composite"])
+            
+            on_segment_vertices = list(self.on_segment_points_set)
+            if not on_segment_vertices:
+                raise ValueError("无可用的线上点，无法执行connect_midpoints操作")
+            
             entity_id = self._randomly_select_entity(target_entity_types) if (target_entity_types and random.random() < 0.7) else None
             
             lines = self.entity_lines_cache.get(entity_id, list(self.line_id_map.keys())) if entity_id else list(self.line_id_map.keys())
@@ -470,7 +487,7 @@ class RandomGeometryBuilder:
             available_modes = []
             if len(lines) >= 2:
                 available_modes.append("two_midpoints")
-            if len(lines) >= 1 and len(on_segment_vertices) >= 1:
+            if len(lines) >= 1:
                 available_modes.append("vertex_and_midpoint")
             if not available_modes:
                 raise ValueError("无可用的connect_midpoints模式（线上点不足）")
@@ -530,11 +547,24 @@ class RandomGeometryBuilder:
             
             else:  # mode == "vertex_and_midpoint"
                 allow_endpoint = constraints.get("allow_endpoint", False)
+                
+                candidate_points = list(self.on_segment_points_set)
+                if not candidate_points:
+                    raise ValueError("无可用的线上点，无法执行draw_perpendicular操作")
+
                 for retry in range(self.MAX_RETRIES):
                     try:
+                        lines = self.entity_lines_cache.get(entity_id, list(self.line_id_map.keys())) if entity_id else list(self.line_id_map.keys())
+                        if not lines:
+                            continue
                         line_id = random.choice(lines)
-                        vertex_id = random.choice(on_segment_vertices)
                         line = self.line_id_map[line_id]
+                        
+                        line_id = random.choice(lines)
+                        # vertex_id = random.choice(on_segment_vertices)
+                        line = self.line_id_map[line_id]
+                        vertex_id = random.choice(candidate_points)
+                        
                         
                         is_endpoint = (vertex_id == line["start_point_id"]) or (vertex_id == line["end_point_id"])
                         
@@ -669,6 +699,14 @@ class RandomGeometryBuilder:
         
         else:
             raise ValueError(f"不支持的操作类型: {op_type}")
+        
+    def _get_entity_ids_for_point(self, point_id: str) -> set:
+        """获取包含指定点的所有实体ID"""
+        entity_ids = set()
+        for ent_id, vertices in self.entity_vertices_cache.items():
+            if point_id in vertices:
+                entity_ids.add(ent_id)
+        return entity_ids
 
     # ------------------------------ 交点检测与几何计算（含level处理） ------------------------------
     def _point_on_segment(self, px: sp.Expr, py: sp.Expr, 
@@ -692,218 +730,298 @@ class RandomGeometryBuilder:
         
         return bool(simplified) if isinstance(simplified, bool) else False
 
-    def _line_arc_intersection(self, line_id: str, arc_id: str) -> List[Tuple[sp.Expr, sp.Expr, int]]:
-        """计算线段与圆弧的交点，返回(坐标x, 坐标y, 交点level)"""
-        arc = self.arc_id_map[arc_id]
-        # 检查圆弧必要参数
-        if "center_id" not in arc or "radius_expr" not in arc:
-            return []
-        
-        center_id = arc["center_id"]
-        # 验证圆心存在
-        if center_id not in self.point_id_map:
-            logger.warning(f"圆弧{arc_id}的圆心{center_id}不存在")
-            return []
-            
-        cx, cy = self.get_point_coords(center_id)
-        radius = self._parse_expr(arc["radius_expr"])
-        arc_level = arc["level"]
-        
-        # 验证线段存在
-        if line_id not in self.line_id_map:
-            logger.warning(f"线段{line_id}不存在")
-            return []
-            
-        s, e = self.line_id_map[line_id]["start_point_id"], self.line_id_map[line_id]["end_point_id"]
-        x1, y1 = self.get_point_coords(s)
-        x2, y2 = self.get_point_coords(e)
-        line_level = self.line_id_map[line_id]["level"]
-        
-        # 交点level为两者最大值
-        intersection_level = max(line_level, arc_level)
-        
-        # 参数化线段方程
-        t = sp.Symbol('t', real=True)  
-        x = x1 + t * (x2 - x1)
-        y = y1 + t * (y2 - y1)
-        
-        # 圆方程
-        circle_eq = (x - cx)**2 + (y - cy)** 2 - radius**2
-        circle_eq = sp.simplify(circle_eq)
-        
-        solutions = sp.solve(circle_eq, t)
+    def _segment_circle_intersection(self,
+                                        x1: sp.Expr, y1: sp.Expr,
+                                        x2: sp.Expr, y2: sp.Expr,
+                                        cx: sp.Expr, cy: sp.Expr,
+                                        r: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
+        """
+        计算线段与圆的交点
+        """
         intersections = []
-        
-        for sol in solutions:
-            # 处理不同形式的解
-            if isinstance(sol, dict):
-                sol = sol.get(t, None)
-            if sol is None:
-                continue
-                
-            try:
-                t_val = sp.simplify(sol)
-                # 过滤复数解
-                if sp.im(t_val) != 0:
-                    continue
-                t_val = sp.re(t_val)
-                
-                # 检查t是否在线段范围内[0,1]
-                t_valid = sp.And(sp.Ge(t_val, 0), sp.Le(t_val, 1))
-                if not sp.simplify(t_valid):
-                    continue
-                
-                # 计算交点坐标
-                ix = sp.simplify(x.subs(t, t_val))
-                iy = sp.simplify(y.subs(t, t_val))
-                
-                # 检查是否在圆弧角度范围内
-                angle_check_passed = True
-                if "start_angle" in arc and "end_angle" in arc:
-                    try:
-                        start_angle = self._parse_expr(arc["start_angle"])
-                        end_angle = self._parse_expr(arc["end_angle"])
-                        dx = ix - cx
-                        dy = iy - cy
-                        
-                        # 计算交点相对于圆心的角度
-                        angle = sp.atan2(dy, dx)
-                        # 标准化角度到[0, 2π)范围
-                        angle = sp.simplify(angle % (2 * sp.pi))
-                        start_angle = sp.simplify(start_angle % (2 * sp.pi))
-                        end_angle = sp.simplify(end_angle % (2 * sp.pi))
-                        
-                        # 检查角度是否在圆弧范围内
-                        if sp.simplify(start_angle <= end_angle):
-                            in_angle_range = sp.And(angle >= start_angle, angle <= end_angle)
-                        else:
-                            in_angle_range = sp.Or(angle >= start_angle, angle <= end_angle)
-                            
-                        angle_check_passed = sp.simplify(in_angle_range)
-                    except Exception as e:
-                        logger.warning(f"角度范围计算失败: {str(e)}")
-                        angle_check_passed = False
-                
-                if angle_check_passed:
-                    is_new_point = True
-                    for endpoint in [s, e]:
-                        ex, ey = self.get_point_coords(endpoint)
-                        if sp.simplify(ix - ex) == 0 and sp.simplify(iy - ey) == 0:
-                            is_new_point = False
-                            break
-                            
-                    if is_new_point:
-                        intersections.append((ix, iy, intersection_level))
+        dx = sp.simplify(x2 - x1)
+        dy = sp.simplify(y2 - y1)
+
+        # 1. 计算一元二次方程系数（ax² + bx + c = 0）
+        a = sp.simplify(dx**2 + dy**2)
+        b = sp.simplify(2 * (dx * (x1 - cx) + dy * (y1 - cy)))
+        c = sp.simplify((x1 - cx)**2 + (y1 - cy)**2 - r**2)
+
+        # 2. 线段退化处理（符号等式判断）
+        if sp.simplify(sp.Eq(a, 0)):
+            if sp.simplify(sp.Eq(c, 0)):
+                intersections.append((x1, y1))
+            return intersections
+
+        # 3. 判别式分析（无solve，纯化简判断）
+        D = sp.simplify(b**2 - 4 * a * c)
+        sqrt_D = sp.sqrt(D)
+
+        # 3.1 无实数解（D<0，符号化简判断）
+        if sp.simplify(D < 0):
+            return intersections
+
+        # 4. 计算t值解析解（线段参数方程：t∈[0,1]）
+        t_candidates = []
+        if sp.simplify(sp.Eq(D, 0)):  # 切点：唯一解
+            t = sp.simplify(-b / (2 * a))
+            t_candidates.append(t)
+        else:  # 两个解（求根公式直接推导）
+            t1 = sp.simplify((-b - sqrt_D) / (2 * a))
+            t2 = sp.simplify((-b + sqrt_D) / (2 * a))
+            t_candidates = [t1, t2]
+
+        # 5. 校验t值有效性（实数+[0,1]区间，无solve）
+        def is_valid_t(t: sp.Expr) -> bool:
+            """校验t是否为实数且在[0,1]区间（纯符号化简判断）"""
+            # 实数判断：虚部为0（符号场景下避免is_real的None返回）
+            is_real = sp.simplify(sp.im(t)) == 0
+            # 区间判断：0≤t≤1（符号不等式化简）
+            in_range = sp.simplify(sp.And(t >= 0, t <= 1))
+            # 合并判断（化简后为True/False或恒成立的符号表达式）
+            return sp.simplify(is_real and in_range)
+
+        valid_ts = [t for t in t_candidates if is_valid_t(t)]
+        if not valid_ts:
+            return intersections
+
+        # 6. 计算交点+二次校验（确保在圆上）
+        seen = set()
+        for t in valid_ts:
+            x = sp.simplify(x1 + t * dx)
+            y = sp.simplify(y1 + t * dy)
             
-            except Exception as e:
-                logger.warning(f"处理交点解时出错: {str(e)}")
-                continue
-        
+            # 二次校验：交点到圆心距离=半径（符号等式验证）
+            dist_sq = sp.simplify((x - cx)**2 + (y - cy)**2)
+            r_sq = sp.simplify(r**2)
+            if sp.simplify(sp.Eq(dist_sq, r_sq)):
+                key = (str(x), str(y))
+                if key not in seen:
+                    seen.add(key)
+                    intersections.append((x, y))
+
         return intersections
 
+    def _line_arc_intersection(self, line_id: str, arc_id: str) -> List[Tuple[sp.Expr, sp.Expr, int]]:
+        """
+        计算线段与完整圆（所有弧均为2π完整圆）的交点，返回(坐标x, 坐标y, 交点level)。
+        适配arc实际结构，移除角度范围过滤，保留核心校验与符号计算兼容性。
+        """
+        try:
+            # 1. 获取线段和完整圆的基本信息
+            arc = self.arc_id_map[arc_id]
+            line = self.line_id_map[line_id]
+
+            # 2. 强化关键参数校验（适配arc实际结构，确保核心参数有效）
+            required_arc_params = ["center_point_id", "radius"]  # 对应arc的实际键名
+            if not all(param in arc for param in required_arc_params):
+                missing = [p for p in required_arc_params if p not in arc]
+                logger.warning(f"完整圆 {arc_id} 缺少必要参数: {missing}")
+                return []
+            
+            # 校验radius字典是否包含expr键
+            if "expr" not in arc["radius"]:
+                logger.warning(f"完整圆 {arc_id} 的radius参数缺少expr字段")
+                return []
+            
+            # 获取圆心ID并校验存在性（对应arc的center_point_id键）
+            center_id = arc["center_point_id"]
+            if center_id not in self.point_id_map:
+                logger.warning(f"完整圆 {arc_id} 的圆心 {center_id} 不存在于点集合中")
+                return []
+            
+            # 3. 计算交点层级（取线段和圆的层级最大值）
+            intersection_level = max(line["level"], arc["level"])
+
+            # 4. 获取并化简所有必要的坐标与表达式（适配arc结构读取半径）
+            cx, cy = self.get_point_coords(center_id)
+            # 从arc["radius"]["expr"]读取半径表达式，适配实际结构
+            radius_expr = arc["radius"]["expr"]
+            radius = sp.simplify(self._parse_expr(radius_expr))
+            
+            s_id, e_id = line["start_point_id"], line["end_point_id"]
+            x1 = sp.simplify(self.get_point_coords(s_id)[0])
+            y1 = sp.simplify(self.get_point_coords(s_id)[1])
+            x2 = sp.simplify(self.get_point_coords(e_id)[0])
+            y2 = sp.simplify(self.get_point_coords(e_id)[1])
+
+            # 5. 调用优化后的_segment_circle_intersection计算交点
+            # 该函数已完成：线段范围校验、交点去重、圆上二次校验，直接复用
+            circle_intersections = self._segment_circle_intersection(
+                x1, y1, x2, y2,
+                cx, cy, radius
+            )
+            if not circle_intersections:
+                return []
+
+            # 6. 过滤线段端点（不视为新交点，修复符号判断逻辑）
+            valid_intersections = []
+            s_point = (x1, y1)
+            e_point = (x2, y2)
+            
+            for (ix, iy) in circle_intersections:
+                # 用sp.Eq+化简判断是否为线段端点，避免符号场景下==失效
+                is_s_endpoint = sp.Eq(sp.simplify(ix), sp.simplify(s_point[0])) and sp.Eq(sp.simplify(iy), sp.simplify(s_point[1]))
+                is_e_endpoint = sp.Eq(sp.simplify(ix), sp.simplify(e_point[0])) and sp.Eq(sp.simplify(iy), sp.simplify(e_point[1]))
+                
+                if not (sp.simplify(is_s_endpoint) or sp.simplify(is_e_endpoint)):
+                    valid_intersections.append((ix, iy, intersection_level))
+
+            return valid_intersections
+
+        except KeyError as e:
+            logger.warning(f"计算交点时缺少对象: {e}。线段 ID: {line_id}, 完整圆 ID: {arc_id}")
+            return []
+        except Exception as e:
+            logger.error(f"计算线段 {line_id} 与完整圆 {arc_id} 的交点时发生未知错误: {e}", exc_info=True)
+            return []
+    
+    def _is_point_on_arc_angle_range(self, px: sp.Expr, py: sp.Expr, cx: sp.Expr, cy: sp.Expr, arc: Dict) -> bool:
+        """
+        辅助函数：判断一个点是否在圆弧的角度范围内。
+        :param px, py: 待判断点的坐标。
+        :param cx, cy: 圆弧圆心坐标。
+        :param arc: 圆弧对象字典。
+        :return: 如果点在角度范围内，返回 True，否则返回 False。
+                如果圆弧没有角度信息，则默认返回 True。
+        """
+        # 如果圆弧没有角度信息，视为整个圆
+        if "start_angle" not in arc or "end_angle" not in arc:
+            return True
+
+        try:
+            # 解析并标准化角度到 [0, 2π)
+            start_angle = sp.simplify(self._parse_expr(arc["start_angle"]) % (2 * sp.pi))
+            end_angle = sp.simplify(self._parse_expr(arc["end_angle"]) % (2 * sp.pi))
+
+            # 计算点相对于圆心的角度
+            dx = px - cx
+            dy = py - cy
+            point_angle = sp.atan2(dy, dx)  # 返回 [-π, π]
+            point_angle = sp.simplify(point_angle % (2 * sp.pi))  # 标准化到 [0, 2π)
+
+            # 判断角度范围
+            if sp.simplify(start_angle <= end_angle):
+                # 情况1：角度范围不跨 0 度
+                in_range = sp.simplify(sp.And(point_angle >= start_angle, point_angle <= end_angle))
+            else:
+                # 情况2：角度范围跨 0 度 (例如从 350° 到 10°)
+                in_range = sp.simplify(sp.Or(point_angle >= start_angle, point_angle <= end_angle))
+
+            # 确保返回的是一个布尔值，而不是 SymPy 表达式
+            return bool(in_range)
+
+        except Exception as e:
+            logger.warning(f"检查点 {px}, {py} 是否在圆弧 {arc.get('id')} 角度范围内时失败: {e}")
+            return False
+
+    def _check_and_add_intersection(self, ix: sp.Expr, iy: sp.Expr, s: str, e: str, cx: sp.Expr, cy: sp.Expr, arc: Dict, level: int, intersections: List):
+        """
+        辅助函数：检查交点是否有效（在角度范围内且非端点），并添加到列表中。
+        """
+        # 1. 检查是否在圆弧角度范围内
+        if not self._is_point_on_arc_angle_range(ix, iy, cx, cy, arc):
+            return
+
+        # 2. 检查是否为线段的端点（避免重复添加）
+        is_new_point = True
+        s_x, s_y = self.get_point_coords(s)
+        e_x, e_y = self.get_point_coords(e)
+        if (sp.simplify(ix - s_x) == 0 and sp.simplify(iy - s_y) == 0) or \
+        (sp.simplify(ix - e_x) == 0 and sp.simplify(iy - e_y) == 0):
+            is_new_point = False
+
+        if is_new_point:
+            intersections.append((ix, iy, level))
 
     def detect_new_intersections(self, new_line_id: str) -> List[str]:
+        """
+        检测一条新线段与场景中所有已有线段和圆弧的交点，并返回新创建的交点 ID 列表。
+        """
         new_ips = []
-        new_line = self.line_id_map[new_line_id]
-        new_line_level = new_line["level"]
-        s_new, e_new = new_line["start_point_id"], new_line["end_point_id"]
-        x1_new, y1_new = self.get_point_coords(s_new)
-        x2_new, y2_new = self.get_point_coords(e_new)
-        
-        new_min_x = Min(x1_new, x2_new)
-        new_max_x = Max(x1_new, x2_new)
-        new_min_y = Min(y1_new, y2_new)
-        new_max_y = Max(y1_new, y2_new)
-        
-        # 检测与现有线段的交点
-        for line_id in self.line_id_map:
-            if line_id == new_line_id:
-                continue
-            line = self.line_id_map[line_id]
-            line_level = line["level"]
-            s, e = line["start_point_id"], line["end_point_id"]
-            x1, y1 = self.get_point_coords(s)
-            x2, y2 = self.get_point_coords(e)
+        try:
+            # 1. 预计算新线段的所有信息
+            new_line = self.line_id_map[new_line_id]
+            s_new_id, e_new_id = new_line["start_point_id"], new_line["end_point_id"]
+            x1_new, y1_new = self.get_point_coords(s_new_id)
+            x2_new, y2_new = self.get_point_coords(e_new_id)
             
-            all_symbols = set()
-            for expr in [x1, y1, x2, y2, new_min_x, new_max_x, new_min_y, new_max_y]:
-                all_symbols.update(expr.free_symbols)
-            all_symbols = list(all_symbols)
-            
-            # 2. 构建假设：所有符号都是实数
-            assumptions = Q.real(*all_symbols)
-            
-            # 3. 使用 ask() 来判断边界框是否重叠
-            # 如果 ask 返回 True，说明线段在该方向上没有交集，可以直接跳过
-            cond1 = ask(Max(x1, x2) < new_min_x, assumptions)
-            cond2 = ask(Min(x1, x2) > new_max_x, assumptions)
-            cond3 = ask(Max(y1, y2) < new_min_y, assumptions)
-            cond4 = ask(Min(y1, y2) > new_max_y, assumptions)
-            
-            if cond1 or cond2 or cond3 or cond4:
-                continue
-            
-            # if (Max(x1, x2) < new_min_x) or (Min(x1, x2) > new_max_x) or \
-            #    (Max(y1, y2) < new_min_y) or (Min(y1, y2) > new_max_y):
-            #     continue
-            
-            intersections = self._line_intersection(new_line_id, line_id)
-            for x, y, level in intersections:
-                x_simplified = sp.simplify(x)
-                y_simplified = sp.simplify(y)
-                pid = self.add_new_point(
-                    x_simplified, y_simplified, 
-                    prefix="I", 
-                    point_type="intersection",
-                    level=level  # 使用计算的交点level
-                )
-                new_ips.append(pid)
-        
-        # 检测与现有圆弧的交点
-        for arc_id in self.arc_id_map:
-            arc = self.arc_id_map[arc_id]
-            arc_level = arc["level"]
-            if "center_id" in arc and "radius_expr" in arc:
-                cx, cy = self.get_point_coords(arc["center_id"])
-                r = self._parse_expr(arc["radius_expr"])
-                arc_min_x = cx - r
-                arc_max_x = cx + r
-                arc_min_y = cy - r
-                arc_max_y = cy + r
-                
-                all_symbols = set()
-                for expr in [arc_min_x, arc_max_x, arc_min_y, arc_max_y, new_min_x, new_max_x, new_min_y, new_max_y]:
-                    all_symbols.update(expr.free_symbols)
-                all_symbols = list(all_symbols)
-                
-                # 2. 构建假设
-                assumptions = Q.real(*all_symbols)
-                
-                # 3. 使用 ask() 来判断边界框是否重叠
-                cond1 = ask(arc_max_x < new_min_x, assumptions)
-                cond2 = ask(arc_min_x > new_max_x, assumptions)
-                cond3 = ask(arc_max_y < new_min_y, assumptions)
-                cond4 = ask(arc_min_y > new_max_y, assumptions)
-                
-                if cond1 or cond2 or cond3 or cond4:
+            # 计算新线段的轴对齐边界框 (AABB)
+            new_min_x = sp.simplify(sp.Min(x1_new, x2_new))
+            new_max_x = sp.simplify(sp.Max(x1_new, x2_new))
+            new_min_y = sp.simplify(sp.Min(y1_new, y2_new))
+            new_max_y = sp.simplify(sp.Max(y1_new, y2_new))
+
+            # 2. 检测与现有线段的交点
+            for line_id, line in self.line_id_map.items():
+                if line_id == new_line_id:
+                    continue
+
+                # 计算现有线段的 AABB
+                s_id, e_id = line["start_point_id"], line["end_point_id"]
+                x1, y1 = self.get_point_coords(s_id)
+                x2, y2 = self.get_point_coords(e_id)
+                min_x = sp.simplify(sp.Min(x1, x2))
+                max_x = sp.simplify(sp.Max(x1, x2))
+                min_y = sp.simplify(sp.Min(y1, y2))
+                max_y = sp.simplify(sp.Max(y1, y2))
+
+                # 【核心优化】快速排斥实验：如果两个 AABB 不重叠，则线段一定不相交
+                # 使用 sympy.simplify 来评估布尔表达式
+                if (sp.simplify(max_x < new_min_x) or
+                    sp.simplify(min_x > new_max_x) or
+                    sp.simplify(max_y < new_min_y) or
+                    sp.simplify(min_y > new_max_y)):
+                    continue
+
+                # AABB 重叠，需要进行精确的线段相交计算
+                intersections = self._line_intersection(new_line_id, line_id)
+                for x, y, level in intersections:
+                    pid = self.add_new_point(
+                        sp.simplify(x), sp.simplify(y), 
+                        prefix="I", 
+                        point_type="intersection",
+                        level=level
+                    )
+                    if pid:  # 确保 add_new_point 成功创建了点
+                        new_ips.append(pid)
+
+            # 3. 检测与现有圆弧的交点
+            for arc_id, arc in self.arc_id_map.items():
+                # 检查圆弧是否有效
+                if "center_point_id" not in arc or "radius" not in arc:
                     continue
                 
-                # if (arc_max_x < new_min_x) or (arc_min_x > new_max_x) or \
-                #    (arc_max_y < new_min_y) or (arc_min_y > new_max_y):
+                # 计算圆弧的 AABB
+                # cx, cy = self.get_point_coords(arc["center_id"])
+                # r = self._parse_expr(arc["radius_expr"])
+                # arc_min_x = sp.simplify(cx - r)
+                # arc_max_x = sp.simplify(cx + r)
+                # arc_min_y = sp.simplify(cy - r)
+                # arc_max_y = sp.simplify(cy + r)
+
+                # 快速排斥实验：如果线段的 AABB 和圆弧的 AABB 不重叠，则无交点
+                # if (sp.simplify(arc_max_x < new_min_x) or
+                #     sp.simplify(arc_min_x > new_max_x) or
+                #     sp.simplify(arc_max_y < new_min_y) or
+                #     sp.simplify(arc_min_y > new_max_y)):
                 #     continue
-            
-            intersections = self._line_arc_intersection(new_line_id, arc_id)
-            for x, y, level in intersections:
-                x_simplified = sp.simplify(x)
-                y_simplified = sp.simplify(y)
-                pid = self.add_new_point(
-                    x_simplified, y_simplified, 
-                    prefix="I", 
-                    point_type="arc_intersection",
-                    level=level  # 使用计算的交点level
-                )
-                new_ips.append(pid)
-        
+
+                # AABB 重叠，需要进行精确的线-弧相交计算
+                intersections = self._line_arc_intersection(new_line_id, arc_id)
+                for x, y, level in intersections:
+                    pid = self.add_new_point(
+                        sp.simplify(x), sp.simplify(y), 
+                        prefix="I", 
+                        point_type="arc_intersection",
+                        level=level
+                    )
+                    if pid:
+                        new_ips.append(pid)
+
+        except Exception as e:
+            logger.error(f"在检测新线段 {new_line_id} 的交点时发生错误: {e}", exc_info=True)
+
         return new_ips
 
     def _line_intersection(self, line1_id: str, line2_id: str) -> List[Tuple[sp.Expr, sp.Expr, int]]:
@@ -987,6 +1105,236 @@ class RandomGeometryBuilder:
         foot_y = y1 + t * dy
         on_segment = Ge(t, 0) and Le(t, 1)
         return (foot_x, foot_y, bool(on_segment), foot_level)
+
+    def _finalize_geometry(self, final_geo: Dict):
+        """
+        对增强后的几何图形进行最终整理（所有计算基于SymPy）。
+        生成所有由相邻点组成的最小线段和弧，并正确打上标记。
+        - 如果最小单元已存在（如原始线段），则仅将其 `is_minimal` 设为 True。
+        - 如果不存在，则创建新元素，并标记为 `is_original=False`, `is_minimal=True`。
+        """
+        if not final_geo:
+            return
+
+        # 1. 准备工作：建立ID到对象的映射，方便快速查找
+        point_map = {p["id"]: p for p in final_geo["points"]}
+        
+        # 建立现有线段和弧的快速查找映射，键为其特征（如端点）
+        existing_lines_map = {}
+        for line in final_geo.get("lines", []):
+            key = tuple(sorted((line["start_point_id"], line["end_point_id"])))
+            existing_lines_map[key] = line
+
+        existing_arcs_map = {}
+        for arc in final_geo.get("arcs", []):
+            # 弧的特征由起点、终点和圆心共同决定
+            key = (arc["start_point_id"], arc["end_point_id"], arc["center_point_id"])
+            existing_arcs_map[key] = arc
+
+        new_lines = []
+        new_arcs = []
+
+        # 确保所有点都有level，如果没有则默认为0
+        for p in final_geo["points"]:
+            if "level" not in p:
+                p["level"] = 0
+
+        # --- 2. 处理线段，生成最小线段 ---
+        for line in final_geo.get("lines", []):
+            s_id = line["start_point_id"]
+            e_id = line["end_point_id"]
+
+            s_p = point_map[s_id]
+            e_p = point_map[e_id]
+            sx, sy = sp.sympify(s_p["x"]["expr"]), sp.sympify(s_p["y"]["expr"])
+            ex, ey = sp.sympify(e_p["x"]["expr"]), sp.sympify(e_p["y"]["expr"])
+
+            points_on_line = []
+            for p_id, p in point_map.items():
+                px, py = sp.sympify(p["x"]["expr"]), sp.sympify(p["y"]["expr"])
+                if self._is_point_on_segment_for_finalize(px, py, sx, sy, ex, ey):
+                    if not sp.Eq(sx, ex):
+                        t = (px - sx) / (ex - sx)
+                    elif not sp.Eq(sy, ey):
+                        t = (py - sy) / (ey - sy)
+                    else:
+                        t = 0
+                    points_on_line.append((t, p_id))
+
+            points_on_line.sort(key=lambda x: x[0])
+            sorted_point_ids = []
+            seen_t = set()
+            for t, p_id in points_on_line:
+                t_simplified = str(sp.simplify(t))
+                if t_simplified not in seen_t:
+                    seen_t.add(t_simplified)
+                    sorted_point_ids.append(p_id)
+
+            # 生成最小线段
+            for i in range(len(sorted_point_ids) - 1):
+                start_pid = sorted_point_ids[i]
+                end_pid = sorted_point_ids[i + 1]
+                level = max(point_map[start_pid]["level"], point_map[end_pid]["level"])
+                
+                # 生成用于查找的键
+                line_key = tuple(sorted((start_pid, end_pid)))
+
+                # 检查这个最小单元是否已存在
+                if line_key in existing_lines_map:
+                    # 如果存在，直接更新其 is_minimal 属性
+                    existing_line = existing_lines_map[line_key]
+                    existing_line["is_minimal"] = True
+                    # 同时确保 level 是最新的（取最大值）
+                    if "level" in existing_line:
+                        existing_line["level"] = max(existing_line["level"], level)
+                    else:
+                        existing_line["level"] = level
+                else:
+                    # 如果不存在，则创建新的最小线段
+                    new_line_id = f"L_min_{len(new_lines) + 1}"
+                    new_line = {
+                        "id": new_line_id,
+                        "start_point_id": start_pid,
+                        "end_point_id": end_pid,
+                        "level": level,
+                        "is_original": False,
+                        "is_minimal": True,
+                    }
+                    new_lines.append(new_line)
+                    # 同时更新查找映射，以便后续检查
+                    existing_lines_map[line_key] = new_line
+
+        # --- 3. 处理弧，生成最小弧段 ---
+        for arc in final_geo.get("arcs", []):
+            s_id = arc["start_point_id"]
+            e_id = arc["end_point_id"]
+            c_id = arc["center_point_id"]
+            radius_expr = sp.sympify(arc["radius"]["expr"])
+            is_complete = arc.get("is_complete", False)
+
+            c_p = point_map[c_id]
+            cx, cy = sp.sympify(c_p["x"]["expr"]), sp.sympify(c_p["y"]["expr"])
+
+            points_on_arc = []
+            for p_id, p in point_map.items():
+                px, py = sp.sympify(p["x"]["expr"]), sp.sympify(p["y"]["expr"])
+                dist_sq = (px - cx)**2 + (py - cy)**2
+                if sp.simplify(dist_sq - radius_expr**2) == 0:
+                    dx = px - cx
+                    dy = py - cy
+                    angle = sp.atan2(dy, dx)
+                    points_on_arc.append((angle, p_id))
+
+            points_on_arc.sort(key=lambda x: x[0])
+            sorted_point_ids = [p_id for _, p_id in points_on_arc]
+
+            if is_complete and sorted_point_ids:
+                sorted_point_ids.append(sorted_point_ids[0])
+
+            # 生成最小弧段
+            for i in range(len(sorted_point_ids) - 1):
+                start_pid = sorted_point_ids[i]
+                end_pid = sorted_point_ids[i + 1]
+                level = max(point_map[start_pid]["level"], point_map[end_pid]["level"])
+
+                # 计算新弧的角度
+                start_dx = sp.sympify(point_map[start_pid]["x"]["expr"]) - cx
+                start_dy = sp.sympify(point_map[start_pid]["y"]["expr"]) - cy
+                end_dx = sp.sympify(point_map[end_pid]["x"]["expr"]) - cx
+                end_dy = sp.sympify(point_map[end_pid]["y"]["expr"]) - cy
+                start_angle = sp.atan2(start_dy, start_dx)
+                end_angle = sp.atan2(end_dy, end_dx)
+                sub_angle = end_angle - start_angle
+                if not is_complete and sp.simplify(sub_angle) < 0:
+                    sub_angle += 2 * sp.pi
+                
+                # 生成用于查找的键
+                arc_key = (start_pid, end_pid, c_id)
+
+                # 检查这个最小单元是否已存在
+                if arc_key in existing_arcs_map:
+                    # 如果存在，直接更新其 is_minimal 属性
+                    existing_arc = existing_arcs_map[arc_key]
+                    existing_arc["is_minimal"] = True
+                    # 同时确保 level 是最新的
+                    if "level" in existing_arc:
+                        existing_arc["level"] = max(existing_arc["level"], level)
+                    else:
+                        existing_arc["level"] = level
+                else:
+                    # 如果不存在，则创建新的最小弧段
+                    new_arc_id = f"Arc_min_{len(new_arcs) + 1}"
+                    new_arc = {
+                        "id": new_arc_id,
+                        "start_point_id": start_pid,
+                        "end_point_id": end_pid,
+                        "center_point_id": c_id,
+                        "radius": {"expr": str(radius_expr)},
+                        "angle": {"expr": str(sp.simplify(sub_angle))},
+                        "is_complete": False,
+                        "is_original": False,
+                        "is_minimal": True,
+                        "level": level,
+                    }
+                    new_arcs.append(new_arc)
+                    # 同时更新查找映射
+                    existing_arcs_map[arc_key] = new_arc
+
+            if is_complete and sorted_point_ids:
+                sorted_point_ids.pop()
+
+        # --- 4. 整合结果 ---
+        final_geo["lines"].extend(new_lines)
+        final_geo["arcs"].extend(new_arcs)
+
+        # print(f"Finalization complete. Added {len(new_lines)} minimal lines and {len(new_arcs)} minimal arcs.")
+
+    def _is_point_on_segment_for_finalize(self, px, py, sx, sy, ex, ey) -> bool:
+        """
+        辅助函数：判断一个点是否在线段上
+        """
+        # 检查点是否与线段共线（符号计算）
+        cross = (px - sx) * (ey - sy) - (py - sy) * (ex - sx)
+        if sp.simplify(cross) != 0:
+            return False
+
+        # 检查点是否在线段的 bounding rectangle 内（符号计算）
+        dot = (px - sx) * (ex - sx) + (py - sy) * (ey - sy)
+        if sp.simplify(dot) < 0:
+            return False
+
+        squared_length = (ex - sx)**2 + (ey - sy)** 2
+        if sp.simplify(dot) > squared_length:
+            return False
+
+        return True
+    
+    def _initialize_geometry_caches(self):
+        """
+        在每次增强任务开始前，初始化关键的几何关系缓存，以加速后续操作。
+        """
+        # 1. 初始化 connected_pairs_set：存储所有已连接的点对 (无序)
+        self.connected_pairs_set = set()
+        for line_id, line in self.line_id_map.items():
+            p1 = line["start_point_id"]
+            p2 = line["end_point_id"]
+            # 使用排序后的元组确保 (A,B) 和 (B,A) 是同一个键
+            pair = tuple(sorted((p1, p2)))
+            self.connected_pairs_set.add(pair)
+
+        # 2. 初始化 point_to_lines_map：存储每个点关联的所有线段ID
+        self.point_to_lines_map = defaultdict(list)
+        for line_id, line in self.line_id_map.items():
+            p1 = line["start_point_id"]
+            p2 = line["end_point_id"]
+            self.point_to_lines_map[p1].append(line_id)
+            self.point_to_lines_map[p2].append(line_id)
+
+        # 3. 初始化 on_segment_points_set：存储所有在线段上的点的ID
+        # 一个点只要在 point_to_lines_map 中有记录，就说明它至少在一条线上
+        self.on_segment_points_set = set(self.point_to_lines_map.keys())
+        
+        logger.debug(f"几何缓存初始化完成。已连接点对: {len(self.connected_pairs_set)}, 线上点: {len(self.on_segment_points_set)}")
 
     # ------------------------------ 操作执行（含level计算） ------------------------------
     def execute_operation(self, op: Dict) -> Dict:
@@ -1247,6 +1595,19 @@ class RandomGeometryBuilder:
             final_geo["base_id"] = self.base_id
             final_geo["enhance_id"] = f"{self.base_id}_enhance_{result['enhance_idx']:03d}"
             
+            
+            for line in final_geo.get("lines", []):
+                # 使用 setdefault 避免覆盖已存在的键
+                line.setdefault("is_original", True)
+                line.setdefault("is_minimal", False)
+            
+            # 标记所有在分割前就存在的弧
+            for arc in final_geo.get("arcs", []):
+                arc.setdefault("is_original", True)
+                arc.setdefault("is_minimal", False)
+                
+            self._finalize_geometry(final_geo)
+            
             enhancements.append(final_geo)
         
         logger.info(f"生成 {len(enhancements)} 个独立增强图形（预期 {num_enhancements} 个）")
@@ -1285,13 +1646,14 @@ class RandomGeometryBuilder:
             self.point_id_map = {p["id"]: p for p in self.points}
             self.line_id_map = {l["id"]: l for l in self.lines}
             self.arc_id_map = {a["id"]: a for a in self.arcs}
-            self.line_pairs = self._build_line_pairs()
-            self.on_segment_points_cache = set(self._cache_on_segment_points())
-            self.all_points_cache = set(self.point_id_map.keys())
+            self._initialize_geometry_caches()
+
+            self.line_pairs = self._build_line_pairs() 
+            # self.on_segment_points_cache = set(self._cache_on_segment_points()) 
             self.entity_vertices_cache = self._cache_entity_vertices()
             self.entity_lines_cache = self._cache_entity_lines()
-            self.entity_arcs_cache = self._cache_entity_arcs()    
-            
+            self.entity_arcs_cache = self._cache_entity_arcs() 
+                
             self.enhancement_history = []
             self.operation_counter = 0
 

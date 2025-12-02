@@ -1,11 +1,11 @@
 {
     "global": {
         "output_root": "./results_n20_v5",
-        "main_seed": 2200,
+        "main_seed": 155,
         "thread_num": 20
     },
     "template": {
-        "n": 40,
+        "n": 10,
         "points_limit": 30,
         "lines_limit": 40,
         "output_dir": "./results_n20_v5/json/base",
@@ -91,7 +91,7 @@
             }
         },
         "derivation": {
-            "round_range": [1, 2],
+            "round_range": [1, 4],
             "mode": "sequential",
             "rules": {
                 "circle": {
@@ -196,8 +196,8 @@
     },
     "shader": {
         "enabled": true,
-        "n_regions": [1, 2], 
-        "x_attempts": 4,
+        "n_regions": [1, 4], 
+        "x_attempts": 5,
         "min_pixel_area": 100, 
         "shadow_types": ["hatch", "solid", "crosshatch"],
         "hatch_spacing": 5,

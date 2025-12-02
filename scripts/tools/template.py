@@ -367,100 +367,143 @@ class TemplateGenerator:
         in_y_range = sp.And(py >= y_min, py <= y_max)
         return bool(sp.simplify(in_x_range & in_y_range))
 
-    def _segment_circle_intersection(self, 
-                                        x1: sp.Expr, y1: sp.Expr,  # 线段起点
-                                        x2: sp.Expr, y2: sp.Expr,  # 线段终点
-                                        cx: sp.Expr, cy: sp.Expr,  # 圆心
+    def _segment_circle_intersection(self,
+                                        x1: sp.Expr, y1: sp.Expr,
+                                        x2: sp.Expr, y2: sp.Expr,
+                                        cx: sp.Expr, cy: sp.Expr,
                                         r: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
-            """计算线段与圆的交点（修复虚数解比较错误）"""
-            t = sp.symbols('t')
-            x = x1 + t*(x2 - x1)
-            y = y1 + t*(y2 - y1)
-            
-            eq = sp.Eq((x - cx)**2 + (y - cy)** 2, r**2)
-            eq_simplified = sp.simplify(eq)
-            solutions = sp.solve(eq_simplified, t, dict=True)
-            intersections = []
-            
-            for sol in solutions:
-                if t not in sol:
-                    continue
-                    
-                t_val = sol[t]
-                # 1. 先检查是否为实数解（关键修复：过滤虚数解）
-                if not sp.simplify(t_val.is_real):
-                    continue
-                    
-                # 2. 仅对实数解进行范围判断
-                t_valid = sp.And(sp.Ge(t_val, 0), sp.Le(t_val, 1))
-                if sp.simplify(t_valid):
-                    x_val = sp.simplify(x.subs(t, t_val))
-                    y_val = sp.simplify(y.subs(t, t_val))
-                    
-                    # 再次确认坐标为实数
-                    if sp.simplify(x_val.is_real) and sp.simplify(y_val.is_real):
-                        intersections.append((x_val, y_val))
-            
-            # 去重处理
-            # unique_intersections = []
-            # seen = set()
-            # for x, y in intersections:
-            #     key = (str(sp.simplify(x)), str(sp.simplify(y)))
-            #     if key not in seen:
-            #         seen.add(key)
-            #         unique_intersections.append((x, y))
-            
+        """
+        计算线段与圆的交点（纯解析解，无sp.solve，兼容垂直线段/切点）
+        """
+        intersections = []
+        dx = sp.simplify(x2 - x1)
+        dy = sp.simplify(y2 - y1)
+
+        # 1. 计算一元二次方程系数（ax² + bx + c = 0）
+        a = sp.simplify(dx**2 + dy**2)
+        b = sp.simplify(2 * (dx * (x1 - cx) + dy * (y1 - cy)))
+        c = sp.simplify((x1 - cx)**2 + (y1 - cy)**2 - r**2)
+
+        # 2. 线段退化处理（符号等式判断）
+        if sp.simplify(sp.Eq(a, 0)):
+            if sp.simplify(sp.Eq(c, 0)):
+                intersections.append((x1, y1))
             return intersections
 
-    def _circle_circle_intersection(self, 
-                                cx1: sp.Expr, cy1: sp.Expr, r1: sp.Expr,  # 圆1
-                                cx2: sp.Expr, cy2: sp.Expr, r2: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
-        """计算两圆的交点（仅保留实数解，完全基于符号表达式计算）"""
+        # 3. 判别式分析（无solve，纯化简判断）
+        D = sp.simplify(b**2 - 4 * a * c)
+        sqrt_D = sp.sqrt(D)
+
+        # 3.1 无实数解（D<0，符号化简判断）
+        if sp.simplify(D < 0):
+            return intersections
+
+        # 4. 计算t值解析解（线段参数方程：t∈[0,1]）
+        t_candidates = []
+        if sp.simplify(sp.Eq(D, 0)):  # 切点：唯一解
+            t = sp.simplify(-b / (2 * a))
+            t_candidates.append(t)
+        else:  # 两个解（求根公式直接推导）
+            t1 = sp.simplify((-b - sqrt_D) / (2 * a))
+            t2 = sp.simplify((-b + sqrt_D) / (2 * a))
+            t_candidates = [t1, t2]
+
+        # 5. 校验t值有效性（实数+[0,1]区间，无solve）
+        def is_valid_t(t: sp.Expr) -> bool:
+            """校验t是否为实数且在[0,1]区间（纯符号化简判断）"""
+            # 实数判断：虚部为0（符号场景下避免is_real的None返回）
+            is_real = sp.simplify(sp.im(t)) == 0
+            # 区间判断：0≤t≤1（符号不等式化简）
+            in_range = sp.simplify(sp.And(t >= 0, t <= 1))
+            # 合并判断（化简后为True/False或恒成立的符号表达式）
+            return sp.simplify(is_real and in_range)
+
+        valid_ts = [t for t in t_candidates if is_valid_t(t)]
+        if not valid_ts:
+            return intersections
+
+        # 6. 计算交点+二次校验（确保在圆上）
+        seen = set()
+        for t in valid_ts:
+            x = sp.simplify(x1 + t * dx)
+            y = sp.simplify(y1 + t * dy)
+            
+            # 二次校验：交点到圆心距离=半径（符号等式验证）
+            dist_sq = sp.simplify((x - cx)**2 + (y - cy)**2)
+            r_sq = sp.simplify(r**2)
+            if sp.simplify(sp.Eq(dist_sq, r_sq)):
+                key = (str(x), str(y))
+                if key not in seen:
+                    seen.add(key)
+                    intersections.append((x, y))
+
+        return intersections
+
+    def _circle_circle_intersection(self,
+                                            cx1: sp.Expr, cy1: sp.Expr, r1: sp.Expr,
+                                            cx2: sp.Expr, cy2: sp.Expr, r2: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
+        """
+        计算两圆的交点（纯符号解析解版本）。
+        完全基于公式推导，不调用 sp.solve，确保符号计算的纯粹性。
+        """
+        intersections = []
+
+        # 1. 计算两圆心之间的距离和方向
         dx = cx2 - cx1
         dy = cy2 - cy1
         d_sq = dx**2 + dy**2
-        d = sqrt(d_sq)
-        
-        if not sp.simplify(d.is_real):
-            return []
-        
+        d = sp.sqrt(d_sq)
+        d_simplified = sp.simplify(d)
+
+        # 2. 快速判断：无交点或有无数交点的情况
         sum_r = r1 + r2
         diff_r = sp.Abs(r1 - r2)
-        if sp.simplify(d > sum_r) or sp.simplify(d < diff_r):
+
+        # 两圆相离或内含
+        if sp.simplify(d_simplified > sum_r) or sp.simplify(d_simplified < diff_r):
+            return intersections
+        # 两圆重合（有无数交点）
+        if sp.simplify(d_simplified == 0) and sp.simplify(r1 == r2):
+            # 这里我们无法返回无穷多个点，通常在这种情况下，我们会根据应用场景处理
+            # 例如，可以返回一个空列表，或者抛出一个特定的异常
+            # logger.warning("两圆完全重合，存在无穷多个交点。")
             return []
-        
-        if sp.simplify(d == 0) and not sp.simplify(r1 == r2):
-            return []
-        
-        try:
-            a = (r1**2 - r2**2 + d_sq) / (2 * d)
-            h_sq = r1**2 - a**2
-            
-            if not sp.simplify(h_sq.is_real) or sp.simplify(h_sq < 0):
-                return []
-            h = sqrt(h_sq)
-            
-            x2 = cx1 + (a * dx) / d
-            y2 = cy1 + (a * dy) / d
-            
-            x3 = x2 - (h * dy) / d
-            y3 = y2 + (h * dx) / d
-            x4 = x2 + (h * dy) / d
-            y4 = y2 - (h * dx) / d
-            
-            def is_real_coord(coord):
-                return sp.simplify(coord.is_real) and sp.simplify(sp.im(coord) == 0)
-            
-            valid_points = []
-            if is_real_coord(x3) and is_real_coord(y3):
-                valid_points.append((sp.simplify(x3), sp.simplify(y3)))
-                
-            if not sp.simplify(h_sq == 0) and is_real_coord(x4) and is_real_coord(y4):
-                valid_points.append((sp.simplify(x4), sp.simplify(y4)))
-            
-            return valid_points
-        except:
-            return []
+
+        # 3. 计算解析解公式中的中间变量
+        # 为了公式简洁，我们将坐标系平移，使 C1 在原点
+        # 计算在平移坐标系下的交点坐标 (x', y')
+        a = (r1**2 - r2**2 + d_sq) / (2 * d)
+        h_sq = r1**2 - a**2
+        h_sq_simplified = sp.simplify(h_sq)
+
+        # 理论上 h_sq 应该非负，这里做一个保险
+        if sp.simplify(h_sq_simplified < 0):
+            return intersections
+
+        h = sp.sqrt(h_sq_simplified)
+
+        # 平移坐标系下的交点
+        x_prime = a
+        y_prime_1 = h
+        y_prime_2 = -h
+
+        # 4. 将交点坐标平移回原坐标系，并旋转
+        # 旋转矩阵：[dx/d, -dy/d], [dy/d, dx/d]
+        x1 = cx1 + (x_prime * dx - y_prime_1 * dy) / d
+        y1 = cy1 + (x_prime * dy + y_prime_1 * dx) / d
+
+        x2 = cx1 + (x_prime * dx - y_prime_2 * dy) / d
+        y2 = cy1 + (x_prime * dy + y_prime_2 * dx) / d
+
+        # 5. 化简并添加到结果列表
+        # 对于两圆相切的情况，两个点是同一个点，我们需要去重
+        if sp.simplify(h_sq_simplified == 0):
+            intersections.append((sp.simplify(x1), sp.simplify(y1)))
+        else:
+            intersections.append((sp.simplify(x1), sp.simplify(y1)))
+            intersections.append((sp.simplify(x2), sp.simplify(y2)))
+
+        return intersections
         
     def _segment_segment_intersection(
         self,
@@ -469,56 +512,65 @@ class TemplateGenerator:
         x3: sp.Expr, y3: sp.Expr,
         x4: sp.Expr, y4: sp.Expr
     ) -> List[Tuple[sp.Expr, sp.Expr]]:
-        """计算两条线段的交点（仅保留线段内部的交点，符号化计算）"""
+        """计算两条线段的交点（仅保留线段内部的交点，纯参数方程解析解，不使用sp.solve）"""
         def points_equal(p1: Tuple[sp.Expr, sp.Expr], p2: Tuple[sp.Expr, sp.Expr]) -> bool:
+            """判断两个点是否重合（符号等式判断）"""
             return sp.simplify(sp.Eq(p1[0], p2[0])) and sp.simplify(sp.Eq(p1[1], p2[1]))
         
+        # 1. 排除线段端点重合的情况（不视为内部交点）
         if (points_equal((x1, y1), (x3, y3)) or points_equal((x1, y1), (x4, y4)) or
             points_equal((x2, y2), (x3, y3)) or points_equal((x2, y2), (x4, y4))):
             return []
         
-        dx1 = x2 - x1
-        dy1 = y2 - y1
-        dx2 = x4 - x3
-        dy2 = y4 - y3
+        # 2. 计算线段方向向量与关键交叉积（参数方程核心变量）
+        dx1 = sp.simplify(x2 - x1)
+        dy1 = sp.simplify(y2 - y1)
+        dx2 = sp.simplify(x4 - x3)
+        dy2 = sp.simplify(y4 - y3)
         
+        # 交叉积：判断两线段是否平行（cross_product=0则平行，无交点或共线）
         cross_product = sp.simplify(dx1 * dy2 - dx2 * dy1)
-        para = cross_product.is_zero
-        if para:
+        if sp.simplify(sp.Eq(cross_product, 0)):
             return []
         
-        t, s = sp.symbols('t s')
-        eq1 = sp.Eq(x1 + t*(x2 - x1), x3 + s*(x4 - x3))
-        eq2 = sp.Eq(y1 + t*(y2 - y1), y3 + s*(y4 - y3))
+        # 3. 解析解计算参数 t 和 s（基于参数方程联立，克莱姆法则推导）
+        # 线段1参数方程：(x1 + t*dx1, y1 + t*dy1)，t∈[0,1]
+        # 线段2参数方程：(x3 + s*dx2, y3 + s*dy2)，s∈[0,1]
+        # 联立方程求解 t 和 s 的解析解
+        delta_x = sp.simplify(x3 - x1)
+        delta_y = sp.simplify(y3 - y1)
         
-        solutions = sp.solve((eq1, eq2), (t, s), dict=True)
-        intersections = []
+        # t 的分子和分母（分母=cross_product≠0）
+        t_num = sp.simplify(delta_x * dy2 - delta_y * dx2)
+        t_val = sp.simplify(t_num / cross_product)
         
-        for sol in solutions:
-            if t not in sol or s not in sol:
-                continue
-            
-            t_val = sol[t]
-            s_val = sol[s]
-            
-            if not (sp.simplify(t_val.is_real) and sp.simplify(s_val.is_real)):
-                continue
-            
-            t_valid = sp.Ge(t_val, 0) and sp.Le(t_val, 1)
-            s_valid = sp.Ge(s_val, 0) and sp.Le(s_val, 1)
-            
-            if sp.simplify(t_valid) and sp.simplify(s_valid):
-                x = sp.simplify(x1 + t_val*(x2 - x1))
-                y = sp.simplify(y1 + t_val*(y2 - y1))
-                intersections.append((x, y))
+        # s 的分子
+        s_num = sp.simplify(delta_x * dy1 - delta_y * dx1)
+        s_val = sp.simplify(s_num / cross_product)
         
+        # 4. 校验 t 和 s 的有效性（实数+在[0,1]区间内）
+        def is_valid_param(param: sp.Expr) -> bool:
+            """校验参数是否为实数且在[0,1]区间"""
+            # 符号场景下确保参数无虚数部分（is_real可能返回None，需化简判断）
+            is_real = sp.simplify(sp.im(param)) == 0  # 虚部为0则为实数
+            # 参数在[0,1]区间（符号等式判断）
+            in_range = sp.simplify(sp.And(sp.Ge(param, 0), sp.Le(param, 1)))
+            return sp.simplify(is_real and in_range)
+        
+        if not is_valid_param(t_val) or not is_valid_param(s_val):
+            return []
+        
+        # 5. 计算交点坐标（代入线段1参数方程，化简结果）
+        x = sp.simplify(x1 + t_val * dx1)
+        y = sp.simplify(y1 + t_val * dy1)
+        
+        # 6. 去重（避免极端场景下的重复交点）
         unique_intersections = []
         seen = set()
-        for x, y in intersections:
-            key = (str(sp.simplify(x)), str(sp.simplify(y)))
-            if key not in seen:
-                seen.add(key)
-                unique_intersections.append((x, y))
+        key = (str(x), str(y))
+        if key not in seen:
+            seen.add(key)
+            unique_intersections.append((x, y))
         
         return unique_intersections
 
@@ -1377,110 +1429,117 @@ class TemplateGenerator:
 
     def _calculate_new_entity_intersections(self, new_id: str):
         """计算新生成entity的边/弧与所有已有元素的交点"""
-        # 提取新entity的所有边和弧ID
         line_id_pattern = re.compile(r'^L\d+$')
         new_entity = self.get_entity(new_id)
-        new_arcs = []
+        
         new_lines = []
-        
         if "lines" in new_entity:
-            new_lines = [cid for cid in new_entity["lines"] if line_id_pattern.match(cid)]
-        if "arcs" in new_entity:
-            new_arcs = [cid for cid in new_entity["arcs"] if cid.startswith("Arc")]
+            new_lines = [
+                line for line in self.data["lines"]
+                if line["id"] in new_entity["lines"] and line_id_pattern.match(line["id"])
+            ]
         
-        # 收集所有已有元素
+        new_arcs = []
+        if "arcs" in new_entity:
+            new_arcs = [
+                arc for arc in self.data["arcs"]
+                if arc["id"] in new_entity["arcs"] and arc["id"].startswith("Arc")
+            ]
+        
+        new_line_ids = {line["id"] for line in new_lines}
         all_existing_lines = [
-            (line["start_point_id"], line["end_point_id"], line["id"])
-            for line in self.data["lines"]
-            if line["id"] not in new_lines
+            line for line in self.data["lines"]
+            if line["id"] not in new_line_ids
         ]
+        
+        # 已有弧：排除新弧，直接存入完整弧对象
+        new_arc_ids = {arc["id"] for arc in new_arcs}
         all_existing_circles = [
-            (arc["center_point_id"], sp.sympify(arc["radius"]["expr"]), arc["id"], arc["is_complete"])
+            {**arc, "radius_expr": sp.sympify(arc["radius"]["expr"])}
             for arc in self.data["arcs"]
-            if arc["id"] not in new_arcs
+            if arc["id"] not in new_arc_ids
         ]
         
         # 新边 ↔ 已有边 的交点
-        for new_line_id in new_lines:
-            new_line = next(l for l in self.data["lines"] if l["id"] == new_line_id)
+        for new_line in new_lines:
             sx, sy = self.get_point_coords(new_line["start_point_id"])
             ex, ey = self.get_point_coords(new_line["end_point_id"])
             
-            for (s_id, e_id, old_line_id) in all_existing_lines:
-                old_line = next(l for l in self.data["lines"] if l["id"] == old_line_id)
+            for old_line in all_existing_lines:
                 intersection_level = max(new_line["level"], old_line["level"])
+                ox1, oy1 = self.get_point_coords(old_line["start_point_id"])
+                ox2, oy2 = self.get_point_coords(old_line["end_point_id"])
                 
-                ox1, oy1 = self.get_point_coords(s_id)
-                ox2, oy2 = self.get_point_coords(e_id)
                 intersections = self._segment_segment_intersection(sx, sy, ex, ey, ox1, oy1, ox2, oy2)
-                
                 for (x, y) in intersections:
                     pid = self._add_point(x, y, is_circle_init=False, level=intersection_level)
                     p = next(p for p in self.data["points"] if p["id"] == pid)
-                    if new_line_id not in p["related_edges"]:
-                        p["related_edges"].append(new_line_id)
-                    if old_line_id not in p["related_edges"]:
-                        p["related_edges"].append(old_line_id)
+                    if new_line["id"] not in p["related_edges"]:
+                        p["related_edges"].append(new_line["id"])
+                    if old_line["id"] not in p["related_edges"]:
+                        p["related_edges"].append(old_line["id"])
         
         # 新边 ↔ 已有圆 的交点
-        for new_line_id in new_lines:
-            new_line = next(l for l in self.data["lines"] if l["id"] == new_line_id)
+        for new_line in new_lines:
             sx, sy = self.get_point_coords(new_line["start_point_id"])
             ex, ey = self.get_point_coords(new_line["end_point_id"])
             
-            for (c_id, r_expr, arc_id, _) in all_existing_circles:
-                old_arc = next(a for a in self.data["arcs"] if a["id"] == arc_id)
+            for old_arc in all_existing_circles:
                 intersection_level = max(new_line["level"], old_arc["level"])
+                cx, cy = self.get_point_coords(old_arc["center_point_id"])
                 
-                cx, cy = self.get_point_coords(c_id)
-                intersections = self._segment_circle_intersection(sx, sy, ex, ey, cx, cy, r_expr)
+                intersections = self._segment_circle_intersection(
+                    sx, sy, ex, ey, cx, cy, old_arc["radius_expr"]
+                )
                 for (x, y) in intersections:
                     pid = self._add_point(x, y, is_circle_init=False, level=intersection_level)
                     p = next(p for p in self.data["points"] if p["id"] == pid)
-                    if new_line_id not in p["related_edges"]:
-                        p["related_edges"].append(new_line_id)
-                    if arc_id not in p["related_edges"]:
-                        p["related_edges"].append(arc_id)
+                    if new_line["id"] not in p["related_edges"]:
+                        p["related_edges"].append(new_line["id"])
+                    if old_arc["id"] not in p["related_edges"]:
+                        p["related_edges"].append(old_arc["id"])
         
         # 新弧 ↔ 已有边/圆 的交点
         new_circles = [
-            (arc["center_point_id"], sp.sympify(arc["radius"]["expr"]), arc["id"], arc["is_complete"])
-            for arc in self.data["arcs"]
-            if arc["id"] in new_arcs
+            {**arc, "radius_expr": sp.sympify(arc["radius"]["expr"])}
+            for arc in new_arcs
         ]
         
-        for (c_id, r_expr, new_arc_id, _) in new_circles:
-            new_arc = next(a for a in self.data["arcs"] if a["id"] == new_arc_id)
-            cx, cy = self.get_point_coords(c_id)
-            for (s_id, e_id, old_line_id) in all_existing_lines:
-                old_line = next(l for l in self.data["lines"] if l["id"] == old_line_id)
+        for new_arc in new_circles:
+            cx, cy = self.get_point_coords(new_arc["center_point_id"])
+            
+            # 新弧 ↔ 已有边
+            for old_line in all_existing_lines:
                 intersection_level = max(new_arc["level"], old_line["level"])
+                ox1, oy1 = self.get_point_coords(old_line["start_point_id"])
+                ox2, oy2 = self.get_point_coords(old_line["end_point_id"])
                 
-                ox1, oy1 = self.get_point_coords(s_id)
-                ox2, oy2 = self.get_point_coords(e_id)
-                intersections = self._segment_circle_intersection(ox1, oy1, ox2, oy2, cx, cy, r_expr)
+                intersections = self._segment_circle_intersection(
+                    ox1, oy1, ox2, oy2, cx, cy, new_arc["radius_expr"]
+                )
                 for (x, y) in intersections:
                     pid = self._add_point(x, y, is_circle_init=False, level=intersection_level)
                     p = next(p for p in self.data["points"] if p["id"] == pid)
-                    if new_arc_id not in p["related_edges"]:
-                        p["related_edges"].append(new_arc_id)
-                    if old_line_id not in p["related_edges"]:
-                        p["related_edges"].append(old_line_id)
+                    if new_arc["id"] not in p["related_edges"]:
+                        p["related_edges"].append(new_arc["id"])
+                    if old_line["id"] not in p["related_edges"]:
+                        p["related_edges"].append(old_line["id"])
             
             # 新弧 ↔ 已有圆
-            for (oc_id, or_expr, old_arc_id, _) in all_existing_circles:
-                old_arc = next(a for a in self.data["arcs"] if a["id"] == old_arc_id)
+            for old_arc in all_existing_circles:
                 intersection_level = max(new_arc["level"], old_arc["level"])
+                ocx, ocy = self.get_point_coords(old_arc["center_point_id"])
                 
-                ocx, ocy = self.get_point_coords(oc_id)
-                intersections = self._circle_circle_intersection(cx, cy, r_expr, ocx, ocy, or_expr)
+                intersections = self._circle_circle_intersection(
+                    cx, cy, new_arc["radius_expr"], ocx, ocy, old_arc["radius_expr"]
+                )
                 for (x, y) in intersections:
                     pid = self._add_point(x, y, is_circle_init=False, level=intersection_level)
                     p = next(p for p in self.data["points"] if p["id"] == pid)
-                    if new_arc_id not in p["related_edges"]:
-                        p["related_edges"].append(new_arc_id)
-                    if old_arc_id not in p["related_edges"]:
-                        p["related_edges"].append(old_arc_id)
+                    if new_arc["id"] not in p["related_edges"]:
+                        p["related_edges"].append(new_arc["id"])
+                    if old_arc["id"] not in p["related_edges"]:
+                        p["related_edges"].append(old_arc["id"])
 
     # ------------------------------ 衍生规则 ------------------------------
     def _get_rule_params(self, base_entity: Dict, rule_name: str) -> Dict:
@@ -2811,6 +2870,7 @@ class TemplateGenerator:
                 self._calculate_new_entity_intersections(new_id)
 
         # self._finalize_geometry()
+        self.data["description"] = " ".join(self.description_parts)
     
     def export_json(self) -> Dict:
         return self.data.copy()

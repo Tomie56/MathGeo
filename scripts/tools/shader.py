@@ -1165,6 +1165,7 @@ class EnhancedDrawer:
         logger.info(f"\n提取匹配关联点：共 {len(matched_point_list)} 个，ID 列表：{matched_point_list}")
         return matched_point_list
 
+
     def _check_geometric_validity(
         self,
         matched_line_ids: List[str],
@@ -1173,156 +1174,171 @@ class EnhancedDrawer:
         original_arcs: List[Dict]
     ) -> Dict:
         """
-        检验匹配到的边和弧是否能形成一个或多个封闭的、有效的环。
+        检验匹配到的边和弧是否能形成一个或多个封闭的、有效的、不相交的环。
 
         检验规则:
-        1. 所有点最多只能连接2个基元（一个入，一个出）。
+        1. 所有点必须连接且只能连接 2 个基元。
         2. 所有基元必须能被遍历形成一个或多个封闭的环。
-        3. 不允许存在孤立的基元或无法形成环的路径。
+        3. 环与环之间必须是不相交的（无共享点）。
+        4. 不允许存在孤立的基元。
+        5. 一个环必须满足以下条件之一：
+            a. 至少包含 3 个边。
+            b. 恰好包含 2 个边，且这两个边中至少有一个是圆弧，并且它们连接着同一对顶点。
 
         Args:
             matched_line_ids: 匹配到的线的ID列表。
             matched_arc_ids: 匹配到的弧的ID列表。
-            original_lines: 所有原始线的列表，每个元素包含完整信息。
-            original_arcs: 所有原始弧的列表，每个元素包含完整信息。
+            original_lines: 所有原始线的列表。
+            original_arcs: 所有原始弧的列表。
 
         Returns:
-            一个包含检验结果的字典:
-            {
-                "is_valid": bool,      # 是否通过所有检验规则
-                "is_closed": bool,     # 是否形成了一个或多个封闭环
-                "num_loops": int,      # 检测到的环的数量
-                "error_message": str   # 如果检验失败，这里会包含失败原因
-            }
+            一个包含检验结果的字典。
         """
         result = {
             "is_valid": True,
             "is_closed": False,
             "num_loops": 0,
-            "error_message": ""
+            "error_message": "",
+            "loop_details": []
         }
 
-        # 如果没有匹配到任何基元，直接返回结果
         if not matched_line_ids and not matched_arc_ids:
             result["error_message"] = "没有匹配到任何线或弧。"
+            result["is_valid"] = False
             return result
 
-        # 为了提高查找效率，构建ID到原始对象的映射
+        # 1. 数据准备：构建图 G 的顶点和边
+        edges: Dict[frozenset, Dict] = {} # key: frozenset({p1, p2}), value: {id, type, ...}
+        vertices: Set[str] = set()
+        primitive_id_map: Dict[str, Dict] = {}
+
         line_id_map = {line["id"]: line for line in original_lines}
         arc_id_map = {arc["id"]: arc for arc in original_arcs}
-
-        # 1. 准备数据：将所有匹配到的基元统一格式，并构建起点到基元的映射
-        all_primitives = []  # 存储所有匹配到的基元对象 (line or arc)
-        start_point_map = defaultdict(list) # key: point_id, value: list of primitives
 
         for line_id in matched_line_ids:
             line = line_id_map.get(line_id)
             if not line:
-                result["is_valid"] = False
                 result["error_message"] = f"在原始线列表中未找到ID为 '{line_id}' 的线。"
+                result["is_valid"] = False
                 return result
-            all_primitives.append(line)
-            start_point_map[line["start_point_id"]].append(line)
+            p1, p2 = line["start_point_id"], line["end_point_id"]
+            edge_key = frozenset({p1, p2})
+            edges[edge_key] = {"id": line_id, "type": "line", "points": edge_key}
+            vertices.add(p1)
+            vertices.add(p2)
+            primitive_id_map[line_id] = line
 
         for arc_id in matched_arc_ids:
             arc = arc_id_map.get(arc_id)
             if not arc:
-                result["is_valid"] = False
                 result["error_message"] = f"在原始弧列表中未找到ID为 '{arc_id}' 的弧。"
+                result["is_valid"] = False
                 return result
-            all_primitives.append(arc)
-            start_point_map[arc["start_point_id"]].append(arc)
+            p1, p2 = arc["start_point_id"], arc["end_point_id"]
+            edge_key = frozenset({p1, p2})
+            edges[edge_key] = {"id": arc_id, "type": "arc", "points": edge_key}
+            vertices.add(p1)
+            vertices.add(p2)
+            primitive_id_map[arc_id] = arc
 
-        used_primitive_ids = set()
+        # 2. 规则1验证：所有顶点的度数必须为2
+        vertex_degree: Dict[str, int] = {v: 0 for v in vertices}
+        for edge_key in edges:
+            p1, p2 = edge_key
+            vertex_degree[p1] += 1
+            vertex_degree[p2] += 1
 
-        # 2. 开始遍历寻找环
-        while len(used_primitive_ids) < len(all_primitives):
-            # 2.1 检查是否有任何点连接数超过2（这是一个快速失败的检查）
-            # 为了高效，我们遍历所有已匹配的基元来收集所有涉及的点
-            all_involved_point_ids = set()
-            for prim in all_primitives:
-                all_involved_point_ids.add(prim["start_point_id"])
-                all_involved_point_ids.add(prim["end_point_id"])
+        for vertex, degree in vertex_degree.items():
+            if degree != 2:
+                result["error_message"] = f"点 '{vertex}' 的连接数为 {degree}，不符合必须连接 2 个基元的规则。"
+                result["is_valid"] = False
+                return result
 
-            for point_id in all_involved_point_ids:
-                # 一个点的连接数 = 以它为起点的基元数 + 以它为终点的基元数
-                start_count = len(start_point_map.get(point_id, []))
-                end_count = sum(1 for p in all_primitives if p["end_point_id"] == point_id)
-                total_connections = start_count + end_count
-                if total_connections > 2:
-                    result["is_valid"] = False
-                    result["error_message"] = f"点 '{point_id}' 连接了 {total_connections} 个基元，超过了最大限制 2 个。"
-                    return result
+        if not vertices:
+            result["error_message"] = "没有找到任何有效的顶点。"
+            result["is_valid"] = False
+            return result
 
-            # 2.2 寻找一个未被使用的基元作为新环的起点
-            start_primitive = None
-            for prim in all_primitives:
-                if prim["id"] not in used_primitive_ids:
-                    start_primitive = prim
-                    break
+        # 3. 寻找所有连通分量并验证是否为环
+        visited_edges: Set[str] = set()
+
+        # 遍历所有边，每个连通分量由共享顶点的边构成
+        all_edge_keys = list(edges.keys())
+        while all_edge_keys:
+            start_edge_key = all_edge_keys.pop(0)
+            if edges[start_edge_key]["id"] in visited_edges:
+                continue
+
+            # BFS 寻找连通分量
+            component_edge_keys = []
+            queue = [start_edge_key]
+            visited_edges_in_component = set()
+            visited_edges_in_component.add(edges[start_edge_key]["id"])
             
-            if not start_primitive:
-                # 所有基元都已被使用，正常退出循环
-                break
-
-            # 2.3 开始遍历一个新的环
-            current_point = start_primitive["start_point_id"]
-            loop_start_point = current_point
-            current_primitive = start_primitive
-            loop_found = False
-
-            while True:
-                prim_id = current_primitive["id"]
-                if prim_id in used_primitive_ids:
-                    # 异常情况：在环的中途遇到了已使用的基元
-                    result["is_valid"] = False
-                    result["error_message"] = f"遍历路径形成了无效的分支或重复使用了基元 '{prim_id}'。"
-                    break
-
-                # 标记当前基元为已使用
-                used_primitive_ids.add(prim_id)
+            while queue:
+                current_key = queue.pop(0)
+                component_edge_keys.append(current_key)
                 
-                # 移动到下一个点
-                current_point = current_primitive["end_point_id"]
+                # 找到与当前边共享顶点的未访问边
+                p1, p2 = current_key
+                for neighbor_key in all_edge_keys:
+                    if edges[neighbor_key]["id"] in visited_edges_in_component:
+                        continue
+                    if p1 in neighbor_key or p2 in neighbor_key:
+                        queue.append(neighbor_key)
+                        visited_edges_in_component.add(edges[neighbor_key]["id"])
 
-                # 如果回到了环的起点，说明一个环已完成
-                if current_point == loop_start_point:
-                    loop_found = True
-                    break
+            # 从所有边列表中移除已处理的边
+            for key in component_edge_keys:
+                if key in all_edge_keys:
+                    all_edge_keys.remove(key)
 
-                # 查找下一个基元：以 current_point 为起点的未使用基元
-                next_primitives = [
-                    p for p in start_point_map.get(current_point, [])
-                    if p["id"] not in used_primitive_ids
-                ]
-                
-                if len(next_primitives) == 0:
-                    # 没有找到下一个基元，路径中断，图形不封闭
-                    result["is_valid"] = False
-                    result["error_message"] = f"路径在点 '{current_point}' 处中断，没有找到以它为起点的未使用基元。"
-                    break
-                elif len(next_primitives) > 1:
-                    # 找到了多个下一个基元，说明出现了分支，是无效的
-                    result["is_valid"] = False
-                    result["error_message"] = f"点 '{current_point}' 有 {len(next_primitives)} 个未使用的出边，形成了分支。"
-                    break
-                
-                current_primitive = next_primitives[0]
+            # 验证连通分量是否为有效环
+            component_edges = [edges[key] for key in component_edge_keys]
+            num_edges = len(component_edges)
+            
+            # 规则5验证
+            is_valid_loop = False
+            if num_edges >= 3:
+                is_valid_loop = True
+            elif num_edges == 2:
+                # 检查是否连接同一对顶点
+                edge1_points = component_edges[0]["points"]
+                edge2_points = component_edges[1]["points"]
+                if edge1_points == edge2_points:
+                    # 检查是否至少有一个是弧
+                    has_arc = any(edge["type"] == "arc" for edge in component_edges)
+                    if has_arc:
+                        is_valid_loop = True
+            
+            if not is_valid_loop:
+                edge_ids = [edge["id"] for edge in component_edges]
+                result["error_message"] = f"检测到无效的环结构。边 {edge_ids} 无法形成一个有效的环。"
+                result["is_valid"] = False
+                return result
 
-            if not result["is_valid"]:
-                break # 如果在遍历环的过程中出错，直接退出
+            # 标记为已访问并记录环信息
+            for edge in component_edges:
+                visited_edges.add(edge["id"])
+            
+            result["num_loops"] += 1
+            result["loop_details"].append({
+                "edges": [edge["id"] for edge in component_edges],
+                "edge_types": [edge["type"] for edge in component_edges]
+            })
 
-            if loop_found:
-                result["num_loops"] += 1
+        # 4. 规则4验证：所有边都必须被访问（无孤立基元）
+        all_matched_primitive_ids = set(matched_line_ids + matched_arc_ids)
+        if visited_edges != all_matched_primitive_ids:
+            isolated_edges = all_matched_primitive_ids - visited_edges
+            result["error_message"] = f"存在未参与任何环的孤立基元: {isolated_edges}"
+            result["is_valid"] = False
+            return result
 
-        # 3. 最终检查
-        if result["is_valid"]:
-            # 如果所有基元都被使用了，并且至少找到了一个环，则图形是封闭的
-            if len(used_primitive_ids) == len(all_primitives) and result["num_loops"] > 0:
-                result["is_closed"] = True
-            else:
-                result["error_message"] = f"未能遍历所有基元形成封闭环。使用了 {len(used_primitive_ids)}/{len(all_primitives)} 个基元。"
-                result["is_valid"] = False # 虽然前面的检查通过了，但如果没有形成完整的环，也视为无效
+        # 5. 最终判断
+        if result["is_valid"] and result["num_loops"] > 0:
+            result["is_closed"] = True
+            result["error_message"] = f"成功检测到 {result['num_loops']} 个不相交的有效环。"
 
         return result
 
@@ -1345,16 +1361,19 @@ class EnhancedDrawer:
             if distance_map.size == 0:
                 raise ValueError("距离图创建失败，无法继续匹配")
             
+            minimal_lines = [line for line in original_lines if line.get("is_minimal", False)]
+            minimal_arcs = [arc for arc in original_arcs if arc.get("is_minimal", False)]
+            
             # 2. 分别匹配直线和圆弧
             matched_lines = self._match_lines(
-                original_lines=original_lines,
+                original_lines=minimal_lines,
                 original_points=original_points,
                 transformer=transformer,
                 distance_map=distance_map,
                 offset=offset
             )
             matched_arcs = self._match_arcs(
-                original_arcs=original_arcs,
+                original_arcs=minimal_arcs,
                 original_points=original_points,
                 transformer=transformer,
                 distance_map=distance_map,
@@ -1365,16 +1384,16 @@ class EnhancedDrawer:
             matched_points = self._extract_matched_point_ids(
                 matched_line_ids=matched_lines,
                 matched_arc_ids=matched_arcs,
-                original_lines=original_lines,
-                original_arcs=original_arcs
+                original_lines=minimal_lines,
+                original_arcs=minimal_arcs
             )
             
             # 4. 检验几何有效性
             geometry_check_result = self._check_geometric_validity(
                 matched_line_ids=matched_lines,
                 matched_arc_ids=matched_arcs,
-                original_lines=original_lines,
-                original_arcs=original_arcs
+                original_lines=minimal_lines,
+                original_arcs=minimal_arcs
             )
             
             # 5. 整理结果
