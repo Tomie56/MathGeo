@@ -1,0 +1,411 @@
+{
+  "points": [
+    {
+      "id": "O1",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "Arc1"
+      ],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "circle_1",
+      "x": {
+        "expr": "9",
+        "latex": "9"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": true,
+      "level": 1
+    },
+    {
+      "id": "O2",
+      "x": {
+        "expr": "-9",
+        "latex": "-9"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "A",
+      "x": {
+        "expr": "-9/2",
+        "latex": "- \\frac{9}{2}"
+      },
+      "y": {
+        "expr": "9*sqrt(3)/2",
+        "latex": "\\frac{9 \\sqrt{3}}{2}"
+      },
+      "related_edges": [
+        "Arc1",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "B",
+      "x": {
+        "expr": "-9/2",
+        "latex": "- \\frac{9}{2}"
+      },
+      "y": {
+        "expr": "-9*sqrt(3)/2",
+        "latex": "- \\frac{9 \\sqrt{3}}{2}"
+      },
+      "related_edges": [
+        "Arc1",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    }
+  ],
+  "lines": [],
+  "arcs": [
+    {
+      "id": "Arc0",
+      "type": "arc",
+      "start_point_id": "circle_1",
+      "end_point_id": "circle_1",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "9",
+        "latex": "9"
+      },
+      "angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "18*pi",
+        "latex": "18 \\pi",
+        "value": 56.54866779
+      }
+    },
+    {
+      "id": "Arc1",
+      "type": "arc",
+      "start_point_id": "O1",
+      "end_point_id": "O1",
+      "center_point_id": "O2",
+      "radius": {
+        "expr": "9",
+        "latex": "9"
+      },
+      "angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "18*pi",
+        "latex": "18 \\pi",
+        "value": 56.54866779
+      }
+    },
+    {
+      "id": "Arc_min_1",
+      "start_point_id": "B",
+      "end_point_id": "circle_1",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "9"
+      },
+      "angle": {
+        "expr": "2*pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 1,
+      "length": {
+        "expr": "6*pi",
+        "latex": "6 \\pi",
+        "value": 18.84955591
+      }
+    },
+    {
+      "id": "Arc_min_2",
+      "start_point_id": "circle_1",
+      "end_point_id": "A",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "9"
+      },
+      "angle": {
+        "expr": "2*pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 1,
+      "length": {
+        "expr": "6*pi",
+        "latex": "6 \\pi",
+        "value": 18.84955591
+      }
+    },
+    {
+      "id": "Arc_min_3",
+      "start_point_id": "A",
+      "end_point_id": "O2",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "9"
+      },
+      "angle": {
+        "expr": "pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 1,
+      "length": {
+        "expr": "3*pi",
+        "latex": "3 \\pi",
+        "value": 9.42477795
+      }
+    },
+    {
+      "id": "Arc_min_4",
+      "start_point_id": "O2",
+      "end_point_id": "B",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "9"
+      },
+      "angle": {
+        "expr": "pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 1,
+      "length": {
+        "expr": "3*pi",
+        "latex": "3 \\pi",
+        "value": 9.42477795
+      }
+    },
+    {
+      "id": "Arc_min_5",
+      "start_point_id": "B",
+      "end_point_id": "O1",
+      "center_point_id": "O2",
+      "radius": {
+        "expr": "9"
+      },
+      "angle": {
+        "expr": "pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 1,
+      "length": {
+        "expr": "3*pi",
+        "latex": "3 \\pi",
+        "value": 9.42477795
+      }
+    },
+    {
+      "id": "Arc_min_6",
+      "start_point_id": "O1",
+      "end_point_id": "A",
+      "center_point_id": "O2",
+      "radius": {
+        "expr": "9"
+      },
+      "angle": {
+        "expr": "pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 1,
+      "length": {
+        "expr": "3*pi",
+        "latex": "3 \\pi",
+        "value": 9.42477795
+      }
+    },
+    {
+      "id": "Arc_min_7",
+      "start_point_id": "A",
+      "end_point_id": "B",
+      "center_point_id": "O2",
+      "radius": {
+        "expr": "9"
+      },
+      "angle": {
+        "expr": "4*pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 1,
+      "length": {
+        "expr": "12*pi",
+        "latex": "12 \\pi",
+        "value": 37.69911182
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "base_circle",
+      "type": "circle",
+      "center_id": "O1",
+      "start_id": "circle_1",
+      "end_id": "circle_1",
+      "arcs": "Arc0",
+      "radius": {
+        "expr": "9",
+        "latex": "9"
+      },
+      "start_angle": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "end_angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "is_base": true,
+      "perimeter": {
+        "expr": "18*pi",
+        "latex": "18 \\pi"
+      },
+      "area": {
+        "expr": "81*pi",
+        "latex": "81 \\pi"
+      }
+    },
+    {
+      "id": "translated_circle",
+      "type": "circle",
+      "center_id": "O2",
+      "start_id": "O1",
+      "end_id": "O1",
+      "arcs": "Arc1",
+      "radius": {
+        "expr": "9",
+        "latex": "9"
+      },
+      "start_angle": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "end_angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "is_base": false,
+      "perimeter": {
+        "expr": "18*pi",
+        "latex": "18 \\pi"
+      },
+      "area": {
+        "expr": "81*pi",
+        "latex": "81 \\pi"
+      }
+    },
+    {
+      "type": "shadow",
+      "region_label": 1,
+      "points": [
+        {
+          "id": "A"
+        },
+        {
+          "id": "B"
+        },
+        {
+          "id": "O2"
+        }
+      ],
+      "lines": [],
+      "arcs": [
+        {
+          "id": "Arc_min_3"
+        },
+        {
+          "id": "Arc_min_4"
+        },
+        {
+          "id": "Arc_min_7"
+        }
+      ],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "A",
+            "O2",
+            "B",
+            "A"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "18*pi",
+        "latex": "18 \\pi"
+      },
+      "area": {
+        "expr": "-27*pi",
+        "latex": "- 27 \\pi"
+      }
+    }
+  ],
+  "description": "Original graphic description: Base shape is a complete circle (center O1) with radius 9. Round 1: applying 'translation' rule. Translation derivation: circle (new center O2) translated left, with distance equal to the radius.\nEnhancement index: 1/5\nNumber of rounds: 0\nNo enhancement.",
+  "is_base": true,
+  "timeout_occurred": false,
+  "completed_rounds": 0,
+  "base_id": "",
+  "enhance_id": "_enhance_000",
+  "raw_path": "./results_n500_v4/images/raw/geometry_line_0037.png",
+  "annotated_raw_path": "./results_n500_v4/images/annotated/annotated_raw_geometry_line_0037.png",
+  "shaded_path": "./results_n500_v4/images/shaded/shaded_36_attempt_0_geometry_line_0037.png",
+  "annotated_shaded_path": "./results_n500_v4/images/annotated/annotated_shaded_36_attempt_0_geometry_line_0037.png",
+  "shadow_type": "hatch",
+  "shader_enabled": true,
+  "shadow_regions": 1,
+  "generated_question": [
+    "{\n  \"question\": \"Given circle_1 centered at O1 with radius 9, and translated_circle centered at O2 (obtained by translating circle_1 left by a distance equal to its radius), find the length of arc AB along the circumference of circle_1, where A and B are the intersection points of circle_1 and translated_circle.\",\n  \"difficulty_label\": 3,\n  \"question_type\": \"length\",\n  \"target_ids\": [\"circle_1\", \"translated_circle\", \"O1\", \"O2\", \"A\", \"B\"]\n}"
+  ]
+}

@@ -78,10 +78,16 @@ def main():
                 # 处理qt_description字段
                 raw_qt_desc = data.get("qt_description", "")
                 processed_qt_desc = process_qt_description(raw_qt_desc)
+                
+                shaded_path = data.get("annotated_shaded_path", "")
+                if(shaded_path is not None) and (shaded_path != ""):
+                    image_path = shaded_path.replace("./", "")
+                else:
+                    image_path = data.get("annotated_raw_path", "").replace("./", "")
 
                 # 构建新格式数据
                 new_data = {
-                    "image": data.get("annotated_raw_path", "").replace("./", ""),  # 处理路径
+                    "image": image_path,  # 处理路径
                     "question": data.get("question", ""),
                     "qt_description": processed_qt_desc,  # 使用处理后的内容
                     "description": data.get("description", ""),

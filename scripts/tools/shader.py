@@ -5,7 +5,7 @@ import math
 import numpy as np
 import cv2
 from dataclasses import dataclass
-from typing import List, Tuple, Dict, Any, Optional, Set
+from typing import List, Tuple, Dict, Any, Optional, Set, FrozenSet
 from collections import defaultdict
 from datetime import datetime
 import sympy as sp
@@ -573,6 +573,8 @@ class EnhancedDrawer:
         self.annotated_dir = os.path.join(self.base_output_dir, "images/annotated")
         self.json_output_dir = os.path.join(self.base_output_dir, "json/shaded")
         self.shaded_path = ''
+        self.success = 0
+        self.failure = 0
         
         # 创建必要目录
         for dir_path in [self.raw_dir, self.shaded_dir, self.annotated_dir, self.json_output_dir]:
@@ -589,8 +591,9 @@ class EnhancedDrawer:
         
         # 匹配阈值
         self.x_attempts = max(1, self.config["shader"].get("x_attempts", 4))
-        self.distance_threshold = self.config["shader"].get("distance_threshold", 10)
-        self.match_threshold = self.config["shader"].get("match_threshold", 0.97)
+        self.distance_threshold = self.config["shader"].get("distance_threshold", 10) + self.config["drawer"].get("line_width",3)
+        self.match_threshold = self.config["shader"].get("match_threshold", 0.9)
+        self.match_threshold_arc = self.config["shader"].get("match_threshold_arc", 0.75)
         self.min_sample_points = self.config["shader"].get("min_sample_points", 20)
 
         self.selected_region_labels = defaultdict(list)
@@ -699,7 +702,10 @@ class EnhancedDrawer:
             
             if entity_data["validity"] == False:
                 logger.warning(f"区域 {region['label']} 轮廓匹配失败，跳过阴影生成")
-                # continue
+                self.failure += 1
+                continue
+            else:
+                self.success += 1
 
             # 构建阴影实体信息（与原有格式一致）
             shadow_entity = {
@@ -708,6 +714,7 @@ class EnhancedDrawer:
                 "points": entity_data["points"],
                 "lines": entity_data["lines"],
                 "arcs": entity_data["arcs"],
+                "ordered_loops": entity_data["ordered_loops"],
                 "validity": entity_data["validity"]
             }
             shadow_entities.append(shadow_entity)
@@ -868,29 +875,84 @@ class EnhancedDrawer:
         return distance_map, offset
 
     @staticmethod
-    def _bresenham_line(start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:
-        """用 Bresenham 算法生成直线上的整数像素采样点"""
+    def _bresenham_line(
+        start: Tuple[int, int], 
+        end: Tuple[int, int]
+    ) -> List[Tuple[int, int]]:
+        """
+        用 Bresenham 算法生成直线上的采样点，分段插值优化：
+        - 线段两端各10%区域：interpolate_step=1.0（像素）
+        - 线段中间80%区域：interpolate_step=0.5（像素）
+        """
         x0, y0 = start
         x1, y1 = end
-        points = []
-        dx = abs(x1 - x0)
-        dy = abs(y1 - y0)
-        sx = 1 if x0 < x1 else -1
-        sy = 1 if y0 < y1 else -1
-        err = dx - dy
 
-        while True:
-            points.append((x0, y0))
-            if x0 == x1 and y0 == y1:
-                break
-            e2 = 2 * err
-            if e2 > -dy:
-                err -= dy
-                x0 += sx
-            if e2 < dx:
-                err += dx
-                y0 += sy
-        return points
+        # 第一步：计算直线总长度（像素，浮点精度）
+        total_len = ((x1 - x0)**2 + (y1 - y0)**2)**0.5
+        if total_len < 1e-6:  # 处理重合点（无有效线段）
+            return [(x0, y0)]
+
+        # 第二步：生成直线上的连续浮点坐标（基础骨架，确保分段精准）
+        min_step = 0.2
+        num_total_steps = int(total_len // min_step) + 1
+        if num_total_steps < 2:
+            num_total_steps = 2  # 至少保证起点和终点
+
+        # 连续坐标列表（(x, y, 累计长度)）
+        continuous_points = []
+        for step in range(num_total_steps):
+            ratio = step / (num_total_steps - 1)  # 0→1 比例
+            x = x0 + ratio * (x1 - x0)
+            y = y0 + ratio * (y1 - y0)
+            cum_len = ratio * total_len  # 当前点到起点的累计长度
+            continuous_points.append((x, y, cum_len))
+
+        # 第三步：分段插值（按长度比例划分区域）
+        dense_points = []
+        len_10pct = total_len * 0.1  # 两端各10%的长度
+        start_mid = len_10pct        # 中间区域起点（10%处）
+        end_mid = total_len - len_10pct  # 中间区域终点（90%处）
+
+        # 区域步长配置
+        def get_step_by_cum_len(cum_len: float) -> float:
+            if cum_len <= start_mid or cum_len >= end_mid:
+                return 1.0  # 两端10%：步长1.0
+            else:
+                return 0.5  # 中间80%：步长0.5
+
+        # 遍历连续点，按区域步长取点（避免重复）
+        last_added = None  # 记录上一个添加的点（去重）
+        for x, y, cum_len in continuous_points:
+            current_step = get_step_by_cum_len(cum_len)
+            # 计算当前点与上一个添加点的距离
+            if last_added is None:
+                # 第一个点（起点）直接添加
+                added_x = round(x)
+                added_y = round(y)
+                dense_points.append((added_x, added_y))
+                last_added = (added_x, added_y, cum_len)
+            else:
+                last_x, last_y, last_cum_len = last_added
+                dist_to_last = ((x - last_x)**2 + (y - last_y)**2)**0.5
+                # 当距离≥当前区域步长时，添加当前点
+                if dist_to_last >= current_step - 1e-6:  # 容差避免浮点误差
+                    added_x = round(x)
+                    added_y = round(y)
+                    # 额外去重（避免相邻点重复）
+                    if (added_x, added_y) != (last_x, last_y):
+                        dense_points.append((added_x, added_y))
+                        last_added = (added_x, added_y, cum_len)
+
+        # 确保终点被添加（避免因步长计算遗漏）
+        end_x_round = round(x1)
+        end_y_round = round(y1)
+        if dense_points[-1] != (end_x_round, end_y_round):
+            dense_points.append((end_x_round, end_y_round))
+
+        # 最终去重（确保无重复点）
+        dense_points = list(dict.fromkeys(dense_points))
+
+        return dense_points
 
     def _sample_arc_points(
         self,
@@ -900,45 +962,92 @@ class EnhancedDrawer:
         end_px: Tuple[float, float],
         is_complete: bool = False
     ) -> List[Tuple[int, int]]:
-        """生成圆弧上的均匀像素采样点"""
-        center = (int(round(center_px[0])), int(round(center_px[1])))
+        """生成圆弧上的所有像素点（Bresenham圆弧算法，密集覆盖无遗漏）"""
+        # 像素级坐标转换（仅取整，不优化）
+        cx = int(round(center_px[0]))
+        cy = int(round(center_px[1]))
         radius = int(round(radius_px))
+        
+        # 基础校验
         if radius <= 0:
             logger.error("圆弧半径必须大于 0，无法采样")
             return []
+        center = (cx, cy)
+        start_angle = 0.0
+        end_angle = 0.0
         
+        # 1. 计算角度范围（兼容完整圆/非完整弧）
         if is_complete:
-            start_angle = 0.0
             end_angle = 2 * math.pi
-            angle_range = end_angle - start_angle
-            logger.debug(f"完整圆采样：圆心 {center}，半径 {radius}")
+            logger.debug(f"完整圆采样：圆心 {center}，半径 {radius}，覆盖全角度")
         else:
+            # 计算起止点相对于圆心的角度（[-π, π]）
             start_angle = math.atan2(start_px[1] - center_px[1], start_px[0] - center_px[0])
             end_angle = math.atan2(end_px[1] - center_px[1], end_px[0] - center_px[0])
-            if end_angle < start_angle:
-                end_angle += 2 * math.pi
-            angle_range = end_angle - start_angle
-            logger.debug(f"圆弧采样：圆心 {center}，半径 {radius}，角度范围 {angle_range:.2f} 弧度")
-
-        arc_length_px = radius * angle_range
-        
-        # 如果弧长很短，使用一个最小的固定采样点数，以确保覆盖整个弧
-        min_samples_for_short_arc = 20
-        if arc_length_px < self.min_sample_points:
-            num_points = min_samples_for_short_arc
-            logger.debug(f"圆弧过短（估算长度 {arc_length_px:.2f}px < {self.min_sample_points}px），使用最小采样点数: {num_points}")
-        else:
-            num_points = max(self.min_sample_points, int(round(arc_length_px / 5)))
+            logger.debug(f"圆弧采样：圆心 {center}，半径 {radius}，角度范围 [{start_angle:.2f}, {end_angle:.2f}] 弧度")
             
-        points = []
-        for i in range(num_points + 1):
-            angle = start_angle + (angle_range) * (i / num_points)
-            x = int(round(center[0] + radius * math.cos(angle)))
-            y = int(round(center[1] + radius * math.sin(angle)))
-            points.append((x, y))
+            start_angle = 0 - start_angle
+            end_angle = 0 - end_angle
+            
+            if start_angle < 0:
+                start_angle = 2 * math.pi + start_angle
+            if end_angle < 0:
+                end_angle = 2 * math.pi + end_angle
+            if end_angle <= start_angle:
+                end_angle += 2 * math.pi  # 确保角度范围正确
+            
+            logger.debug(f"圆弧采样：圆心 {center}，半径 {radius}，角度范围 [{start_angle:.2f}, {end_angle:.2f}] 弧度")
         
-        logger.debug(f"圆弧采样完成：共 {len(points)} 个采样点")
-        return points
+        # 2. Bresenham算法生成所有像素点（8分圆对称扩展，确保无遗漏）
+        arc_points: Set[Tuple[int, int]] = set()  # 用集合去重（避免对称点重复）
+        
+        def add_point(x: int, y: int):
+            """添加点并校验是否在角度范围内"""
+            if is_complete:
+                arc_points.add((x, y))
+                return
+            # 计算当前点相对于圆心的角度
+            point_angle = math.atan2(y - cy, x - cx)
+            
+            point_angle = 0 - point_angle
+            if point_angle < 0:
+                point_angle = 2 * math.pi + point_angle
+            
+            # 校验是否在目标角度范围内（包含边界）
+            if start_angle <= point_angle <= end_angle:
+                arc_points.add((x, y))
+        
+        # Bresenham核心逻辑（处理第一分圆，其余分圆对称扩展）
+        x, y = 0, radius
+        d = 3 - 2 * radius  # 初始决策参数
+        
+        while x <= y:
+            # 8分圆对称点（覆盖整个圆的所有像素）
+            add_point(cx + x, cy + y)
+            add_point(cx - x, cy + y)
+            add_point(cx + x, cy - y)
+            add_point(cx - x, cy - y)
+            add_point(cx + y, cy + x)
+            add_point(cx - y, cy + x)
+            add_point(cx + y, cy - x)
+            add_point(cx - y, cy - x)
+            
+            # 更新决策参数和坐标
+            if d < 0:
+                d += 4 * x + 6
+            else:
+                d += 4 * (x - y) + 10
+                y -= 1
+            x += 1
+        
+        # 转换为有序列表（按角度排序，不影响匹配，仅保持一致性）
+        def sort_by_angle(point: Tuple[int, int]) -> float:
+            angle = math.atan2(point[1] - cy, point[0] - cx)
+            return angle if angle >= 0 else angle + 2 * math.pi
+        
+        sorted_points = sorted(arc_points, key=sort_by_angle)
+        logger.debug(f"圆弧采样完成：共生成 {len(sorted_points)} 个像素点（无重复）")
+        return sorted_points
 
     def _parse_point_coords(
         self, 
@@ -1118,11 +1227,11 @@ class EnhancedDrawer:
                 )
                 
                 # 5. 判断是否匹配成功
-                if match_score >= self.match_threshold:
+                if match_score >= self.match_threshold_arc:
                     matched_ids.append(arc_id)
-                    logger.info(f"圆弧 {arc_id} 匹配成功！匹配度 {match_score:.2%} ≥ 阈值 {self.match_threshold:.2%}")
+                    logger.info(f"圆弧 {arc_id} 匹配成功！匹配度 {match_score:.2%} ≥ 阈值 {self.match_threshold_arc:.2%}")
                 else:
-                    logger.info(f"圆弧 {arc_id} 匹配失败！匹配度 {match_score:.2%} < 阈值 {self.match_threshold:.2%}")
+                    logger.info(f"圆弧 {arc_id} 匹配失败！匹配度 {match_score:.2%} < 阈值 {self.match_threshold_arc:.2%}")
             
             except Exception as e:
                 logger.error(f"圆弧 {arc_id} 匹配过程出错：{str(e)}，跳过")
@@ -1154,7 +1263,7 @@ class EnhancedDrawer:
         for arc_id in matched_arc_ids:
             try:
                 arc = next(a for a in original_arcs if a.get("id") == arc_id)
-                matched_point_ids.add(arc["center_point_id"])
+                # matched_point_ids.add(arc["center_point_id"])
                 matched_point_ids.add(arc["start_point_id"])
                 matched_point_ids.add(arc["end_point_id"])
             except StopIteration:
@@ -1165,182 +1274,258 @@ class EnhancedDrawer:
         logger.info(f"\n提取匹配关联点：共 {len(matched_point_list)} 个，ID 列表：{matched_point_list}")
         return matched_point_list
 
-
     def _check_geometric_validity(
-        self,
-        matched_line_ids: List[str],
-        matched_arc_ids: List[str],
-        original_lines: List[Dict],
-        original_arcs: List[Dict]
-    ) -> Dict:
-        """
-        检验匹配到的边和弧是否能形成一个或多个封闭的、有效的、不相交的环。
+            self,
+            matched_line_ids: List[str],
+            matched_arc_ids: List[str],
+            original_lines: List[Dict],
+            original_arcs: List[Dict]
+        ) -> Dict:
+            """
+            检验匹配到的边和弧是否能形成一个或多个封闭的、有效的、不相交的环。
 
-        检验规则:
-        1. 所有点必须连接且只能连接 2 个基元。
-        2. 所有基元必须能被遍历形成一个或多个封闭的环。
-        3. 环与环之间必须是不相交的（无共享点）。
-        4. 不允许存在孤立的基元。
-        5. 一个环必须满足以下条件之一：
-            a. 至少包含 3 个边。
-            b. 恰好包含 2 个边，且这两个边中至少有一个是圆弧，并且它们连接着同一对顶点。
+            检验规则:
+            1. 所有点必须连接且只能连接 2 个基元。
+            2. 所有基元必须能被遍历形成一个或多个封闭的环。
+            3. 环与环之间必须是不相交的（无共享点）。
+            4. 不允许存在孤立的基元。
+            5. 一个环必须满足以下条件之一：
+                a. 至少包含 3 个边。
+                b. 恰好包含 2 个边，且这两个边中至少有一个是圆弧，并且它们连接着同一对顶点。
 
-        Args:
-            matched_line_ids: 匹配到的线的ID列表。
-            matched_arc_ids: 匹配到的弧的ID列表。
-            original_lines: 所有原始线的列表。
-            original_arcs: 所有原始弧的列表。
+            Args:
+                matched_line_ids: 匹配到的线的ID列表。
+                matched_arc_ids: 匹配到的弧的ID列表。
+                original_lines: 所有原始线的列表(已经传入minimal_lines)。
+                original_arcs: 所有原始弧的列表(已经传入minimal_arcs)。
 
-        Returns:
-            一个包含检验结果的字典。
-        """
-        result = {
-            "is_valid": True,
-            "is_closed": False,
-            "num_loops": 0,
-            "error_message": "",
-            "loop_details": []
-        }
+            Returns:
+                一个包含检验结果的字典，新增 `ordered_points` 字段记录环的有序点序列。
+            """
+            result = {
+                "is_valid": True,
+                "is_closed": False,
+                "num_loops": 0,
+                "error_message": "",
+                "loop_details": []
+            }
 
-        if not matched_line_ids and not matched_arc_ids:
-            result["error_message"] = "没有匹配到任何线或弧。"
-            result["is_valid"] = False
-            return result
-
-        # 1. 数据准备：构建图 G 的顶点和边
-        edges: Dict[frozenset, Dict] = {} # key: frozenset({p1, p2}), value: {id, type, ...}
-        vertices: Set[str] = set()
-        primitive_id_map: Dict[str, Dict] = {}
-
-        line_id_map = {line["id"]: line for line in original_lines}
-        arc_id_map = {arc["id"]: arc for arc in original_arcs}
-
-        for line_id in matched_line_ids:
-            line = line_id_map.get(line_id)
-            if not line:
-                result["error_message"] = f"在原始线列表中未找到ID为 '{line_id}' 的线。"
-                result["is_valid"] = False
-                return result
-            p1, p2 = line["start_point_id"], line["end_point_id"]
-            edge_key = frozenset({p1, p2})
-            edges[edge_key] = {"id": line_id, "type": "line", "points": edge_key}
-            vertices.add(p1)
-            vertices.add(p2)
-            primitive_id_map[line_id] = line
-
-        for arc_id in matched_arc_ids:
-            arc = arc_id_map.get(arc_id)
-            if not arc:
-                result["error_message"] = f"在原始弧列表中未找到ID为 '{arc_id}' 的弧。"
-                result["is_valid"] = False
-                return result
-            p1, p2 = arc["start_point_id"], arc["end_point_id"]
-            edge_key = frozenset({p1, p2})
-            edges[edge_key] = {"id": arc_id, "type": "arc", "points": edge_key}
-            vertices.add(p1)
-            vertices.add(p2)
-            primitive_id_map[arc_id] = arc
-
-        # 2. 规则1验证：所有顶点的度数必须为2
-        vertex_degree: Dict[str, int] = {v: 0 for v in vertices}
-        for edge_key in edges:
-            p1, p2 = edge_key
-            vertex_degree[p1] += 1
-            vertex_degree[p2] += 1
-
-        for vertex, degree in vertex_degree.items():
-            if degree != 2:
-                result["error_message"] = f"点 '{vertex}' 的连接数为 {degree}，不符合必须连接 2 个基元的规则。"
+            if not matched_line_ids and not matched_arc_ids:
+                result["error_message"] = "没有匹配到任何线或弧。"
                 result["is_valid"] = False
                 return result
 
-        if not vertices:
-            result["error_message"] = "没有找到任何有效的顶点。"
-            result["is_valid"] = False
-            return result
+            # 1. 数据准备：重构edges结构，支持同一顶点对多基元（关键修复）
+            edges: Dict[FrozenSet[str], List[Dict]] = {}  # key: 顶点对，value: 该顶点对的所有基元（线/弧）
+            vertices: Set[str] = set()
+            primitive_id_map: Dict[str, Dict] = {}  # 所有基元的ID映射（线+弧）
 
-        # 3. 寻找所有连通分量并验证是否为环
-        visited_edges: Set[str] = set()
+            line_id_map = {line["id"]: line for line in original_lines}
+            arc_id_map = {arc["id"]: arc for arc in original_arcs}
 
-        # 遍历所有边，每个连通分量由共享顶点的边构成
-        all_edge_keys = list(edges.keys())
-        while all_edge_keys:
-            start_edge_key = all_edge_keys.pop(0)
-            if edges[start_edge_key]["id"] in visited_edges:
-                continue
+            # 添加匹配的线到edges（支持同一顶点对多基元）
+            for line_id in matched_line_ids:
+                line = line_id_map.get(line_id)
+                if not line:
+                    result["error_message"] = f"在原始线列表中未找到ID为 '{line_id}' 的线。"
+                    result["is_valid"] = False
+                    return result
+                p1, p2 = line["start_point_id"], line["end_point_id"]
+                edge_key = frozenset({p1, p2})
+                if edge_key not in edges:
+                    edges[edge_key] = []
+                line_info = {"id": line_id, "type": "line", "points": edge_key, "vertices": (p1, p2)}
+                edges[edge_key].append(line_info)
+                vertices.add(p1)
+                vertices.add(p2)
+                primitive_id_map[line_id] = line
 
-            # BFS 寻找连通分量
-            component_edge_keys = []
-            queue = [start_edge_key]
-            visited_edges_in_component = set()
-            visited_edges_in_component.add(edges[start_edge_key]["id"])
-            
-            while queue:
-                current_key = queue.pop(0)
-                component_edge_keys.append(current_key)
+            # 添加匹配的弧到edges（支持同一顶点对多基元）
+            for arc_id in matched_arc_ids:
+                arc = arc_id_map.get(arc_id)
+                if not arc:
+                    result["error_message"] = f"在原始弧列表中未找到ID为 '{arc_id}' 的弧。"
+                    result["is_valid"] = False
+                    return result
+                p1, p2 = arc["start_point_id"], arc["end_point_id"]
+                edge_key = frozenset({p1, p2})
+                if edge_key not in edges:
+                    edges[edge_key] = []
+                arc_info = {"id": arc_id, "type": "arc", "points": edge_key, "vertices": (p1, p2)}
+                edges[edge_key].append(arc_info)
+                vertices.add(p1)
+                vertices.add(p2)
+                primitive_id_map[arc_id] = arc
+
+            # 2. 规则1验证：所有顶点的度数必须为2（关键修复：遍历所有基元统计度数）
+            vertex_degree: Dict[str, int] = {v: 0 for v in vertices}
+            for edge_key in edges:
+                for primitive in edges[edge_key]:
+                    p1, p2 = primitive["vertices"]
+                    vertex_degree[p1] += 1
+                    vertex_degree[p2] += 1
+
+            for vertex, degree in vertex_degree.items():
+                if degree != 2:
+                    result["error_message"] = f"点 '{vertex}' 的连接数为 {degree}，不符合必须连接 2 个基元的规则。"
+                    result["is_valid"] = False
+                    return result
+
+            if not vertices:
+                result["error_message"] = "没有找到任何有效的顶点。"
+                result["is_valid"] = False
+                return result
+
+            # 3. 寻找所有连通分量并验证是否为环（关键修复：以基元为单位遍历）
+            all_primitives: List[Dict] = []  # 所有匹配的基元（线+弧）
+            for edge_key in edges:
+                all_primitives.extend(edges[edge_key])
+            visited_primitives: Set[str] = set()  # 已访问的基元ID
+
+            while all_primitives:
+                # 取第一个未访问的基元作为起点
+                start_primitive = None
+                for prim in all_primitives:
+                    if prim["id"] not in visited_primitives:
+                        start_primitive = prim
+                        break
+                if not start_primitive:
+                    break
+
+                # BFS 寻找连通分量（基于基元共享顶点）
+                component_primitives: List[Dict] = []
+                queue = [start_primitive]
+                visited_primitives.add(start_primitive["id"])
+
+                while queue:
+                    current_prim = queue.pop(0)
+                    component_primitives.append(current_prim)
+                    current_p1, current_p2 = current_prim["vertices"]
+
+                    # 寻找与当前基元共享顶点的未访问基元
+                    for candidate_prim in all_primitives:
+                        if candidate_prim["id"] in visited_primitives:
+                            continue
+                        cand_p1, cand_p2 = candidate_prim["vertices"]
+                        if current_p1 in (cand_p1, cand_p2) or current_p2 in (cand_p1, cand_p2):
+                            queue.append(candidate_prim)
+                            visited_primitives.add(candidate_prim["id"])
+
+                # 验证连通分量是否为有效环（规则5）
+                num_primitives = len(component_primitives)
+                is_valid_loop = False
+
+                if num_primitives >= 3:
+                    is_valid_loop = True
+                elif num_primitives == 2:
+                    # 规则5b：同一对顶点 + 至少一个是弧
+                    prim1 = component_primitives[0]
+                    prim2 = component_primitives[1]
+                    if prim1["points"] == prim2["points"]:
+                        has_arc = any(prim["type"] == "arc" for prim in component_primitives)
+                        if has_arc:
+                            is_valid_loop = True
+
+                if not is_valid_loop:
+                    prim_ids = [prim["id"] for prim in component_primitives]
+                    result["error_message"] = f"检测到无效的环结构。基元 {prim_ids} 无法形成一个有效的环。"
+                    result["is_valid"] = False
+                    return result
+
+                # -------------------------- 新增：生成环的有序点序列 --------------------------
+                def get_ordered_loop_points(component):
+                    """辅助函数：根据环的基元列表，生成按遍历顺序的闭环点序列"""
+                    if not component:
+                        return []
+                    
+                    # 构建顶点到关联基元的映射（每个顶点对应2个基元）
+                    vertex_prim_map = defaultdict(list)
+                    for prim in component:
+                        p1, p2 = prim["vertices"]
+                        vertex_prim_map[p1].append(prim)
+                        vertex_prim_map[p2].append(prim)
+                    
+                    ordered_points = []
+                    visited_prim_ids = set()
+                    total_prims = len(component)
+
+                    # 1. 确定起始基元和初始方向（优先保留弧的原始方向）
+                    start_prim = None
+                    for prim in component:
+                        if prim["type"] == "arc":  # 弧有固定方向，优先作为起始基元
+                            start_prim = prim
+                            break
+                    if not start_prim:
+                        start_prim = component[0]  # 全是线的情况，取第一个基元
+                    
+                    visited_prim_ids.add(start_prim["id"])
+                    original_prim = primitive_id_map[start_prim["id"]]
+                    # 按原始基元的起止点确定初始路径方向
+                    current_p = original_prim["start_point_id"]
+                    next_p = original_prim["end_point_id"]
+                    ordered_points.extend([current_p, next_p])
+
+                    # 2. 遍历剩余基元，构建完整路径
+                    while len(visited_prim_ids) < total_prims:
+                        # 查找包含当前终点next_p且未访问的基元
+                        candidate_prims = vertex_prim_map[next_p]
+                        next_prim = None
+                        for prim in candidate_prims:
+                            if prim["id"] not in visited_prim_ids:
+                                next_prim = prim
+                                break
+                        if not next_prim:
+                            break  # 已通过有效性验证，此处不应触发
+
+                        visited_prim_ids.add(next_prim["id"])
+                        next_original = primitive_id_map[next_prim["id"]]
+                        # 确定下一个点（保持基元原始方向）
+                        if next_original["start_point_id"] == next_p:
+                            new_next_p = next_original["end_point_id"]
+                        elif next_original["end_point_id"] == next_p:
+                            new_next_p = next_original["start_point_id"]
+                        else:
+                            new_next_p = next_original["end_point_id"]  # 兜底逻辑
+
+                        ordered_points.append(new_next_p)
+                        next_p = new_next_p
+
+                    # 3. 确保闭环（首尾点一致）
+                    if ordered_points and ordered_points[0] != ordered_points[-1]:
+                        ordered_points.append(ordered_points[0])
+                    
+                    return ordered_points
+
+                ordered_points = get_ordered_loop_points(component_primitives)
+                # ----------------------------------------------------------------------------
+
+                # 记录环信息（新增ordered_points字段）
+                result["num_loops"] += 1
+                result["loop_details"].append({
+                    # "primitives": [prim["id"] for prim in component_primitives],
+                    # "primitive_types": [prim["type"] for prim in component_primitives],
+                    "ordered_points": ordered_points  # 新增：按顺序排列的闭环点ID列表
+                })
+
+            # 4. 规则4验证：所有基元都必须被访问（无孤立基元）
+            all_matched_primitive_ids = set(matched_line_ids + matched_arc_ids)
+            if visited_primitives != all_matched_primitive_ids:
+                isolated_primitives = all_matched_primitive_ids - visited_primitives
+                result["error_message"] = f"存在未参与任何环的孤立基元: {isolated_primitives}"
+                result["is_valid"] = False
+                return result
+
+            # 5. 最终判断
+            if result["is_valid"] and result["num_loops"] > 0:
+                result["is_closed"] = True
+                result["error_message"] = f"成功检测到 {result['num_loops']} 个不相交的有效环。"
                 
-                # 找到与当前边共享顶点的未访问边
-                p1, p2 = current_key
-                for neighbor_key in all_edge_keys:
-                    if edges[neighbor_key]["id"] in visited_edges_in_component:
-                        continue
-                    if p1 in neighbor_key or p2 in neighbor_key:
-                        queue.append(neighbor_key)
-                        visited_edges_in_component.add(edges[neighbor_key]["id"])
+            # 不方便处理环状图形面积的话，启用
+            # if result["num_loops"] != 1:
+            #     logger.warning(f"检测到多个环结构：共 {result['num_loops']} 个环，详情：{result['loop_details']}")
+            #     result["is_valid"] = False
 
-            # 从所有边列表中移除已处理的边
-            for key in component_edge_keys:
-                if key in all_edge_keys:
-                    all_edge_keys.remove(key)
-
-            # 验证连通分量是否为有效环
-            component_edges = [edges[key] for key in component_edge_keys]
-            num_edges = len(component_edges)
-            
-            # 规则5验证
-            is_valid_loop = False
-            if num_edges >= 3:
-                is_valid_loop = True
-            elif num_edges == 2:
-                # 检查是否连接同一对顶点
-                edge1_points = component_edges[0]["points"]
-                edge2_points = component_edges[1]["points"]
-                if edge1_points == edge2_points:
-                    # 检查是否至少有一个是弧
-                    has_arc = any(edge["type"] == "arc" for edge in component_edges)
-                    if has_arc:
-                        is_valid_loop = True
-            
-            if not is_valid_loop:
-                edge_ids = [edge["id"] for edge in component_edges]
-                result["error_message"] = f"检测到无效的环结构。边 {edge_ids} 无法形成一个有效的环。"
-                result["is_valid"] = False
-                return result
-
-            # 标记为已访问并记录环信息
-            for edge in component_edges:
-                visited_edges.add(edge["id"])
-            
-            result["num_loops"] += 1
-            result["loop_details"].append({
-                "edges": [edge["id"] for edge in component_edges],
-                "edge_types": [edge["type"] for edge in component_edges]
-            })
-
-        # 4. 规则4验证：所有边都必须被访问（无孤立基元）
-        all_matched_primitive_ids = set(matched_line_ids + matched_arc_ids)
-        if visited_edges != all_matched_primitive_ids:
-            isolated_edges = all_matched_primitive_ids - visited_edges
-            result["error_message"] = f"存在未参与任何环的孤立基元: {isolated_edges}"
-            result["is_valid"] = False
             return result
-
-        # 5. 最终判断
-        if result["is_valid"] and result["num_loops"] > 0:
-            result["is_closed"] = True
-            result["error_message"] = f"成功检测到 {result['num_loops']} 个不相交的有效环。"
-
-        return result
 
     def _match_primitives_to_contour(
         self,
@@ -1401,6 +1586,7 @@ class EnhancedDrawer:
                 "points": [{"id": p_id} for p_id in matched_points],
                 "lines": [{"id": l_id} for l_id in matched_lines],
                 "arcs": [{"id": a_id} for a_id in matched_arcs],
+                "ordered_loops": geometry_check_result.get("loop_details", []),
                 "validity": geometry_check_result["is_valid"]
             }
             
@@ -1477,6 +1663,7 @@ class EnhancedDrawer:
                 continue
             
             # 处理阴影
+            # self.selected_region_labels = defaultdict(list)
             for attempt in range(self.x_attempts):
                 try:
                     self._process_shaded_image(
@@ -1500,3 +1687,4 @@ class EnhancedDrawer:
         logger.info(f"原始图像目录：{self.raw_dir}")
         logger.info(f"阴影图像目录：{self.shaded_dir}")
         logger.info(f"标注图像目录：{self.annotated_dir}")
+        logger.info(f"阴影匹配成功率：{(self.success/(self.success+self.failure)):.2%}（成功 {self.success}，失败 {self.failure}）")

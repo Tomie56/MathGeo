@@ -1,0 +1,655 @@
+{
+  "points": [
+    {
+      "id": "O1",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "A",
+      "x": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "y": {
+        "expr": "-3/2",
+        "latex": "- \\frac{3}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "B",
+      "x": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "y": {
+        "expr": "-3/2",
+        "latex": "- \\frac{3}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L1"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "C",
+      "x": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "y": {
+        "expr": "3/2",
+        "latex": "\\frac{3}{2}"
+      },
+      "related_edges": [
+        "L1",
+        "L2"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "D",
+      "x": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "y": {
+        "expr": "3/2",
+        "latex": "\\frac{3}{2}"
+      },
+      "related_edges": [
+        "L2",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "E",
+      "x": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "y": {
+        "expr": "-3",
+        "latex": "-3"
+      },
+      "related_edges": [
+        "L4",
+        "L7",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "F",
+      "x": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "y": {
+        "expr": "-3",
+        "latex": "-3"
+      },
+      "related_edges": [
+        "L4",
+        "L5",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "G",
+      "x": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "y": {
+        "expr": "3",
+        "latex": "3"
+      },
+      "related_edges": [
+        "L5",
+        "L6",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "H",
+      "x": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "y": {
+        "expr": "3",
+        "latex": "3"
+      },
+      "related_edges": [
+        "L6",
+        "L7",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "circle_1",
+      "x": {
+        "expr": "sqrt(10)",
+        "latex": "\\sqrt{10}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": true,
+      "level": 2
+    }
+  ],
+  "lines": [
+    {
+      "id": "L0",
+      "type": "line",
+      "start_point_id": "A",
+      "end_point_id": "B",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L1",
+      "type": "line",
+      "start_point_id": "B",
+      "end_point_id": "C",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "3",
+        "latex": "3",
+        "value": 3.0
+      }
+    },
+    {
+      "id": "L2",
+      "type": "line",
+      "start_point_id": "C",
+      "end_point_id": "D",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L3",
+      "type": "line",
+      "start_point_id": "D",
+      "end_point_id": "A",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "3",
+        "latex": "3",
+        "value": 3.0
+      }
+    },
+    {
+      "id": "L4",
+      "type": "line",
+      "start_point_id": "E",
+      "end_point_id": "F",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L5",
+      "type": "line",
+      "start_point_id": "F",
+      "end_point_id": "G",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "6",
+        "latex": "6",
+        "value": 6.0
+      }
+    },
+    {
+      "id": "L6",
+      "type": "line",
+      "start_point_id": "G",
+      "end_point_id": "H",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L7",
+      "type": "line",
+      "start_point_id": "H",
+      "end_point_id": "E",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "6",
+        "latex": "6",
+        "value": 6.0
+      }
+    },
+    {
+      "id": "ConnP0",
+      "type": "connection",
+      "start_point_id": "E",
+      "end_point_id": "A",
+      "level": 3,
+      "description": "Connect points E and A (both on segments)",
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(10)/2",
+        "latex": "\\frac{\\sqrt{10}}{2}",
+        "value": 1.58113883
+      }
+    }
+  ],
+  "arcs": [
+    {
+      "id": "Arc0",
+      "type": "arc",
+      "start_point_id": "circle_1",
+      "end_point_id": "circle_1",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "sqrt(10)",
+        "latex": "\\sqrt{10}"
+      },
+      "angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "2*sqrt(10)*pi",
+        "latex": "2 \\sqrt{10} \\pi",
+        "value": 19.86917654
+      }
+    },
+    {
+      "id": "Arc_min_1",
+      "start_point_id": "E",
+      "end_point_id": "F",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "sqrt(10)"
+      },
+      "angle": {
+        "expr": "pi - 2*atan(3)"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "sqrt(10)*(pi - 2*atan(3))",
+        "latex": "\\sqrt{10} \\left(\\pi - 2 \\operatorname{atan}{\\left(3 \\right)}\\right)",
+        "value": 2.03492918
+      }
+    },
+    {
+      "id": "Arc_min_2",
+      "start_point_id": "F",
+      "end_point_id": "circle_1",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "sqrt(10)"
+      },
+      "angle": {
+        "expr": "atan(3)"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "sqrt(10)*atan(3)",
+        "latex": "\\sqrt{10} \\operatorname{atan}{\\left(3 \\right)}",
+        "value": 3.94982954
+      }
+    },
+    {
+      "id": "Arc_min_3",
+      "start_point_id": "circle_1",
+      "end_point_id": "G",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "sqrt(10)"
+      },
+      "angle": {
+        "expr": "atan(3)"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "sqrt(10)*atan(3)",
+        "latex": "\\sqrt{10} \\operatorname{atan}{\\left(3 \\right)}",
+        "value": 3.94982954
+      }
+    },
+    {
+      "id": "Arc_min_4",
+      "start_point_id": "G",
+      "end_point_id": "H",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "sqrt(10)"
+      },
+      "angle": {
+        "expr": "pi - 2*atan(3)"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "sqrt(10)*(pi - 2*atan(3))",
+        "latex": "\\sqrt{10} \\left(\\pi - 2 \\operatorname{atan}{\\left(3 \\right)}\\right)",
+        "value": 2.03492918
+      }
+    },
+    {
+      "id": "Arc_min_5",
+      "start_point_id": "H",
+      "end_point_id": "E",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "sqrt(10)"
+      },
+      "angle": {
+        "expr": "2*atan(3)"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "2*sqrt(10)*atan(3)",
+        "latex": "2 \\sqrt{10} \\operatorname{atan}{\\left(3 \\right)}",
+        "value": 7.89965908
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "base_rectangle_1:3",
+      "type": "special_rectangle",
+      "center_id": "O1",
+      "vertices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "lines": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "width": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "length": {
+        "expr": "3",
+        "latex": "3"
+      },
+      "perimeter": {
+        "expr": "8",
+        "latex": "8"
+      },
+      "area": {
+        "expr": "3",
+        "latex": "3"
+      },
+      "rotate_mode": "original",
+      "is_base": true
+    },
+    {
+      "id": "concentric_rectangle",
+      "type": "special_rectangle",
+      "center_id": "O1",
+      "vertices": [
+        "E",
+        "F",
+        "G",
+        "H"
+      ],
+      "lines": [
+        "L4",
+        "L5",
+        "L6",
+        "L7"
+      ],
+      "width": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "length": {
+        "expr": "6",
+        "latex": "6"
+      },
+      "perimeter": {
+        "expr": "16",
+        "latex": "16"
+      },
+      "area": {
+        "expr": "12",
+        "latex": "12"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "id": "circumscribedcircle_rectangle",
+      "type": "circle",
+      "center_id": "O1",
+      "start_id": "circle_1",
+      "end_id": "circle_1",
+      "arcs": "Arc0",
+      "radius": {
+        "expr": "sqrt(10)",
+        "latex": "\\sqrt{10}"
+      },
+      "start_angle": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "end_angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "is_base": false,
+      "perimeter": {
+        "expr": "2*sqrt(10)*pi",
+        "latex": "2 \\sqrt{10} \\pi"
+      },
+      "area": {
+        "expr": "10*pi",
+        "latex": "10 \\pi"
+      }
+    },
+    {
+      "type": "shadow",
+      "region_label": 5,
+      "points": [
+        {
+          "id": "A"
+        },
+        {
+          "id": "B"
+        },
+        {
+          "id": "C"
+        },
+        {
+          "id": "D"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L0"
+        },
+        {
+          "id": "L1"
+        },
+        {
+          "id": "L2"
+        },
+        {
+          "id": "L3"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "A"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "8",
+        "latex": "8"
+      },
+      "area": {
+        "expr": "3",
+        "latex": "3"
+      }
+    },
+    {
+      "type": "shadow",
+      "region_label": 6,
+      "points": [
+        {
+          "id": "E"
+        },
+        {
+          "id": "F"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L4"
+        }
+      ],
+      "arcs": [
+        {
+          "id": "Arc_min_1"
+        }
+      ],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "E",
+            "F",
+            "E"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "2 + sqrt(10)*(pi - 2*atan(3))",
+        "latex": "2 + \\sqrt{10} \\left(\\pi - 2 \\operatorname{atan}{\\left(3 \\right)}\\right)"
+      },
+      "area": {
+        "expr": "-10*atan(3) - 3 + 5*pi",
+        "latex": "- 10 \\operatorname{atan}{\\left(3 \\right)} - 3 + 5 \\pi"
+      }
+    }
+  ],
+  "description": "Original graphic description: Base shape is a rectangle (center O1) with width 1, length 3, rotate mode original Round 1: applying 'concentric' rule. Concentric rectangle (center O1) scaled by 2 (new size 2×6). Round 2: applying 'circum_inscribe' rule. Circumscribed circle (center O1) for rectangle, radius sqrt(10).\nEnhancement index: 3/5\nNumber of rounds: 1\nRound 1:\nConnect points E and A (both on segments)",
+  "is_base": false,
+  "timeout_occurred": false,
+  "completed_rounds": 1,
+  "base_id": "",
+  "enhance_id": "_enhance_002",
+  "raw_path": "./results_n500_v4/images/raw/geometry_line_0045.png",
+  "annotated_raw_path": "./results_n500_v4/images/annotated/annotated_raw_geometry_line_0045.png",
+  "shaded_path": "./results_n500_v4/images/shaded/shaded_44_attempt_1_geometry_line_0045.png",
+  "annotated_shaded_path": "./results_n500_v4/images/annotated/annotated_shaded_44_attempt_1_geometry_line_0045.png",
+  "shadow_type": "solid",
+  "shader_enabled": true,
+  "shadow_regions": 2,
+  "generated_question": [
+    "{\n  \"question\": \"Given that base_rectangle_1:3 has center O1, width 1, and length 3, and concentric_rectangle is a scaled version centered at O1 with dimensions 2×6, while circumscribedcircle_rectangle (center O1, radius √10) passes through points E, F, G, H, compute the length of the line segment from point A to point E, which lies along the boundary of base_rectangle_1:3 and circumscribedcircle_rectangle respectively.\",\n  \"difficulty_label\": 3,\n  \"question_type\": \"length\",\n  \"target_ids\": [\"A\", \"E\", \"base_rectangle_1:3\", \"circumscribedcircle_rectangle\"]\n}"
+  ]
+}

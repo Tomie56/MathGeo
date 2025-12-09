@@ -1,0 +1,699 @@
+{
+  "points": [
+    {
+      "id": "O1",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "A",
+      "x": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "y": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "related_edges": [
+        "L0",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "B",
+      "x": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "y": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "related_edges": [
+        "L0",
+        "L1"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "C",
+      "x": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "y": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "related_edges": [
+        "L1",
+        "L2",
+        "L5"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "D",
+      "x": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "y": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "related_edges": [
+        "L2",
+        "L3",
+        "L7"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "O2",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 2,
+      "type": "midpoint",
+      "related_edge": "L2"
+    },
+    {
+      "id": "E",
+      "x": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "L4",
+        "L7",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "F",
+      "x": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "L4",
+        "L5",
+        "L1"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "G",
+      "x": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "y": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "related_edges": [
+        "L5",
+        "L6"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "H",
+      "x": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "y": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "related_edges": [
+        "L6",
+        "L7"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "I2",
+      "x": {
+        "expr": "-1/4",
+        "latex": "- \\frac{1}{4}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "level": 2,
+      "type": "intersection"
+    }
+  ],
+  "lines": [
+    {
+      "id": "L0",
+      "type": "line",
+      "start_point_id": "A",
+      "end_point_id": "B",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L1",
+      "type": "line",
+      "start_point_id": "B",
+      "end_point_id": "C",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L2",
+      "type": "line",
+      "start_point_id": "C",
+      "end_point_id": "D",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L3",
+      "type": "line",
+      "start_point_id": "D",
+      "end_point_id": "A",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L4",
+      "type": "line",
+      "start_point_id": "E",
+      "end_point_id": "F",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L5",
+      "type": "line",
+      "start_point_id": "F",
+      "end_point_id": "G",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L6",
+      "type": "line",
+      "start_point_id": "G",
+      "end_point_id": "H",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L7",
+      "type": "line",
+      "start_point_id": "H",
+      "end_point_id": "E",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "ConnP0",
+      "type": "connection",
+      "start_point_id": "A",
+      "end_point_id": "E",
+      "level": 3,
+      "description": "Connect points A and E (both on segments)",
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "VMidL1",
+      "type": "vertex_midline",
+      "start_point_id": "A",
+      "end_point_id": "O2",
+      "level": 2,
+      "description": "Connect vertex A with midpoint O2 (of line L2)",
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "sqrt(17)/2",
+        "latex": "\\frac{\\sqrt{17}}{2}",
+        "value": 2.06155281
+      }
+    },
+    {
+      "id": "L_min_1",
+      "start_point_id": "B",
+      "end_point_id": "F",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_2",
+      "start_point_id": "F",
+      "end_point_id": "C",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_3",
+      "start_point_id": "C",
+      "end_point_id": "O2",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}",
+        "value": 0.5
+      }
+    },
+    {
+      "id": "L_min_4",
+      "start_point_id": "O2",
+      "end_point_id": "D",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}",
+        "value": 0.5
+      }
+    },
+    {
+      "id": "L_min_5",
+      "start_point_id": "D",
+      "end_point_id": "E",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_6",
+      "start_point_id": "E",
+      "end_point_id": "I2",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1/4",
+        "latex": "\\frac{1}{4}",
+        "value": 0.25
+      }
+    },
+    {
+      "id": "L_min_7",
+      "start_point_id": "I2",
+      "end_point_id": "O1",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1/4",
+        "latex": "\\frac{1}{4}",
+        "value": 0.25
+      }
+    },
+    {
+      "id": "L_min_8",
+      "start_point_id": "O1",
+      "end_point_id": "F",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}",
+        "value": 0.5
+      }
+    },
+    {
+      "id": "L_min_9",
+      "start_point_id": "C",
+      "end_point_id": "G",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_10",
+      "start_point_id": "H",
+      "end_point_id": "D",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_11",
+      "start_point_id": "A",
+      "end_point_id": "I2",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(17)/4",
+        "latex": "\\frac{\\sqrt{17}}{4}",
+        "value": 1.03077641
+      }
+    },
+    {
+      "id": "L_min_12",
+      "start_point_id": "I2",
+      "end_point_id": "O2",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(17)/4",
+        "latex": "\\frac{\\sqrt{17}}{4}",
+        "value": 1.03077641
+      }
+    }
+  ],
+  "arcs": [],
+  "entities": [
+    {
+      "id": "base_rectangle_1:2",
+      "type": "special_rectangle",
+      "center_id": "O1",
+      "vertices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "lines": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "width": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "length": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "perimeter": {
+        "expr": "6",
+        "latex": "6"
+      },
+      "area": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "rotate_mode": "original",
+      "is_base": true
+    },
+    {
+      "id": "translated_rectangle_edge1",
+      "type": "special_rectangle",
+      "center_id": "O2",
+      "vertices": [
+        "E",
+        "F",
+        "G",
+        "H"
+      ],
+      "lines": [
+        "L4",
+        "L5",
+        "L6",
+        "L7"
+      ],
+      "width": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "length": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "perimeter": {
+        "expr": "6",
+        "latex": "6"
+      },
+      "area": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "type": "shadow",
+      "region_label": 1,
+      "points": [
+        {
+          "id": "C"
+        },
+        {
+          "id": "D"
+        },
+        {
+          "id": "G"
+        },
+        {
+          "id": "H"
+        },
+        {
+          "id": "O2"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L6"
+        },
+        {
+          "id": "L_min_3"
+        },
+        {
+          "id": "L_min_4"
+        },
+        {
+          "id": "L_min_9"
+        },
+        {
+          "id": "L_min_10"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "G",
+            "H",
+            "D",
+            "O2",
+            "C",
+            "G"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "4",
+        "latex": "4"
+      },
+      "area": {
+        "expr": "1",
+        "latex": "1"
+      }
+    },
+    {
+      "type": "shadow",
+      "region_label": 2,
+      "points": [
+        {
+          "id": "D"
+        },
+        {
+          "id": "E"
+        },
+        {
+          "id": "I2"
+        },
+        {
+          "id": "O2"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L_min_4"
+        },
+        {
+          "id": "L_min_5"
+        },
+        {
+          "id": "L_min_6"
+        },
+        {
+          "id": "L_min_12"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "O2",
+            "D",
+            "E",
+            "I2",
+            "O2"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "sqrt(17)/4 + 7/4",
+        "latex": "\\frac{\\sqrt{17}}{4} + \\frac{7}{4}"
+      },
+      "area": {
+        "expr": "3/8",
+        "latex": "\\frac{3}{8}"
+      }
+    }
+  ],
+  "description": "Original graphic description: Base shape is a rectangle (center O1) with width 1, length 2, rotate mode original Round 1: applying 'translation' rule. Translated rectangle along edge L1 by half length (new center O2).\nEnhancement index: 5/5\nNumber of rounds: 2\nRound 1:\nConnect points A and E (both on segments)\nRound 2:\nConnect vertex A with midpoint O2 (of line L2)",
+  "is_base": false,
+  "timeout_occurred": false,
+  "completed_rounds": 2,
+  "base_id": "",
+  "enhance_id": "_enhance_004",
+  "raw_path": "./results_n500_v4/images/raw/geometry_line_0107.png",
+  "annotated_raw_path": "./results_n500_v4/images/annotated/annotated_raw_geometry_line_0107.png",
+  "shaded_path": "./results_n500_v4/images/shaded/shaded_106_attempt_0_geometry_line_0107.png",
+  "annotated_shaded_path": "./results_n500_v4/images/annotated/annotated_shaded_106_attempt_0_geometry_line_0107.png",
+  "shadow_type": "hatch",
+  "shader_enabled": true,
+  "shadow_regions": 2,
+  "generated_question": [
+    "{\n  \"question\": \"Given the base rectangle centered at O1 with width 1 and length 2, and its translated copy centered at O2 after translation along edge L1 by half its length, compute the length of the line segment connecting vertex A to midpoint O2 (of line L2), where A is a vertex of the original rectangle and O2 lies on the translated rectangle's top edge.\",\n  \"difficulty_label\": 3,\n  \"question_type\": \"length\",\n  \"target_ids\": [\"A\", \"O2\", \"L2\"]\n}"
+  ]
+}

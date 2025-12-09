@@ -1,0 +1,686 @@
+{
+  "points": [
+    {
+      "id": "O1",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "A",
+      "x": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "y": {
+        "expr": "-sqrt(3)/2",
+        "latex": "- \\frac{\\sqrt{3}}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "B",
+      "x": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "y": {
+        "expr": "-sqrt(3)/2",
+        "latex": "- \\frac{\\sqrt{3}}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L1"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "C",
+      "x": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "y": {
+        "expr": "sqrt(3)/2",
+        "latex": "\\frac{\\sqrt{3}}{2}"
+      },
+      "related_edges": [
+        "L1",
+        "L2"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "D",
+      "x": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "y": {
+        "expr": "sqrt(3)/2",
+        "latex": "\\frac{\\sqrt{3}}{2}"
+      },
+      "related_edges": [
+        "L2",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "E",
+      "x": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "y": {
+        "expr": "-sqrt(3)",
+        "latex": "- \\sqrt{3}"
+      },
+      "related_edges": [
+        "L4",
+        "L7",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "F",
+      "x": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "y": {
+        "expr": "-sqrt(3)",
+        "latex": "- \\sqrt{3}"
+      },
+      "related_edges": [
+        "L4",
+        "L5",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "G",
+      "x": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "y": {
+        "expr": "sqrt(3)",
+        "latex": "\\sqrt{3}"
+      },
+      "related_edges": [
+        "L5",
+        "L6",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "H",
+      "x": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "y": {
+        "expr": "sqrt(3)",
+        "latex": "\\sqrt{3}"
+      },
+      "related_edges": [
+        "L6",
+        "L7",
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "circle_1",
+      "x": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "Arc0"
+      ],
+      "is_center": false,
+      "is_circle_init": true,
+      "level": 2
+    },
+    {
+      "id": "circle_2",
+      "x": {
+        "expr": "4",
+        "latex": "4"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "Arc1"
+      ],
+      "is_center": false,
+      "is_circle_init": true,
+      "level": 2
+    }
+  ],
+  "lines": [
+    {
+      "id": "L0",
+      "type": "line",
+      "start_point_id": "A",
+      "end_point_id": "B",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L1",
+      "type": "line",
+      "start_point_id": "B",
+      "end_point_id": "C",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(3)",
+        "latex": "\\sqrt{3}",
+        "value": 1.73205081
+      }
+    },
+    {
+      "id": "L2",
+      "type": "line",
+      "start_point_id": "C",
+      "end_point_id": "D",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L3",
+      "type": "line",
+      "start_point_id": "D",
+      "end_point_id": "A",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(3)",
+        "latex": "\\sqrt{3}",
+        "value": 1.73205081
+      }
+    },
+    {
+      "id": "L4",
+      "type": "line",
+      "start_point_id": "E",
+      "end_point_id": "F",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L5",
+      "type": "line",
+      "start_point_id": "F",
+      "end_point_id": "G",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2*sqrt(3)",
+        "latex": "2 \\sqrt{3}",
+        "value": 3.46410162
+      }
+    },
+    {
+      "id": "L6",
+      "type": "line",
+      "start_point_id": "G",
+      "end_point_id": "H",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L7",
+      "type": "line",
+      "start_point_id": "H",
+      "end_point_id": "E",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2*sqrt(3)",
+        "latex": "2 \\sqrt{3}",
+        "value": 3.46410162
+      }
+    },
+    {
+      "id": "ConnP0",
+      "type": "connection",
+      "start_point_id": "B",
+      "end_point_id": "G",
+      "level": 3,
+      "description": "Connect points B and G (both on segments)",
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(7)",
+        "latex": "\\sqrt{7}",
+        "value": 2.64575131
+      }
+    }
+  ],
+  "arcs": [
+    {
+      "id": "Arc0",
+      "type": "arc",
+      "start_point_id": "circle_1",
+      "end_point_id": "circle_1",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "4*pi",
+        "latex": "4 \\pi",
+        "value": 12.56637062
+      }
+    },
+    {
+      "id": "Arc1",
+      "type": "arc",
+      "start_point_id": "circle_2",
+      "end_point_id": "circle_2",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "4",
+        "latex": "4"
+      },
+      "angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "8*pi",
+        "latex": "8 \\pi",
+        "value": 25.13274124
+      }
+    },
+    {
+      "id": "Arc_min_1",
+      "start_point_id": "E",
+      "end_point_id": "F",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "2"
+      },
+      "angle": {
+        "expr": "pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "2*pi/3",
+        "latex": "\\frac{2 \\pi}{3}",
+        "value": 2.0943951
+      }
+    },
+    {
+      "id": "Arc_min_2",
+      "start_point_id": "F",
+      "end_point_id": "circle_1",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "2"
+      },
+      "angle": {
+        "expr": "pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "2*pi/3",
+        "latex": "\\frac{2 \\pi}{3}",
+        "value": 2.0943951
+      }
+    },
+    {
+      "id": "Arc_min_3",
+      "start_point_id": "circle_1",
+      "end_point_id": "G",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "2"
+      },
+      "angle": {
+        "expr": "pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "2*pi/3",
+        "latex": "\\frac{2 \\pi}{3}",
+        "value": 2.0943951
+      }
+    },
+    {
+      "id": "Arc_min_4",
+      "start_point_id": "G",
+      "end_point_id": "H",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "2"
+      },
+      "angle": {
+        "expr": "pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "2*pi/3",
+        "latex": "\\frac{2 \\pi}{3}",
+        "value": 2.0943951
+      }
+    },
+    {
+      "id": "Arc_min_5",
+      "start_point_id": "H",
+      "end_point_id": "E",
+      "center_point_id": "O1",
+      "radius": {
+        "expr": "2"
+      },
+      "angle": {
+        "expr": "2*pi/3"
+      },
+      "is_complete": false,
+      "is_original": false,
+      "is_minimal": true,
+      "level": 2,
+      "length": {
+        "expr": "4*pi/3",
+        "latex": "\\frac{4 \\pi}{3}",
+        "value": 4.1887902
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "base_rectangle_1:sqrt(3)",
+      "type": "special_rectangle",
+      "center_id": "O1",
+      "vertices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "lines": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "width": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "length": {
+        "expr": "sqrt(3)",
+        "latex": "\\sqrt{3}"
+      },
+      "perimeter": {
+        "expr": "2 + 2*sqrt(3)",
+        "latex": "2 + 2 \\sqrt{3}"
+      },
+      "area": {
+        "expr": "sqrt(3)",
+        "latex": "\\sqrt{3}"
+      },
+      "rotate_mode": "original",
+      "is_base": true
+    },
+    {
+      "id": "concentric_rectangle",
+      "type": "special_rectangle",
+      "center_id": "O1",
+      "vertices": [
+        "E",
+        "F",
+        "G",
+        "H"
+      ],
+      "lines": [
+        "L4",
+        "L5",
+        "L6",
+        "L7"
+      ],
+      "width": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "length": {
+        "expr": "2*sqrt(3)",
+        "latex": "2 \\sqrt{3}"
+      },
+      "perimeter": {
+        "expr": "4 + 4*sqrt(3)",
+        "latex": "4 + 4 \\sqrt{3}"
+      },
+      "area": {
+        "expr": "4*sqrt(3)",
+        "latex": "4 \\sqrt{3}"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "id": "circumscribedcircle_rectangle",
+      "type": "circle",
+      "center_id": "O1",
+      "start_id": "circle_1",
+      "end_id": "circle_1",
+      "arcs": "Arc0",
+      "radius": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "start_angle": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "end_angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "is_base": false,
+      "perimeter": {
+        "expr": "4*pi",
+        "latex": "4 \\pi"
+      },
+      "area": {
+        "expr": "4*pi",
+        "latex": "4 \\pi"
+      }
+    },
+    {
+      "id": "concentric_circle",
+      "type": "circle",
+      "center_id": "O1",
+      "start_id": "circle_2",
+      "end_id": "circle_2",
+      "arcs": "Arc1",
+      "radius": {
+        "expr": "4",
+        "latex": "4"
+      },
+      "start_angle": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "end_angle": {
+        "expr": "2*pi",
+        "latex": "2 \\pi"
+      },
+      "is_complete": true,
+      "is_base": false,
+      "perimeter": {
+        "expr": "8*pi",
+        "latex": "8 \\pi"
+      },
+      "area": {
+        "expr": "16*pi",
+        "latex": "16 \\pi"
+      }
+    },
+    {
+      "type": "shadow",
+      "region_label": 6,
+      "points": [
+        {
+          "id": "A"
+        },
+        {
+          "id": "B"
+        },
+        {
+          "id": "C"
+        },
+        {
+          "id": "D"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L0"
+        },
+        {
+          "id": "L1"
+        },
+        {
+          "id": "L2"
+        },
+        {
+          "id": "L3"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "A"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "2 + 2*sqrt(3)",
+        "latex": "2 + 2 \\sqrt{3}"
+      },
+      "area": {
+        "expr": "sqrt(3)",
+        "latex": "\\sqrt{3}"
+      }
+    }
+  ],
+  "description": "Original graphic description: Base shape is a rectangle (center O1) with width 1, length sqrt(3), rotate mode original Round 1: applying 'concentric' rule. Concentric rectangle (center O1) scaled by 2 (new size 2×2*sqrt(3)). Round 2: applying 'circum_inscribe' rule. Circumscribed circle (center O1) for rectangle, radius 2. Round 3: applying 'concentric' rule. Concentric derivation: circle (center O1) scaled by 2 (new radius 4).\nEnhancement index: 2/5\nNumber of rounds: 1\nRound 1:\nConnect points B and G (both on segments)",
+  "is_base": false,
+  "timeout_occurred": false,
+  "completed_rounds": 1,
+  "base_id": "",
+  "enhance_id": "_enhance_001",
+  "raw_path": "./results_n500_v4/images/raw/geometry_line_0204.png",
+  "annotated_raw_path": "./results_n500_v4/images/annotated/annotated_raw_geometry_line_0204.png",
+  "shaded_path": "./results_n500_v4/images/shaded/shaded_203_attempt_2_geometry_line_0204.png",
+  "annotated_shaded_path": "./results_n500_v4/images/annotated/annotated_shaded_203_attempt_2_geometry_line_0204.png",
+  "shadow_type": "hatch",
+  "shader_enabled": true,
+  "shadow_regions": 1,
+  "generated_question": [
+    "{\n  \"question\": \"Given the concentric rectangle scaled by 2 from base_rectangle_1:sqrt(3) and its circumscribed circle (radius 2), if points B and G lie on the outer rectangle and are connected by line segment L0, what is the length of L0?\",\n  \"difficulty_label\": 3,\n  \"question_type\": \"length\",\n  \"target_ids\": [\"L0\", \"base_rectangle_1:sqrt(3)\", \"concentric_rectangle\", \"circumscribedcircle_rectangle\"]\n}"
+  ]
+}

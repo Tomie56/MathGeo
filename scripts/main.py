@@ -216,6 +216,32 @@ class GeoChainPipeline:
     def run_shader(self) -> None:
         """步骤4：区域着色与标注"""
         # 1. 提取核心配置参数
+        
+        # self.config['drawer']['jsonl_path'] = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n500_v4/json/enhanced/enhanced_20251202_203446_702.jsonl"
+        # self.enhanced_jsons = []
+        # jsonl_path = self.config['drawer']['jsonl_path']
+        
+        # try:
+        #     with open(jsonl_path, 'r', encoding='utf-8') as f:
+        #         for line in f:
+        #             line = line.strip()
+        #             if not line:
+        #                 continue
+        #             # 解析每一行的JSON数据并添加到列表
+        #             json_data = json.loads(line)
+        #             self.enhanced_jsons.append(json_data)
+        #     logger.info(f"成功读取JSONL文件，共加载 {len(self.enhanced_jsons)} 条数据（路径：{jsonl_path}）")
+        # except FileNotFoundError:
+        #     logger.error(f"JSONL文件不存在，路径：{jsonl_path}")
+        #     self.enhanced_jsons = []
+        # except json.JSONDecodeError as e:
+        #     logger.error(f"JSONL文件解析失败，错误行：{e.lineno}，错误信息：{str(e)}")
+        #     self.enhanced_jsons = []
+        # except Exception as e:
+        #     logger.error(f"读取JSONL文件时发生未知错误：{str(e)}")
+        #     self.enhanced_jsons = []
+
+        
         shader_config = self.config['shader']
         annotator_config = self.config.get('annotator', {})
         output_root = self.config['global']['output_root']
@@ -304,7 +330,7 @@ class GeoChainPipeline:
         if not hasattr(self, 'gt_jsonl_path') or not self.gt_jsonl_path or not os.path.exists(self.gt_jsonl_path):
             raise RuntimeError("GT计算结果路径无效或不存在，请先执行run_gt生成结果")
         
-        # self.gt_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/final/shaded_with_gt_20251029_042308_320.jsonl"
+        # self.gt_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n20_v5/json/final/shaded_with_gt_20251202_183956_638.jsonl"
         
         logger.info(f"使用GT结果文件: {self.gt_jsonl_path}")
 
@@ -343,7 +369,8 @@ class GeoChainPipeline:
                         qa_pairs = qa_generator.generate(
                             geo_data=geo_data,
                             num_questions=qa_config.get('num_questions_per_geo', 3),
-                            question_types=qa_config.get('question_types', ['length', 'comparison', 'sum', 'ratio']) 
+                            question_types=qa_config.get('question_types', ["length", "angle", "area", "shadow_ratio", "shadow_total"]),
+                            type_weights = qa_config.get('type_weights', {})
                         )
                         
                         # 写入输出文件（每条问答对一行）

@@ -1,11 +1,11 @@
 {
     "global": {
         "output_root": "./results_n20_v5",
-        "main_seed": 155,
+        "main_seed": 928854,
         "thread_num": 20
     },
     "template": {
-        "n": 10,
+        "n": 100,
         "points_limit": 30,
         "lines_limit": 40,
         "output_dir": "./results_n20_v5/json/base",
@@ -204,8 +204,9 @@
         "crosshatch_spacing": 6,
         "adjacent_threshold": 5.0,
         "intensity_range": [0.3, 0.7],
-        "distance_threshold": 10,
-        "match_threshold": 0.97,
+        "distance_threshold": 12,
+        "match_threshold": 0.8,
+        "match_threshold_arc": 0.7,
         "min_sample_points": 20
     },
     "gt": {
@@ -255,12 +256,17 @@
         }
     },
     "qa": {
-        "question_types": ["length", "angle"],
+        "question_types": ["length", "angle", "perimeter", "entity_area", "shadow_area", "shadow_ratio", "shadow_entity_ratio"],
         "type_weights": {
-            "length": 0.7,
-            "angle": 0.3
-        },   
-        "num_questions_per_group": 3,
+            "length": 0.2,
+            "angle": 0.1,
+            "perimeter": 0.1,
+            "entity_area": 0.1,
+            "shadow_area": 0.2,
+            "shadow_ratio": 0.2,
+            "shadow_entity_ratio": 0.1
+        },
+        "num_questions_per_geo": 6,
         "output_dir": "./results_n20_v5/json/qa"
     }
 }

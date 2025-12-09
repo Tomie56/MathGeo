@@ -1,0 +1,514 @@
+{
+  "points": [
+    {
+      "id": "O1",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "A",
+      "x": {
+        "expr": "-3",
+        "latex": "-3"
+      },
+      "y": {
+        "expr": "-5/2",
+        "latex": "- \\frac{5}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L3",
+        "L6",
+        "L7"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "B",
+      "x": {
+        "expr": "3",
+        "latex": "3"
+      },
+      "y": {
+        "expr": "-5/2",
+        "latex": "- \\frac{5}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L1"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "C",
+      "x": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "y": {
+        "expr": "5/2",
+        "latex": "\\frac{5}{2}"
+      },
+      "related_edges": [
+        "L1",
+        "L2"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "D",
+      "x": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "y": {
+        "expr": "5/2",
+        "latex": "\\frac{5}{2}"
+      },
+      "related_edges": [
+        "L2",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "O2",
+      "x": {
+        "expr": "-2",
+        "latex": "-2"
+      },
+      "y": {
+        "expr": "-5",
+        "latex": "-5"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "E",
+      "x": {
+        "expr": "-5",
+        "latex": "-5"
+      },
+      "y": {
+        "expr": "-15/2",
+        "latex": "- \\frac{15}{2}"
+      },
+      "related_edges": [
+        "L4",
+        "L7"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "F",
+      "x": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "y": {
+        "expr": "-15/2",
+        "latex": "- \\frac{15}{2}"
+      },
+      "related_edges": [
+        "L4",
+        "L5"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "G",
+      "x": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "y": {
+        "expr": "-5/2",
+        "latex": "- \\frac{5}{2}"
+      },
+      "related_edges": [
+        "L5",
+        "L6",
+        "L0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "M0",
+      "x": {
+        "expr": "-2",
+        "latex": "-2"
+      },
+      "y": {
+        "expr": "-5/2",
+        "latex": "- \\frac{5}{2}"
+      },
+      "level": 4,
+      "type": "midpoint",
+      "related_edge": "L6"
+    }
+  ],
+  "lines": [
+    {
+      "id": "L0",
+      "type": "line",
+      "start_point_id": "A",
+      "end_point_id": "B",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "6",
+        "latex": "6",
+        "value": 6.0
+      }
+    },
+    {
+      "id": "L1",
+      "type": "line",
+      "start_point_id": "B",
+      "end_point_id": "C",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)",
+        "latex": "\\sqrt{29}",
+        "value": 5.3851648
+      }
+    },
+    {
+      "id": "L2",
+      "type": "line",
+      "start_point_id": "C",
+      "end_point_id": "D",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L3",
+      "type": "line",
+      "start_point_id": "D",
+      "end_point_id": "A",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)",
+        "latex": "\\sqrt{29}",
+        "value": 5.3851648
+      }
+    },
+    {
+      "id": "L4",
+      "type": "line",
+      "start_point_id": "E",
+      "end_point_id": "F",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "6",
+        "latex": "6",
+        "value": 6.0
+      }
+    },
+    {
+      "id": "L5",
+      "type": "line",
+      "start_point_id": "F",
+      "end_point_id": "G",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)",
+        "latex": "\\sqrt{29}",
+        "value": 5.3851648
+      }
+    },
+    {
+      "id": "L6",
+      "type": "line",
+      "start_point_id": "G",
+      "end_point_id": "A",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L7",
+      "type": "line",
+      "start_point_id": "A",
+      "end_point_id": "E",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)",
+        "latex": "\\sqrt{29}",
+        "value": 5.3851648
+      }
+    },
+    {
+      "id": "VMidL1",
+      "type": "vertex_midline",
+      "start_point_id": "F",
+      "end_point_id": "M0",
+      "level": 4,
+      "description": "Connect vertex F with midpoint M0 (of line L6)",
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(34)",
+        "latex": "\\sqrt{34}",
+        "value": 5.83095189
+      }
+    },
+    {
+      "id": "L_min_1",
+      "start_point_id": "A",
+      "end_point_id": "M0",
+      "level": 4,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_2",
+      "start_point_id": "M0",
+      "end_point_id": "G",
+      "level": 4,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_3",
+      "start_point_id": "G",
+      "end_point_id": "B",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "4",
+        "latex": "4",
+        "value": 4.0
+      }
+    }
+  ],
+  "arcs": [],
+  "entities": [
+    {
+      "id": "base_trapezoid_6:2",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O1",
+      "vertices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "lines": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "base1": {
+        "expr": "6",
+        "latex": "6"
+      },
+      "base2": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "height": {
+        "expr": "5",
+        "latex": "5"
+      },
+      "angle_rad": {
+        "expr": "3*pi/4",
+        "latex": "\\frac{3 \\pi}{4}"
+      },
+      "angle_deg": {
+        "expr": "135",
+        "latex": "135"
+      },
+      "leg_length": {
+        "expr": "5*sqrt(2)",
+        "latex": "5 \\sqrt{2}"
+      },
+      "perimeter": {
+        "expr": "8 + 10*sqrt(2)",
+        "latex": "8 + 10 \\sqrt{2}"
+      },
+      "area": {
+        "expr": "20",
+        "latex": "20"
+      },
+      "rotate_mode": "original",
+      "is_base": true
+    },
+    {
+      "id": "translated_trapezoid_edge3",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O2",
+      "vertices": [
+        "E",
+        "F",
+        "G",
+        "A"
+      ],
+      "lines": [
+        "L4",
+        "L5",
+        "L6",
+        "L7"
+      ],
+      "base1": {
+        "expr": "6",
+        "latex": "6"
+      },
+      "base2": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "height": {
+        "expr": "5",
+        "latex": "5"
+      },
+      "angle_rad": {
+        "expr": "3*pi/4",
+        "latex": "\\frac{3 \\pi}{4}"
+      },
+      "angle_deg": {
+        "expr": "135",
+        "latex": "135"
+      },
+      "leg_length": {
+        "expr": "5*sqrt(2)",
+        "latex": "5 \\sqrt{2}"
+      },
+      "perimeter": {
+        "expr": "8 + 10*sqrt(2)",
+        "latex": "8 + 10 \\sqrt{2}"
+      },
+      "area": {
+        "expr": "20",
+        "latex": "20"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "type": "shadow",
+      "region_label": 3,
+      "points": [
+        {
+          "id": "F"
+        },
+        {
+          "id": "G"
+        },
+        {
+          "id": "M0"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L5"
+        },
+        {
+          "id": "VMidL1"
+        },
+        {
+          "id": "L_min_2"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "F",
+            "G",
+            "M0",
+            "F"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "1 + sqrt(29) + sqrt(34)",
+        "latex": "1 + \\sqrt{29} + \\sqrt{34}"
+      },
+      "area": {
+        "expr": "5/2",
+        "latex": "\\frac{5}{2}"
+      }
+    }
+  ],
+  "description": "Original graphic description: Base shape is an isosceles trapezoid (center O1) with bases 6, 2, height 5, angle 135°, rotate mode original Round 1: applying 'translation' rule. Translated trapezoid along edge L3 by full length (new center O2).\nEnhancement index: 4/5\nNumber of rounds: 1\nRound 1:\nConnect vertex F with midpoint M0 (of line L6)",
+  "is_base": false,
+  "timeout_occurred": false,
+  "completed_rounds": 1,
+  "base_id": "",
+  "enhance_id": "_enhance_003",
+  "raw_path": "./results_n500_v4/images/raw/geometry_line_0010.png",
+  "annotated_raw_path": "./results_n500_v4/images/annotated/annotated_raw_geometry_line_0010.png",
+  "shaded_path": "./results_n500_v4/images/shaded/shaded_9_attempt_1_geometry_line_0010.png",
+  "annotated_shaded_path": "./results_n500_v4/images/annotated/annotated_shaded_9_attempt_1_geometry_line_0010.png",
+  "shadow_type": "hatch",
+  "shader_enabled": true,
+  "shadow_regions": 1,
+  "generated_question": [
+    "{\n  \"question\": \"Given the isosceles trapezoid with center O1, bases 6 and 2, height 5, and base angle 135°, which is translated along edge L3 to form a new trapezoid centered at O2, compute the length of the line segment from vertex F to midpoint M0 of line L6.\",\n  \"difficulty_label\": 3,\n  \"question_type\": \"length\",\n  \"target_ids\": [\"F\", \"M0\", \"L6\", \"O1\", \"O2\"]\n}"
+  ]
+}

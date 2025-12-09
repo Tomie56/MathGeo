@@ -1,9 +1,9 @@
 import json
 
 # 输入文件路径
-input_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v3/output/A500_v3_level_judged_processed.jsonl"
+input_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4/output/all_test_answer_level_shuffled_judged.jsonl"
 # 输出文件路径（避免覆盖原文件）
-output_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v3/output/A500_v3_level_judged_cleaned.jsonl"
+output_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4/output/A500_v4_no_system.jsonl"
 
 with open(input_path, 'r', encoding='utf-8') as f_in, \
      open(output_path, 'w', encoding='utf-8') as f_out:
@@ -17,7 +17,7 @@ with open(input_path, 'r', encoding='utf-8') as f_in, \
                 "from": "system",
                 "value": "Reason step by step and place the thought process within the <think></think> tags, and provide the final conclusion at the end."
             }
-            conversations.insert(0, system_message) 
+            # conversations.insert(0, system_message) 
             # 遍历数组中的每个对话对象
             for conv in conversations:
                 # 检查是否是 human 的对话且包含 value 字段

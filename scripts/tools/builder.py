@@ -1244,9 +1244,20 @@ class RandomGeometryBuilder:
                 end_dy = sp.sympify(point_map[end_pid]["y"]["expr"]) - cy
                 start_angle = sp.atan2(start_dy, start_dx)
                 end_angle = sp.atan2(end_dy, end_dx)
-                sub_angle = end_angle - start_angle
-                if not is_complete and sp.simplify(sub_angle) < 0:
-                    sub_angle += 2 * sp.pi
+                
+                if start_angle < 0:
+                    start_angle = 2 * sp.pi + start_angle
+                if end_angle < 0:
+                    end_angle = 2 * sp.pi + end_angle
+                
+                # sub_angle = start_angle - end_angle
+                raw_angle = end_angle - start_angle 
+                sub_angle = sp.Mod(raw_angle, 2 * sp.pi) 
+                if sp.Eq(sub_angle, 0):
+                    sub_angle = 2 * sp.pi
+
+                # if sp.simplify(sub_angle) <= 0:
+                #     sub_angle += 2 * sp.pi
                 
                 # 生成用于查找的键
                 arc_key = (start_pid, end_pid, c_id)
@@ -1268,6 +1279,8 @@ class RandomGeometryBuilder:
                         "id": new_arc_id,
                         "start_point_id": start_pid,
                         "end_point_id": end_pid,
+                        # "start_angle": {"expr": str(sp.simplify(start_angle))},
+                        # "end_angle": {"expr": str(sp.simplify(end_angle))},
                         "center_point_id": c_id,
                         "radius": {"expr": str(radius_expr)},
                         "angle": {"expr": str(sp.simplify(sub_angle))},
@@ -1668,7 +1681,7 @@ class RandomGeometryBuilder:
             start_time = time.time()
 
             if num_rounds == 0:
-                enhancement_desc.append("未执行增强操作（轮数为0）")
+                enhancement_desc.append("No enhancement.")
                 self.data["description"] = "\n".join(enhancement_desc)
                 all_enhance_results.append({
                     "final_geometry": self.data,
@@ -1693,7 +1706,7 @@ class RandomGeometryBuilder:
                 logger.info(f"增强结果{enh_idx + 1}：执行第 {round_idx + 1}/{num_rounds} 轮操作")
                 num_ops = random.randint(min_ops_per_round, max_ops_per_round)
                 round_result = {"round": round_idx, "operations": []}
-                round_desc = [f"第 {round_idx + 1} 轮操作（共 {num_ops} 步）:"]
+                round_desc = [f"Round {round_idx + 1}:"]
 
                 for op_idx in range(num_ops):
                     if time.time() - start_time > single_enhance_timeout:
@@ -1710,7 +1723,7 @@ class RandomGeometryBuilder:
                             logger.debug(f"操作{op_type}成功，新增元素：{op_result['new_elements']}")
 
                             round_result["operations"].append(op_result)
-                            round_desc.append(f"  第 {op_idx + 1} 步: {op_result['description']}")
+                            round_desc.append(f"{op_result['description']}")
                             self.enhancement_history.append(op_result)
                             break
                         except OverflowError as e:

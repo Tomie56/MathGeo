@@ -1,0 +1,506 @@
+{
+  "points": [
+    {
+      "id": "O1",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "A",
+      "x": {
+        "expr": "-3",
+        "latex": "-3"
+      },
+      "y": {
+        "expr": "-5/2",
+        "latex": "- \\frac{5}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "B",
+      "x": {
+        "expr": "3",
+        "latex": "3"
+      },
+      "y": {
+        "expr": "-5/2",
+        "latex": "- \\frac{5}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L1"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "C",
+      "x": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "y": {
+        "expr": "5/2",
+        "latex": "\\frac{5}{2}"
+      },
+      "related_edges": [
+        "L1",
+        "L2"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "D",
+      "x": {
+        "expr": "-2",
+        "latex": "-2"
+      },
+      "y": {
+        "expr": "5/2",
+        "latex": "\\frac{5}{2}"
+      },
+      "related_edges": [
+        "L2",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "E",
+      "x": {
+        "expr": "-3/2",
+        "latex": "- \\frac{3}{2}"
+      },
+      "y": {
+        "expr": "-5/4",
+        "latex": "- \\frac{5}{4}"
+      },
+      "related_edges": [
+        "L4",
+        "L7"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "F",
+      "x": {
+        "expr": "3/2",
+        "latex": "\\frac{3}{2}"
+      },
+      "y": {
+        "expr": "-5/4",
+        "latex": "- \\frac{5}{4}"
+      },
+      "related_edges": [
+        "L4",
+        "L5"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "G",
+      "x": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "y": {
+        "expr": "5/4",
+        "latex": "\\frac{5}{4}"
+      },
+      "related_edges": [
+        "L5",
+        "L6"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "H",
+      "x": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "y": {
+        "expr": "5/4",
+        "latex": "\\frac{5}{4}"
+      },
+      "related_edges": [
+        "L6",
+        "L7"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    }
+  ],
+  "lines": [
+    {
+      "id": "L0",
+      "type": "line",
+      "start_point_id": "A",
+      "end_point_id": "B",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "6",
+        "latex": "6",
+        "value": 6.0
+      }
+    },
+    {
+      "id": "L1",
+      "type": "line",
+      "start_point_id": "B",
+      "end_point_id": "C",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(26)",
+        "latex": "\\sqrt{26}",
+        "value": 5.09901951
+      }
+    },
+    {
+      "id": "L2",
+      "type": "line",
+      "start_point_id": "C",
+      "end_point_id": "D",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "4",
+        "latex": "4",
+        "value": 4.0
+      }
+    },
+    {
+      "id": "L3",
+      "type": "line",
+      "start_point_id": "D",
+      "end_point_id": "A",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(26)",
+        "latex": "\\sqrt{26}",
+        "value": 5.09901951
+      }
+    },
+    {
+      "id": "L4",
+      "type": "line",
+      "start_point_id": "E",
+      "end_point_id": "F",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "3",
+        "latex": "3",
+        "value": 3.0
+      }
+    },
+    {
+      "id": "L5",
+      "type": "line",
+      "start_point_id": "F",
+      "end_point_id": "G",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(26)/2",
+        "latex": "\\frac{\\sqrt{26}}{2}",
+        "value": 2.54950976
+      }
+    },
+    {
+      "id": "L6",
+      "type": "line",
+      "start_point_id": "G",
+      "end_point_id": "H",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L7",
+      "type": "line",
+      "start_point_id": "H",
+      "end_point_id": "E",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(26)/2",
+        "latex": "\\frac{\\sqrt{26}}{2}",
+        "value": 2.54950976
+      }
+    }
+  ],
+  "arcs": [],
+  "entities": [
+    {
+      "id": "base_trapezoid_6:4",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O1",
+      "vertices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "lines": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "base1": {
+        "expr": "6",
+        "latex": "6"
+      },
+      "base2": {
+        "expr": "4",
+        "latex": "4"
+      },
+      "height": {
+        "expr": "5",
+        "latex": "5"
+      },
+      "angle_rad": {
+        "expr": "5*pi/6",
+        "latex": "\\frac{5 \\pi}{6}"
+      },
+      "angle_deg": {
+        "expr": "150",
+        "latex": "150"
+      },
+      "leg_length": {
+        "expr": "10",
+        "latex": "10"
+      },
+      "perimeter": {
+        "expr": "30",
+        "latex": "30"
+      },
+      "area": {
+        "expr": "25",
+        "latex": "25"
+      },
+      "rotate_mode": "original",
+      "is_base": true
+    },
+    {
+      "id": "concentric_trapezoid",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O1",
+      "vertices": [
+        "E",
+        "F",
+        "G",
+        "H"
+      ],
+      "lines": [
+        "L4",
+        "L5",
+        "L6",
+        "L7"
+      ],
+      "base1": {
+        "expr": "3",
+        "latex": "3"
+      },
+      "base2": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "height": {
+        "expr": "5/2",
+        "latex": "\\frac{5}{2}"
+      },
+      "angle_rad": {
+        "expr": "5*pi/6",
+        "latex": "\\frac{5 \\pi}{6}"
+      },
+      "angle_deg": {
+        "expr": "150",
+        "latex": "150"
+      },
+      "leg_length": {
+        "expr": "5",
+        "latex": "5"
+      },
+      "perimeter": {
+        "expr": "15",
+        "latex": "15"
+      },
+      "area": {
+        "expr": "25/4",
+        "latex": "\\frac{25}{4}"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "type": "shadow",
+      "region_label": 1,
+      "points": [
+        {
+          "id": "A"
+        },
+        {
+          "id": "B"
+        },
+        {
+          "id": "C"
+        },
+        {
+          "id": "D"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L0"
+        },
+        {
+          "id": "L1"
+        },
+        {
+          "id": "L2"
+        },
+        {
+          "id": "L3"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "A"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "10 + 2*sqrt(26)",
+        "latex": "10 + 2 \\sqrt{26}"
+      },
+      "area": {
+        "expr": "25",
+        "latex": "25"
+      }
+    },
+    {
+      "type": "shadow",
+      "region_label": 2,
+      "points": [
+        {
+          "id": "E"
+        },
+        {
+          "id": "F"
+        },
+        {
+          "id": "G"
+        },
+        {
+          "id": "H"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L4"
+        },
+        {
+          "id": "L5"
+        },
+        {
+          "id": "L6"
+        },
+        {
+          "id": "L7"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "E",
+            "F",
+            "G",
+            "H",
+            "E"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "5 + sqrt(26)",
+        "latex": "5 + \\sqrt{26}"
+      },
+      "area": {
+        "expr": "25/4",
+        "latex": "\\frac{25}{4}"
+      }
+    }
+  ],
+  "description": "Original graphic description: Base shape is an isosceles trapezoid (center O1) with bases 6, 4, height 5, angle 150°, rotate mode original Round 1: applying 'concentric' rule. Concentric trapezoid (center O1) scaled by 1/2 (new bases 3, 2; height 5/2).\nEnhancement index: 2/5\nNumber of rounds: 1\n\n超时（256秒），保留部分操作",
+  "is_base": true,
+  "timeout_occurred": true,
+  "completed_rounds": 0,
+  "base_id": "",
+  "enhance_id": "_enhance_001",
+  "raw_path": "./results_n500_v4/images/raw/geometry_line_0028.png",
+  "annotated_raw_path": "./results_n500_v4/images/annotated/annotated_raw_geometry_line_0028.png",
+  "shaded_path": "./results_n500_v4/images/shaded/shaded_27_attempt_0_geometry_line_0028.png",
+  "annotated_shaded_path": "./results_n500_v4/images/annotated/annotated_shaded_27_attempt_0_geometry_line_0028.png",
+  "shadow_type": "solid",
+  "shader_enabled": true,
+  "shadow_regions": 2,
+  "generated_question": [
+    "{\n  \"question\": \"Given the concentric trapezoid centered at O1 with bases 3 and 2 and height 5/2, compute the area of the region between the base trapezoid (bases 6 and 4, height 5) and the concentric trapezoid, denoted as shadow_1.\",\n  \"difficulty_label\": 3,\n  \"question_type\": \"area\",\n  \"target_ids\": [\"base_trapezoid_6:4\", \"concentric_trapezoid\", \"shadow_1\"]\n}"
+  ]
+}

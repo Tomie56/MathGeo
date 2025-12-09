@@ -31,8 +31,11 @@ def log_message(message):
     print(f"[{timestamp}] {message}")
     sys.stdout.flush()
 
+
+
+
 # 基础配置（可通过命令行参数覆盖部分配置）
-ips = ['10.119.23.0'] # 注意修改
+ips = ['10.119.19.84', '10.119.19.97'] # 注意修改
 URLS = [f"http://{ip}:8000" for ip in ips]
 MAX_CONCURRENT_PER_SERVER = 80
 max_retry = 3
@@ -153,7 +156,7 @@ class APIOptimizer:
                         "model": "Qwen3-VL-235B-A22B-Thinking",
                         "messages": messages,
                         "temperature": 0.3, 
-                        "max_tokens": 16384, 
+                        "max_tokens": 32768, 
                     },
                     timeout=aiohttp.ClientTimeout(total=2000) 
                 ) as response:

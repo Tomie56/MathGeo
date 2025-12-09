@@ -431,8 +431,10 @@ class MathGeoPipeline:
     def run_qa(self) -> None:
         """步骤6：基于GT计算结果生成问答数据（兼容新QA配置：权重控制+新参数名）"""
         # 检查GT处理结果路径是否有效
-        if not hasattr(self, 'gt_jsonl_path') or not self.gt_jsonl_path or not os.path.exists(self.gt_jsonl_path):
-            raise RuntimeError("GT计算结果路径无效或不存在，请先执行run_gt生成结果")
+        # if not hasattr(self, 'gt_jsonl_path') or not self.gt_jsonl_path or not os.path.exists(self.gt_jsonl_path):
+        #     raise RuntimeError("GT计算结果路径无效或不存在，请先执行run_gt生成结果")
+        
+        self.gt_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n500_v4/json/final/shaded_with_gt_20251203_071430_009.jsonl"
         
         logger.info(f"使用GT结果文件: {self.gt_jsonl_path}")
 
@@ -441,7 +443,7 @@ class MathGeoPipeline:
         output_dir = qa_config.get('output_dir', os.path.join(self.config['global']['output_root'], 'qa'))
         os.makedirs(output_dir, exist_ok=True)  # 确保输出目录存在
         
-        num_questions = qa_config.get('num_questions_per_group', 3)
+        num_questions = qa_config.get('num_questions_per_geo', 3)
         question_types = qa_config.get('question_types', ['length', 'angle'])
         type_weights = qa_config.get('type_weights', {})
 
@@ -450,7 +452,8 @@ class MathGeoPipeline:
         timestamp = self._get_timestamp()
         qa_output_path = os.path.join(output_dir, f"qa_{gt_basename}.jsonl")
 
-        try:
+        # try:
+        if True:
             # 初始化问答生成器（传入完整配置，便于内部使用权重）
             qa_generator = QAGenerator(qa_config)
             logger.info(f"=== 开始生成问答数据 ===")
@@ -468,6 +471,7 @@ class MathGeoPipeline:
                         continue
 
                     try:
+                    # if True:
                         # 解析单条带GT参数的几何数据
                         geo_data = json.loads(line)
                         
@@ -501,18 +505,18 @@ class MathGeoPipeline:
             logger.info(f"生成问答对总数: {total_qa} 个")
             logger.info(f"问答结果保存至: {qa_output_path}")
 
-        except Exception as e:
-            logger.error(f"问答生成流程失败: {str(e)}", exc_info=True)
-            raise
+        # except Exception as e:
+        #     logger.error(f"问答生成流程失败: {str(e)}", exc_info=True)
+        #     raise
 
     def run(self) -> None:
         """执行全流程"""
         try:
-            self.run_template()      # 生成基础图形（多线程+超时）
-            self.run_builder()       # 增强图形（多线程+超时）
+            # self.run_template()      # 生成基础图形（多线程+超时）
+            # self.run_builder()       # 增强图形（多线程+超时）
             # self.run_drawer()        # 绘制原始图像
-            self.run_shader()        # 区域阴影与标注
-            self.run_gt()            # 计算参数
+            # self.run_shader()        # 区域阴影与标注
+            # self.run_gt()            # 计算参数
             self.run_qa()            # 生成问答
             logger.info("=== 全流程执行完成 ===")
         except Exception as e:

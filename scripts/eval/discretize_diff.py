@@ -177,10 +177,10 @@ def process_file(input_path, output_path):
 def main():
     parser = argparse.ArgumentParser(description="生成level并统计不同level中judge为true的比例（10为最高等级）")
     parser.add_argument("--input", 
-                       default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v3/output/length_arc_test_20251102_qa.jsonl",
+                       default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4/output/all_test_answer_judged.jsonl",
                        help="输入JSONL路径（默认提供的路径）")
     parser.add_argument("--output", 
-                       default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v3/output/A500_v3_level.jsonl",
+                       default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4/output/all_test_answer_level.jsonl",
                        help="输出路径（默认原目录生成带_judge_stats的文件）")
     args = parser.parse_args()
 

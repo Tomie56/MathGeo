@@ -515,7 +515,7 @@ class TemplateGenerator:
         """计算两条线段的交点（仅保留线段内部的交点，纯参数方程解析解，不使用sp.solve）"""
         def points_equal(p1: Tuple[sp.Expr, sp.Expr], p2: Tuple[sp.Expr, sp.Expr]) -> bool:
             """判断两个点是否重合（符号等式判断）"""
-            return sp.simplify(sp.Eq(p1[0], p2[0])) and sp.simplify(sp.Eq(p1[1], p2[1]))
+            return sp.Eq(p1[0], p2[0]) and sp.Eq(p1[1], p2[1])
         
         # 1. 排除线段端点重合的情况（不视为内部交点）
         if (points_equal((x1, y1), (x3, y3)) or points_equal((x1, y1), (x4, y4)) or
@@ -968,6 +968,12 @@ class TemplateGenerator:
         r_expr = simplify(side_length / (2 * sin(pi / n)))
         r_in_expr = simplify(r_expr * cos(pi / n))
 
+        # 1. 周长公式：边数 × 边长（正多边形所有边长相等）
+        perimeter = simplify(n * side_length)
+        # 2. 面积公式：1/2 × 周长 × 边心距（边心距=inner_radius=r_in_expr）
+        area = simplify(0.5 * perimeter * r_in_expr)
+        # --------------------------------------------------------------------------------
+
         vertices = []
         for i in range(n):
             angle = simplify(rotation + 2 * pi * i / n)
@@ -994,7 +1000,17 @@ class TemplateGenerator:
             "radius": {"expr": self._format_expr(r_expr), "latex": sp.latex(r_expr)},
             "inner_radius": {"expr": self._format_expr(r_in_expr), "latex": sp.latex(r_in_expr)},
             "rotation": {"expr": self._format_expr(rotation), "latex": sp.latex(rotation)},
-            "is_base": is_base
+            "is_base": is_base,
+            # ------------------------------ 新增：周长和面积存储 ------------------------------
+            "perimeter": {
+                "expr": self._format_expr(perimeter),
+                "latex": sp.latex(perimeter)
+            },
+            "area": {
+                "expr": self._format_expr(area),
+                "latex": sp.latex(area)
+            },
+            # --------------------------------------------------------------------------------
         })
         return entity_id
 
@@ -1007,7 +1023,7 @@ class TemplateGenerator:
         entity_id: Optional[str] = None,
         is_base: bool = False
     ) -> str:
-        """生成圆（圆心O系列，完整圆初始点circle_x，弧先查重）"""
+        """生成圆（圆心O系列，完整圆初始点circle_x，弧先查重），补充周长/弧长和面积/扇形面积计算"""
         cx, cy = self.get_point_coords(center_id)
         r_expr = simplify(radius)
         if r_expr < 0:
@@ -1023,6 +1039,18 @@ class TemplateGenerator:
         end_id = start_id if is_complete else self._add_point(end_x, end_y, is_circle_init=False)
 
         angle_expr = simplify(end_angle - start_angle)
+        
+        # ------------------------------ 新增：计算周长/弧长和面积/扇形面积 ------------------------------
+        if is_complete:
+            # 完整圆：周长=2πr，面积=πr²
+            perimeter = simplify(2 * pi * r_expr)
+            area = simplify(pi * r_expr ** 2)
+        else:
+            # 圆弧：弧长=圆心角（弧度）×半径，扇形面积=1/2×圆心角×半径²
+            perimeter = simplify(angle_expr * r_expr)  # 弧长（复用perimeter字段，标注清晰）
+            area = simplify(Rational(1/2) * angle_expr * r_expr ** 2)  # 扇形面积
+        # --------------------------------------------------------------------------------
+
         arc_id = self._add_arc(
             start_pid=start_id,
             end_pid=end_id,
@@ -1044,7 +1072,17 @@ class TemplateGenerator:
             "start_angle": {"expr": self._format_expr(start_angle), "latex": sp.latex(start_angle)},
             "end_angle": {"expr": self._format_expr(end_angle), "latex": sp.latex(end_angle)},
             "is_complete": is_complete,
-            "is_base": is_base
+            "is_base": is_base,
+            # ------------------------------ 新增：周长/弧长和面积/扇形面积存储 ------------------------------
+            "perimeter": {
+                "expr": self._format_expr(perimeter),
+                "latex": sp.latex(perimeter)
+            },
+            "area": {
+                "expr": self._format_expr(area),
+                "latex": sp.latex(area)
+            },
+            # --------------------------------------------------------------------------------
         })
         return arc_id
 
@@ -1056,7 +1094,7 @@ class TemplateGenerator:
         entity_id: Optional[str] = None,
         is_base: bool = False
     ) -> str:
-        """生成特殊三角形（等腰/直角），统一参数格式为expr+latex，兼容符号计算"""
+        """生成特殊三角形（等腰/直角），统一参数格式为expr+latex，兼容符号计算，补充周长和面积计算"""
         level = 1 if is_base else 2
         entity_id = entity_id or self._get_unique_entity_id(f"special_triangle_{triangle_type}")
         
@@ -1080,7 +1118,7 @@ class TemplateGenerator:
             base_length = simplify(params["base_length"])
             
             # 计算相对于 origin_id 的顶点坐标
-            base_half = simplify(S(base_length) / 2)
+            base_half = simplify(base_length / 2)
             # 底边左点相对坐标
             rx_a, ry_a = -base_half, 0
             # 底边右点相对坐标
@@ -1090,6 +1128,13 @@ class TemplateGenerator:
             y_coord_rel = height if rotate_mode == "original" else -height
             # 顶角顶点相对坐标
             rx_c, ry_c = 0, y_coord_rel
+            
+            # ------------------------------ 新增：计算周长和面积 ------------------------------
+            # 1. 周长公式：2×腰长 + 底边长（等腰三角形两腰相等）
+            perimeter = simplify(2 * waist_length + base_length)
+            # 2. 面积公式：底 × 高 ÷ 2
+            area = simplify(base_length * height / 2)
+            # --------------------------------------------------------------------------------
             
             # --- 核心修正：计算最终世界坐标 ---
             point_a = self._add_point(ox + rx_a, oy + ry_a, level=level)
@@ -1101,7 +1146,7 @@ class TemplateGenerator:
             line_bc = self._add_line(point_b, point_c)
             line_ca = self._add_line(point_c, point_a)
             
-            # 更新组件和实体数据
+            # 更新组件和实体数据（新增perimeter和area字段）
             entity_data.update({
                 "vertices": [point_a, point_b, point_c],
                 "lines": [line_ab, line_bc, line_ca],
@@ -1118,7 +1163,17 @@ class TemplateGenerator:
                 "height": {
                     "expr": self._format_expr(height),
                     "latex": sp.latex(height)
-                }
+                },
+                # ------------------------------ 新增：周长和面积存储 ------------------------------
+                "perimeter": {
+                    "expr": self._format_expr(perimeter),
+                    "latex": sp.latex(perimeter)
+                },
+                "area": {
+                    "expr": self._format_expr(area),
+                    "latex": sp.latex(area)
+                },
+                # --------------------------------------------------------------------------------
             })
 
         elif triangle_type == "right":
@@ -1127,11 +1182,18 @@ class TemplateGenerator:
             leg2 = simplify(params["leg2"])
             hypotenuse = simplify(params["hypotenuse"])
             
+            # ------------------------------ 新增：计算周长和面积 ------------------------------
+            # 1. 周长公式：直角边1 + 直角边2 + 斜边
+            perimeter = simplify(leg1 + leg2 + hypotenuse)
+            # 2. 面积公式：直角边1 × 直角边2 ÷ 2（直角三角形核心面积公式）
+            area = simplify(leg1 * leg2 / 2)
+            # --------------------------------------------------------------------------------
+            
             # --- 核心修正：所有坐标计算都基于相对坐标 ---
             rx_a, ry_a, rx_b, ry_b, rx_c, ry_c = 0, 0, 0, 0, 0, 0
             
-            leg1_half = simplify(S(leg1) / 2)
-            leg2_half = simplify(S(leg2) / 2)
+            leg1_half = simplify(leg1 / 2)
+            leg2_half = simplify(leg2 / 2)
 
             if rotate_mode == "original":
                 rx_a, ry_a = -leg1_half, leg2_half
@@ -1150,7 +1212,6 @@ class TemplateGenerator:
                 rx_b, ry_b = -leg2_half, -leg1_half  # 直角顶点
                 rx_c, ry_c = leg2_half, -leg1_half
             
-            
             # --- 核心修正：计算最终世界坐标 ---
             point_a = self._add_point(ox + rx_a, oy + ry_a, level=level)
             point_b = self._add_point(ox + rx_b, oy + ry_b, level=level)
@@ -1161,7 +1222,7 @@ class TemplateGenerator:
             line_bc = self._add_line(point_b, point_c)  # 直角边1
             line_ca = self._add_line(point_c, point_a)  # 直角边2
             
-            # 更新组件和实体数据
+            # 更新组件和实体数据（新增perimeter和area字段）
             entity_data.update({
                 "vertices": [point_a, point_b, point_c],
                 "lines": [line_ab, line_bc, line_ca],
@@ -1176,7 +1237,17 @@ class TemplateGenerator:
                 "hypotenuse": {
                     "expr": self._format_expr(hypotenuse),
                     "latex": sp.latex(hypotenuse)
-                }
+                },
+                # ------------------------------ 新增：周长和面积存储 ------------------------------
+                "perimeter": {
+                    "expr": self._format_expr(perimeter),
+                    "latex": sp.latex(perimeter)
+                },
+                "area": {
+                    "expr": self._format_expr(area),
+                    "latex": sp.latex(area)
+                },
+                # --------------------------------------------------------------------------------
             })
 
         self.data["entities"].append(entity_data)
@@ -1191,7 +1262,7 @@ class TemplateGenerator:
         entity_id: Optional[str] = None,
         is_base: bool = False
     ) -> str:
-        """生成特殊矩形，统一参数格式为expr+latex，基于中心对称"""
+        """生成特殊矩形，统一参数格式为expr+latex，基于中心对称，补充周长和面积计算"""
         level = 1 if is_base else 2
         entity_id = entity_id or self._get_unique_entity_id(f"special_rectangle_{width}:{length}")
         
@@ -1203,6 +1274,13 @@ class TemplateGenerator:
         length = simplify(length)
         half_w = simplify(width / 2)
         half_l = simplify(length / 2)
+        
+        # ------------------------------ 新增：计算周长和面积 ------------------------------
+        # 1. 周长公式：2×(长 + 宽)（矩形对边相等）
+        perimeter = simplify(2 * (length + width))
+        # 2. 面积公式：长 × 宽（矩形核心面积公式）
+        area = simplify(length * width)
+        # --------------------------------------------------------------------------------
         
         # --- 核心修正：计算相对于中心点的相对坐标 ---
         # 左下
@@ -1226,7 +1304,7 @@ class TemplateGenerator:
         line_cd = self._add_line(point_c, point_d)
         line_da = self._add_line(point_d, point_a)
         
-        # 实体数据（统一expr+latex格式）
+        # 实体数据（新增perimeter和area字段）
         self.data["entities"].append({
             "id": entity_id,
             "type": "special_rectangle",
@@ -1241,6 +1319,16 @@ class TemplateGenerator:
                 "expr": self._format_expr(length),
                 "latex": sp.latex(length)
             },
+            # ------------------------------ 新增：周长和面积存储 ------------------------------
+            "perimeter": {
+                "expr": self._format_expr(perimeter),
+                "latex": sp.latex(perimeter)
+            },
+            "area": {
+                "expr": self._format_expr(area),
+                "latex": sp.latex(area)
+            },
+            # --------------------------------------------------------------------------------
             "rotate_mode": rotate_mode,
             "is_base": is_base
         })
@@ -1256,7 +1344,7 @@ class TemplateGenerator:
         entity_id: Optional[str] = None,
         is_base: bool = False
     ) -> str:
-        """生成平行四边形，统一参数格式为expr+latex，支持符号计算"""
+        """生成平行四边形，统一参数格式为expr+latex，支持符号计算，补充周长和面积计算"""
         level = 1 if is_base else 2
         entity_id = entity_id or self._get_unique_entity_id(f"parallelogram_{base}x{height}")
         
@@ -1268,6 +1356,13 @@ class TemplateGenerator:
         # 计算侧边长度和水平偏移
         side_len = simplify(height / sp.sin(angle))
         offset_x = simplify(side_len * sp.cos(angle))
+        
+        # ------------------------------ 新增：计算周长和面积 ------------------------------
+        # 1. 周长公式：2×(底 + 侧边长度)（平行四边形对边相等）
+        perimeter = simplify(2 * (base + side_len))
+        # 2. 面积公式：底 × 高（平行四边形核心面积公式）
+        area = simplify(base * height)
+        # --------------------------------------------------------------------------------
         
         # 翻转处理（水平翻转时偏移取反）
         actual_offset = offset_x if rotate_mode == "original" else -offset_x
@@ -1311,7 +1406,7 @@ class TemplateGenerator:
         line_cd = self._add_line(point_c, point_d)
         line_da = self._add_line(point_d, point_a)
         
-        # 实体数据
+        # 实体数据（新增perimeter和area字段）
         self.data["entities"].append({
             "id": entity_id,
             "type": "parallelogram",
@@ -1334,6 +1429,16 @@ class TemplateGenerator:
                 "expr": self._format_expr(sp.deg(angle)),
                 "latex": sp.latex(sp.deg(angle))
             },
+            # ------------------------------ 新增：周长和面积存储 ------------------------------
+            "perimeter": {
+                "expr": self._format_expr(perimeter),
+                "latex": sp.latex(perimeter)
+            },
+            "area": {
+                "expr": self._format_expr(area),
+                "latex": sp.latex(area)
+            },
+            # --------------------------------------------------------------------------------
             "rotate_mode": rotate_mode,
             "is_base": is_base
         })
@@ -1350,7 +1455,7 @@ class TemplateGenerator:
         entity_id: Optional[str] = None,
         is_base: bool = False
     ) -> str:
-        """生成等腰梯形，统一参数格式为expr+latex，校验上下底关系"""
+        """生成等腰梯形，统一参数格式为expr+latex，校验上下底关系，补充周长和面积计算"""
         base1 = simplify(base1)
         base2 = simplify(base2)
         if base2 >= base1:
@@ -1372,6 +1477,13 @@ class TemplateGenerator:
         half_base2 = simplify(base2 / 2)
         overhang = simplify((base1 - base2) / 2)  # 下底超出上底的长度
         leg_len = simplify(height / sp.sin(angle))  # 腰长
+
+        # ------------------------------ 新增：计算周长和面积 ------------------------------
+        # 1. 周长公式：上底 + 下底 + 2×腰长（等腰梯形两腰相等）
+        perimeter = simplify(base1 + base2 + 2 * leg_len)
+        # 2. 面积公式：(上底 + 下底) × 高 ÷ 2
+        area = simplify((base1 + base2) * height / 2)
+        # --------------------------------------------------------------------------------
         
         rx_a, ry_a = -half_base1, -height/2
         rx_b, ry_b = half_base1, -height/2
@@ -1390,7 +1502,7 @@ class TemplateGenerator:
         line_cd = self._add_line(point_c, point_d)  # 上底
         line_da = self._add_line(point_d, point_a)  # 左腰
         
-        # 实体数据
+        # 实体数据（新增perimeter和area字段）
         self.data["entities"].append({
             "id": entity_id,
             "type": "trapezoid",
@@ -1422,6 +1534,16 @@ class TemplateGenerator:
                 "expr": self._format_expr(leg_len),
                 "latex": sp.latex(leg_len)
             },
+            # ------------------------------ 新增：周长和面积存储 ------------------------------
+            "perimeter": {
+                "expr": self._format_expr(perimeter),
+                "latex": sp.latex(perimeter)
+            },
+            "area": {
+                "expr": self._format_expr(area),
+                "latex": sp.latex(area)
+            },
+            # --------------------------------------------------------------------------------
             "rotate_mode": rotate_mode,
             "is_base": is_base
         })

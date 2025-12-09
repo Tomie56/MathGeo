@@ -1,0 +1,1591 @@
+{
+  "points": [
+    {
+      "id": "O1",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "A",
+      "x": {
+        "expr": "-7/2",
+        "latex": "- \\frac{7}{2}"
+      },
+      "y": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L3",
+        "L4"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 3,
+      "type": "intersection"
+    },
+    {
+      "id": "B",
+      "x": {
+        "expr": "7/2",
+        "latex": "\\frac{7}{2}"
+      },
+      "y": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "related_edges": [
+        "L0",
+        "L1"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "C",
+      "x": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "y": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "related_edges": [
+        "L1",
+        "L2"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "D",
+      "x": {
+        "expr": "-1",
+        "latex": "-1"
+      },
+      "y": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "related_edges": [
+        "L2",
+        "L3",
+        "L5",
+        "L6",
+        "L8",
+        "L9"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "O2",
+      "x": {
+        "expr": "-2",
+        "latex": "-2"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "E",
+      "x": {
+        "expr": "-11/2",
+        "latex": "- \\frac{11}{2}"
+      },
+      "y": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "related_edges": [
+        "L4",
+        "L7"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "F",
+      "x": {
+        "expr": "3/2",
+        "latex": "\\frac{3}{2}"
+      },
+      "y": {
+        "expr": "-1/2",
+        "latex": "- \\frac{1}{2}"
+      },
+      "related_edges": [
+        "L4",
+        "L5",
+        "L0"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "G",
+      "x": {
+        "expr": "-3",
+        "latex": "-3"
+      },
+      "y": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "related_edges": [
+        "L6",
+        "L7",
+        "L8"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "O3",
+      "x": {
+        "expr": "-9/2",
+        "latex": "- \\frac{9}{2}"
+      },
+      "y": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "related_edges": [],
+      "is_center": true,
+      "is_circle_init": false,
+      "level": 1
+    },
+    {
+      "id": "H",
+      "x": {
+        "expr": "-8",
+        "latex": "-8"
+      },
+      "y": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "related_edges": [
+        "L8",
+        "L11"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "I",
+      "x": {
+        "expr": "-7/2",
+        "latex": "- \\frac{7}{2}"
+      },
+      "y": {
+        "expr": "3/2",
+        "latex": "\\frac{3}{2}"
+      },
+      "related_edges": [
+        "L9",
+        "L10"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "J",
+      "x": {
+        "expr": "-11/2",
+        "latex": "- \\frac{11}{2}"
+      },
+      "y": {
+        "expr": "3/2",
+        "latex": "\\frac{3}{2}"
+      },
+      "related_edges": [
+        "L10",
+        "L11"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "K",
+      "x": {
+        "expr": "-23/2",
+        "latex": "- \\frac{23}{2}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "L12",
+        "L15"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "L",
+      "x": {
+        "expr": "5/2",
+        "latex": "\\frac{5}{2}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "L12",
+        "L13"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "M",
+      "x": {
+        "expr": "-5/2",
+        "latex": "- \\frac{5}{2}"
+      },
+      "y": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "related_edges": [
+        "L13",
+        "L14"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "N",
+      "x": {
+        "expr": "-13/2",
+        "latex": "- \\frac{13}{2}"
+      },
+      "y": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "related_edges": [
+        "L14",
+        "L15"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "O",
+      "x": {
+        "expr": "9/4",
+        "latex": "\\frac{9}{4}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "L12",
+        "L1"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "P",
+      "x": {
+        "expr": "-9/4",
+        "latex": "- \\frac{9}{4}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "L12",
+        "L3"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "Q",
+      "x": {
+        "expr": "1/4",
+        "latex": "\\frac{1}{4}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "L12",
+        "L5"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "R",
+      "x": {
+        "expr": "-17/4",
+        "latex": "- \\frac{17}{4}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "related_edges": [
+        "L12",
+        "L7"
+      ],
+      "is_center": false,
+      "is_circle_init": false,
+      "level": 2
+    },
+    {
+      "id": "I1",
+      "x": {
+        "expr": "-307/74",
+        "latex": "- \\frac{307}{74}"
+      },
+      "y": {
+        "expr": "3/74",
+        "latex": "\\frac{3}{74}"
+      },
+      "level": 3,
+      "type": "intersection"
+    },
+    {
+      "id": "I2",
+      "x": {
+        "expr": "-47/10",
+        "latex": "- \\frac{47}{10}"
+      },
+      "y": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "level": 3,
+      "type": "intersection"
+    },
+    {
+      "id": "I3",
+      "x": {
+        "expr": "-427/74",
+        "latex": "- \\frac{427}{74}"
+      },
+      "y": {
+        "expr": "103/74",
+        "latex": "\\frac{103}{74}"
+      },
+      "level": 3,
+      "type": "intersection"
+    },
+    {
+      "id": "I4",
+      "x": {
+        "expr": "-41/10",
+        "latex": "- \\frac{41}{10}"
+      },
+      "y": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "level": 3,
+      "type": "intersection"
+    },
+    {
+      "id": "M5",
+      "x": {
+        "expr": "0",
+        "latex": "0"
+      },
+      "y": {
+        "expr": "1/2",
+        "latex": "\\frac{1}{2}"
+      },
+      "level": 3,
+      "type": "midpoint",
+      "related_edge": "L2"
+    },
+    {
+      "id": "I7",
+      "x": {
+        "expr": "-11/6",
+        "latex": "- \\frac{11}{6}"
+      },
+      "y": {
+        "expr": "5/6",
+        "latex": "\\frac{5}{6}"
+      },
+      "level": 3,
+      "type": "intersection"
+    }
+  ],
+  "lines": [
+    {
+      "id": "L0",
+      "type": "line",
+      "start_point_id": "A",
+      "end_point_id": "B",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "7",
+        "latex": "7",
+        "value": 7.0
+      }
+    },
+    {
+      "id": "L1",
+      "type": "line",
+      "start_point_id": "B",
+      "end_point_id": "C",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "sqrt(29)/2",
+        "latex": "\\frac{\\sqrt{29}}{2}",
+        "value": 2.6925824
+      }
+    },
+    {
+      "id": "L2",
+      "type": "line",
+      "start_point_id": "C",
+      "end_point_id": "D",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L3",
+      "type": "line",
+      "start_point_id": "D",
+      "end_point_id": "A",
+      "level": 1,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "sqrt(29)/2",
+        "latex": "\\frac{\\sqrt{29}}{2}",
+        "value": 2.6925824
+      }
+    },
+    {
+      "id": "L4",
+      "type": "line",
+      "start_point_id": "E",
+      "end_point_id": "F",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "7",
+        "latex": "7",
+        "value": 7.0
+      }
+    },
+    {
+      "id": "L5",
+      "type": "line",
+      "start_point_id": "F",
+      "end_point_id": "D",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "sqrt(29)/2",
+        "latex": "\\frac{\\sqrt{29}}{2}",
+        "value": 2.6925824
+      }
+    },
+    {
+      "id": "L6",
+      "type": "line",
+      "start_point_id": "D",
+      "end_point_id": "G",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L7",
+      "type": "line",
+      "start_point_id": "G",
+      "end_point_id": "E",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "sqrt(29)/2",
+        "latex": "\\frac{\\sqrt{29}}{2}",
+        "value": 2.6925824
+      }
+    },
+    {
+      "id": "L8",
+      "type": "line",
+      "start_point_id": "H",
+      "end_point_id": "D",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "7",
+        "latex": "7",
+        "value": 7.0
+      }
+    },
+    {
+      "id": "L9",
+      "type": "line",
+      "start_point_id": "D",
+      "end_point_id": "I",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "sqrt(29)/2",
+        "latex": "\\frac{\\sqrt{29}}{2}",
+        "value": 2.6925824
+      }
+    },
+    {
+      "id": "L10",
+      "type": "line",
+      "start_point_id": "I",
+      "end_point_id": "J",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L11",
+      "type": "line",
+      "start_point_id": "J",
+      "end_point_id": "H",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "sqrt(29)/2",
+        "latex": "\\frac{\\sqrt{29}}{2}",
+        "value": 2.6925824
+      }
+    },
+    {
+      "id": "L12",
+      "type": "line",
+      "start_point_id": "K",
+      "end_point_id": "L",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "14",
+        "latex": "14",
+        "value": 14.0
+      }
+    },
+    {
+      "id": "L13",
+      "type": "line",
+      "start_point_id": "L",
+      "end_point_id": "M",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)",
+        "latex": "\\sqrt{29}",
+        "value": 5.3851648
+      }
+    },
+    {
+      "id": "L14",
+      "type": "line",
+      "start_point_id": "M",
+      "end_point_id": "N",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "4",
+        "latex": "4",
+        "value": 4.0
+      }
+    },
+    {
+      "id": "L15",
+      "type": "line",
+      "start_point_id": "N",
+      "end_point_id": "K",
+      "level": 2,
+      "is_original": true,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)",
+        "latex": "\\sqrt{29}",
+        "value": 5.3851648
+      }
+    },
+    {
+      "id": "ConnP0",
+      "type": "connection",
+      "start_point_id": "A",
+      "end_point_id": "N",
+      "level": 3,
+      "description": "Connect points A and N (both on segments)",
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "sqrt(61)/2",
+        "latex": "\\frac{\\sqrt{61}}{2}",
+        "value": 3.90512484
+      }
+    },
+    {
+      "id": "VMidL6",
+      "type": "vertex_midline",
+      "start_point_id": "J",
+      "end_point_id": "M5",
+      "level": 3,
+      "description": "Connect vertex J with midpoint M5 (of line L2)",
+      "is_original": true,
+      "is_minimal": false,
+      "length": {
+        "expr": "5*sqrt(5)/2",
+        "latex": "\\frac{5 \\sqrt{5}}{2}",
+        "value": 5.59016994
+      }
+    },
+    {
+      "id": "L_min_1",
+      "start_point_id": "A",
+      "end_point_id": "F",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "5",
+        "latex": "5",
+        "value": 5.0
+      }
+    },
+    {
+      "id": "L_min_2",
+      "start_point_id": "F",
+      "end_point_id": "B",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L_min_3",
+      "start_point_id": "B",
+      "end_point_id": "O",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/4",
+        "latex": "\\frac{\\sqrt{29}}{4}",
+        "value": 1.3462912
+      }
+    },
+    {
+      "id": "L_min_4",
+      "start_point_id": "O",
+      "end_point_id": "C",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/4",
+        "latex": "\\frac{\\sqrt{29}}{4}",
+        "value": 1.3462912
+      }
+    },
+    {
+      "id": "L_min_5",
+      "start_point_id": "C",
+      "end_point_id": "M5",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_6",
+      "start_point_id": "M5",
+      "end_point_id": "D",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1",
+        "latex": "1",
+        "value": 1.0
+      }
+    },
+    {
+      "id": "L_min_7",
+      "start_point_id": "D",
+      "end_point_id": "P",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/4",
+        "latex": "\\frac{\\sqrt{29}}{4}",
+        "value": 1.3462912
+      }
+    },
+    {
+      "id": "L_min_8",
+      "start_point_id": "P",
+      "end_point_id": "A",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/4",
+        "latex": "\\frac{\\sqrt{29}}{4}",
+        "value": 1.3462912
+      }
+    },
+    {
+      "id": "L_min_9",
+      "start_point_id": "E",
+      "end_point_id": "A",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L_min_10",
+      "start_point_id": "F",
+      "end_point_id": "Q",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/4",
+        "latex": "\\frac{\\sqrt{29}}{4}",
+        "value": 1.3462912
+      }
+    },
+    {
+      "id": "L_min_11",
+      "start_point_id": "Q",
+      "end_point_id": "D",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/4",
+        "latex": "\\frac{\\sqrt{29}}{4}",
+        "value": 1.3462912
+      }
+    },
+    {
+      "id": "L_min_12",
+      "start_point_id": "G",
+      "end_point_id": "I1",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "17*sqrt(29)/74",
+        "latex": "\\frac{17 \\sqrt{29}}{74}",
+        "value": 1.23713246
+      }
+    },
+    {
+      "id": "L_min_13",
+      "start_point_id": "I1",
+      "end_point_id": "R",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "3*sqrt(29)/148",
+        "latex": "\\frac{3 \\sqrt{29}}{148}",
+        "value": 0.10915875
+      }
+    },
+    {
+      "id": "L_min_14",
+      "start_point_id": "R",
+      "end_point_id": "E",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/4",
+        "latex": "\\frac{\\sqrt{29}}{4}",
+        "value": 1.3462912
+      }
+    },
+    {
+      "id": "L_min_15",
+      "start_point_id": "H",
+      "end_point_id": "I2",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "33/10",
+        "latex": "\\frac{33}{10}",
+        "value": 3.3
+      }
+    },
+    {
+      "id": "L_min_16",
+      "start_point_id": "I2",
+      "end_point_id": "G",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "17/10",
+        "latex": "\\frac{17}{10}",
+        "value": 1.7
+      }
+    },
+    {
+      "id": "L_min_17",
+      "start_point_id": "D",
+      "end_point_id": "I7",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/6",
+        "latex": "\\frac{\\sqrt{29}}{6}",
+        "value": 0.89752747
+      }
+    },
+    {
+      "id": "L_min_18",
+      "start_point_id": "I7",
+      "end_point_id": "I",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(29)/3",
+        "latex": "\\frac{\\sqrt{29}}{3}",
+        "value": 1.79505493
+      }
+    },
+    {
+      "id": "L_min_19",
+      "start_point_id": "J",
+      "end_point_id": "I3",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "2*sqrt(29)/37",
+        "latex": "\\frac{2 \\sqrt{29}}{37}",
+        "value": 0.29108999
+      }
+    },
+    {
+      "id": "L_min_20",
+      "start_point_id": "I3",
+      "end_point_id": "H",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "33*sqrt(29)/74",
+        "latex": "\\frac{33 \\sqrt{29}}{74}",
+        "value": 2.40149241
+      }
+    },
+    {
+      "id": "L_min_21",
+      "start_point_id": "K",
+      "end_point_id": "R",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "29/4",
+        "latex": "\\frac{29}{4}",
+        "value": 7.25
+      }
+    },
+    {
+      "id": "L_min_22",
+      "start_point_id": "R",
+      "end_point_id": "I4",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "3/20",
+        "latex": "\\frac{3}{20}",
+        "value": 0.15
+      }
+    },
+    {
+      "id": "L_min_23",
+      "start_point_id": "I4",
+      "end_point_id": "P",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "37/20",
+        "latex": "\\frac{37}{20}",
+        "value": 1.85
+      }
+    },
+    {
+      "id": "L_min_24",
+      "start_point_id": "P",
+      "end_point_id": "O2",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1/4",
+        "latex": "\\frac{1}{4}",
+        "value": 0.25
+      }
+    },
+    {
+      "id": "L_min_25",
+      "start_point_id": "O2",
+      "end_point_id": "O1",
+      "level": 1,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L_min_26",
+      "start_point_id": "O1",
+      "end_point_id": "Q",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1/4",
+        "latex": "\\frac{1}{4}",
+        "value": 0.25
+      }
+    },
+    {
+      "id": "L_min_27",
+      "start_point_id": "Q",
+      "end_point_id": "O",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "2",
+        "latex": "2",
+        "value": 2.0
+      }
+    },
+    {
+      "id": "L_min_28",
+      "start_point_id": "O",
+      "end_point_id": "L",
+      "level": 2,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "1/4",
+        "latex": "\\frac{1}{4}",
+        "value": 0.25
+      }
+    },
+    {
+      "id": "L_min_29",
+      "start_point_id": "A",
+      "end_point_id": "I4",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "sqrt(61)/10",
+        "latex": "\\frac{\\sqrt{61}}{10}",
+        "value": 0.78102497
+      }
+    },
+    {
+      "id": "L_min_30",
+      "start_point_id": "I4",
+      "end_point_id": "I1",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "3*sqrt(61)/370",
+        "latex": "\\frac{3 \\sqrt{61}}{370}",
+        "value": 0.06332635
+      }
+    },
+    {
+      "id": "L_min_31",
+      "start_point_id": "I1",
+      "end_point_id": "I2",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "17*sqrt(61)/185",
+        "latex": "\\frac{17 \\sqrt{61}}{185}",
+        "value": 0.71769862
+      }
+    },
+    {
+      "id": "L_min_32",
+      "start_point_id": "I2",
+      "end_point_id": "I3",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "33*sqrt(61)/185",
+        "latex": "\\frac{33 \\sqrt{61}}{185}",
+        "value": 1.39317967
+      }
+    },
+    {
+      "id": "L_min_33",
+      "start_point_id": "I3",
+      "end_point_id": "N",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "9*sqrt(61)/74",
+        "latex": "\\frac{9 \\sqrt{61}}{74}",
+        "value": 0.94989523
+      }
+    },
+    {
+      "id": "L_min_34",
+      "start_point_id": "J",
+      "end_point_id": "I7",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "5*sqrt(5)/3",
+        "latex": "\\frac{5 \\sqrt{5}}{3}",
+        "value": 3.72677996
+      }
+    },
+    {
+      "id": "L_min_35",
+      "start_point_id": "I7",
+      "end_point_id": "M5",
+      "level": 3,
+      "is_original": false,
+      "is_minimal": true,
+      "length": {
+        "expr": "5*sqrt(5)/6",
+        "latex": "\\frac{5 \\sqrt{5}}{6}",
+        "value": 1.86338998
+      }
+    }
+  ],
+  "arcs": [],
+  "entities": [
+    {
+      "id": "base_trapezoid_7:2",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O1",
+      "vertices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "lines": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "base1": {
+        "expr": "7",
+        "latex": "7"
+      },
+      "base2": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "height": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "angle_rad": {
+        "expr": "pi/4",
+        "latex": "\\frac{\\pi}{4}"
+      },
+      "angle_deg": {
+        "expr": "45",
+        "latex": "45"
+      },
+      "leg_length": {
+        "expr": "sqrt(2)",
+        "latex": "\\sqrt{2}"
+      },
+      "perimeter": {
+        "expr": "2*sqrt(2) + 9",
+        "latex": "2 \\sqrt{2} + 9"
+      },
+      "area": {
+        "expr": "9/2",
+        "latex": "\\frac{9}{2}"
+      },
+      "rotate_mode": "original",
+      "is_base": true
+    },
+    {
+      "id": "translated_trapezoid_edge2",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O2",
+      "vertices": [
+        "E",
+        "F",
+        "D",
+        "G"
+      ],
+      "lines": [
+        "L4",
+        "L5",
+        "L6",
+        "L7"
+      ],
+      "base1": {
+        "expr": "7",
+        "latex": "7"
+      },
+      "base2": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "height": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "angle_rad": {
+        "expr": "pi/4",
+        "latex": "\\frac{\\pi}{4}"
+      },
+      "angle_deg": {
+        "expr": "45",
+        "latex": "45"
+      },
+      "leg_length": {
+        "expr": "sqrt(2)",
+        "latex": "\\sqrt{2}"
+      },
+      "perimeter": {
+        "expr": "2*sqrt(2) + 9",
+        "latex": "2 \\sqrt{2} + 9"
+      },
+      "area": {
+        "expr": "9/2",
+        "latex": "\\frac{9}{2}"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "id": "translated_trapezoid_edge1",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O3",
+      "vertices": [
+        "H",
+        "D",
+        "I",
+        "J"
+      ],
+      "lines": [
+        "L8",
+        "L9",
+        "L10",
+        "L11"
+      ],
+      "base1": {
+        "expr": "7",
+        "latex": "7"
+      },
+      "base2": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "height": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "angle_rad": {
+        "expr": "pi/4",
+        "latex": "\\frac{\\pi}{4}"
+      },
+      "angle_deg": {
+        "expr": "45",
+        "latex": "45"
+      },
+      "leg_length": {
+        "expr": "sqrt(2)",
+        "latex": "\\sqrt{2}"
+      },
+      "perimeter": {
+        "expr": "2*sqrt(2) + 9",
+        "latex": "2 \\sqrt{2} + 9"
+      },
+      "area": {
+        "expr": "9/2",
+        "latex": "\\frac{9}{2}"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "id": "concentric_trapezoid",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O3",
+      "vertices": [
+        "K",
+        "L",
+        "M",
+        "N"
+      ],
+      "lines": [
+        "L12",
+        "L13",
+        "L14",
+        "L15"
+      ],
+      "base1": {
+        "expr": "14",
+        "latex": "14"
+      },
+      "base2": {
+        "expr": "4",
+        "latex": "4"
+      },
+      "height": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "angle_rad": {
+        "expr": "pi/4",
+        "latex": "\\frac{\\pi}{4}"
+      },
+      "angle_deg": {
+        "expr": "45",
+        "latex": "45"
+      },
+      "leg_length": {
+        "expr": "2*sqrt(2)",
+        "latex": "2 \\sqrt{2}"
+      },
+      "perimeter": {
+        "expr": "4*sqrt(2) + 18",
+        "latex": "4 \\sqrt{2} + 18"
+      },
+      "area": {
+        "expr": "18",
+        "latex": "18"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "id": "concentric_trapezoid_1",
+      "type": "trapezoid",
+      "subtype": "isosceles",
+      "center_id": "O3",
+      "vertices": [
+        "H",
+        "D",
+        "I",
+        "J"
+      ],
+      "lines": [
+        "L8",
+        "L9",
+        "L10",
+        "L11"
+      ],
+      "base1": {
+        "expr": "7",
+        "latex": "7"
+      },
+      "base2": {
+        "expr": "2",
+        "latex": "2"
+      },
+      "height": {
+        "expr": "1",
+        "latex": "1"
+      },
+      "angle_rad": {
+        "expr": "pi/4",
+        "latex": "\\frac{\\pi}{4}"
+      },
+      "angle_deg": {
+        "expr": "45",
+        "latex": "45"
+      },
+      "leg_length": {
+        "expr": "sqrt(2)",
+        "latex": "\\sqrt{2}"
+      },
+      "perimeter": {
+        "expr": "2*sqrt(2) + 9",
+        "latex": "2 \\sqrt{2} + 9"
+      },
+      "area": {
+        "expr": "9/2",
+        "latex": "\\frac{9}{2}"
+      },
+      "rotate_mode": "original",
+      "is_base": false
+    },
+    {
+      "type": "shadow",
+      "region_label": 1,
+      "points": [
+        {
+          "id": "H"
+        },
+        {
+          "id": "I1"
+        },
+        {
+          "id": "I2"
+        },
+        {
+          "id": "I3"
+        },
+        {
+          "id": "K"
+        },
+        {
+          "id": "N"
+        },
+        {
+          "id": "R"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L15"
+        },
+        {
+          "id": "L_min_13"
+        },
+        {
+          "id": "L_min_15"
+        },
+        {
+          "id": "L_min_20"
+        },
+        {
+          "id": "L_min_21"
+        },
+        {
+          "id": "L_min_31"
+        },
+        {
+          "id": "L_min_33"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "N",
+            "K",
+            "R",
+            "I1",
+            "I2",
+            "H",
+            "I3",
+            "N"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "79*sqrt(61)/370 + 217*sqrt(29)/148 + 211/20",
+        "latex": "\\frac{79 \\sqrt{61}}{370} + \\frac{217 \\sqrt{29}}{148} + \\frac{211}{20}"
+      },
+      "area": {
+        "expr": "17539/2960",
+        "latex": "\\frac{17539}{2960}"
+      }
+    },
+    {
+      "type": "shadow",
+      "region_label": 3,
+      "points": [
+        {
+          "id": "D"
+        },
+        {
+          "id": "G"
+        },
+        {
+          "id": "I2"
+        },
+        {
+          "id": "I3"
+        },
+        {
+          "id": "I7"
+        },
+        {
+          "id": "J"
+        }
+      ],
+      "lines": [
+        {
+          "id": "L6"
+        },
+        {
+          "id": "L_min_16"
+        },
+        {
+          "id": "L_min_17"
+        },
+        {
+          "id": "L_min_19"
+        },
+        {
+          "id": "L_min_32"
+        },
+        {
+          "id": "L_min_34"
+        }
+      ],
+      "arcs": [],
+      "ordered_loops": [
+        {
+          "ordered_points": [
+            "D",
+            "G",
+            "I2",
+            "I3",
+            "J",
+            "I7",
+            "D"
+          ]
+        }
+      ],
+      "validity": true,
+      "perimeter": {
+        "expr": "49*sqrt(29)/222 + 33*sqrt(61)/185 + 37/10 + 5*sqrt(5)/3",
+        "latex": "\\frac{49 \\sqrt{29}}{222} + \\frac{33 \\sqrt{61}}{185} + \\frac{37}{10} + \\frac{5 \\sqrt{5}}{3}"
+      },
+      "area": {
+        "expr": "5243/2220",
+        "latex": "\\frac{5243}{2220}"
+      }
+    }
+  ],
+  "description": "Original graphic description: Base shape is an isosceles trapezoid (center O1) with bases 7, 2, height 1, angle 45°, rotate mode original Round 1: applying 'translation' rule. Translated trapezoid along edge L2 by full length (new center O2). Round 2: applying 'translation' rule. Translated trapezoid along edge L5 by full length (new center O3). Round 3: applying 'concentric' rule. Concentric trapezoid (center O3) scaled by 2 (new bases 14, 4; height 2). Round 4: applying 'concentric' rule. Concentric trapezoid (center O3) scaled by 1/2 (new bases 7, 2; height 1).\nEnhancement index: 5/5\nNumber of rounds: 2\nRound 1:\nConnect points A and N (both on segments)\nRound 2:\nConnect vertex J with midpoint M5 (of line L2)",
+  "is_base": false,
+  "timeout_occurred": false,
+  "completed_rounds": 2,
+  "base_id": "",
+  "enhance_id": "_enhance_004",
+  "raw_path": "./results_n500_v4/images/raw/geometry_line_0147.png",
+  "annotated_raw_path": "./results_n500_v4/images/annotated/annotated_raw_geometry_line_0147.png",
+  "shaded_path": "./results_n500_v4/images/shaded/shaded_146_attempt_0_geometry_line_0147.png",
+  "annotated_shaded_path": "./results_n500_v4/images/annotated/annotated_shaded_146_attempt_0_geometry_line_0147.png",
+  "shadow_type": "solid",
+  "shader_enabled": true,
+  "shadow_regions": 2,
+  "generated_question": [
+    "{\n  \"question\": \"Given the geometric construction involving trapezoids centered at O1, O2, and O3 with translations and concentric scaling, compute the length of the line segment connecting point A to point N, where A lies on the base of the original trapezoid and N is a vertex of the concentrically scaled trapezoid (centered at O3) after Round 4, using coordinates derived from the described transformations.\",\n  \"difficulty_label\": 4,\n  \"question_type\": \"length\",\n  \"target_ids\": [\"A\", \"N\", \"O1\", \"O2\", \"O3\"]\n}"
+  ]
+}

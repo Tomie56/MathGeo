@@ -2,7 +2,7 @@
 启动脚本:
 python ./scripts/call_api/convert.py <输入jsonl路径> --output <最终输出路径>
 
-功能：保持原有输出格式 + 参考方法提取答案 + 等价性判断
+功能：保持原有输出格式 + 参考方法提取答案 + math-verify等价性判断
 """
 
 import json
@@ -14,18 +14,44 @@ import argparse
 from tqdm import tqdm
 from PIL import Image
 from io import BytesIO
-from aoss_client import client
+# from aoss_client import client
 
-# 导入参考方法中的核心函数（确保路径正确）
+# -------------------------- 新增：math-verify 比对方法 --------------------------
+try:
+    from math_verify.errors import TimeoutException
+    from math_verify.metric import math_metric
+    from math_verify.parser import ExprExtractionConfig, LatexExtractionConfig
+except ImportError:
+    print("To use Math-Verify, please install it first by running `pip install math-verify`.")
+    sys.exit(1)
+
+def compute_score(model_output: str, ground_truth: str, timeout_score: float = 0) -> float:
+    verify_func = math_metric(
+        gold_extraction_target=(LatexExtractionConfig(),),
+        pred_extraction_target=(ExprExtractionConfig(), LatexExtractionConfig()),
+    )
+    ret_score = 0.0
+
+    # Wrap the ground truth in \boxed{} format for verification
+    ground_truth_boxed = "\\boxed{" + ground_truth + "}"
+    try:
+        ret_score, _ = verify_func([ground_truth_boxed], [model_output])
+    except TimeoutException:
+        ret_score = timeout_score
+    except Exception:
+        ret_score = 0.0
+
+    return ret_score
+
+# 导入参考方法中的核心函数（仅保留extract_answer，移除原比对函数）
 sys.path.append('/mnt/afs/liangjinwei/project/verl/verl/utils/reward_score/omni_reward/math')
-from utils import extract_answer, grade_answer_mathd, grade_answer_sympy
+from utils import extract_answer  # 仅保留答案提取函数
 
 def log_message(message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     print(f"[{timestamp}] {message}")
     sys.stdout.flush()
 
-# 初始化AOSS客户端
 try:
     _aoss_client = client.Client('/mnt/afs/jingjinhao/aoss.conf')
 except Exception as e:
@@ -62,7 +88,7 @@ def get_image_size(image_path):
         log_message(f"获取图片尺寸失败：{str(e)}")
         return (None, None)
 
-# -------------------------- 处理Ground Truth（适配参考方法） --------------------------
+# -------------------------- 处理Ground Truth（适配math-verify） --------------------------
 def get_ground_truths(gt_dict):
     """从gt字典中提取有效真值列表（expr和latex）"""
     ground_truths = []
@@ -75,7 +101,7 @@ def get_ground_truths(gt_dict):
             ground_truths.append(val.strip())
     return ground_truths
 
-# -------------------------- 核心处理函数（保持原有输出格式） --------------------------
+# -------------------------- 核心处理函数（替换比对逻辑） --------------------------
 def process_item(item):
     """处理单条数据，严格保持目标输出格式"""
     # 1. 提取图片信息（保留原有逻辑）
@@ -102,16 +128,16 @@ def process_item(item):
     extracted_answer = extract_answer(answer_text)
     log_message(f"提取答案：{extracted_answer[:50] if extracted_answer else 'None'}")
     
-    # 4. 处理GT和等价性判断（使用参考方法的评分函数）
+    # 4. 处理GT和等价性判断（替换为math-verify的compute_score）
     gt = item.get("gt", {})
     ground_truths = get_ground_truths(gt)
     judge = False
     
     if extracted_answer and ground_truths:
-        # 与每个真值比较，任一匹配则判定为正确
+        # 与每个真值比较，任一匹配则判定为正确（score>0即正确）
         for truth in ground_truths:
-            is_correct = grade_answer_mathd(extracted_answer, truth) or grade_answer_sympy(extracted_answer, truth)
-            if is_correct:
+            score = compute_score(extracted_answer, truth)
+            if score > 0:  # math-verify返回score为0/1，>0表示等价
                 judge = True
                 break
         log_message(f"等价性判断：{'正确' if judge else '错误'}（真值：{ground_truths[:2]}）")
@@ -130,7 +156,7 @@ def process_item(item):
 
 # -------------------------- 主函数（保持原有流程） --------------------------
 def main():
-    parser = argparse.ArgumentParser(description="保持格式+参考方法判断答案等价性")
+    parser = argparse.ArgumentParser(description="保持格式+math-verify判断答案等价性")
     parser.add_argument("input_path", help="输入JSONL路径")
     parser.add_argument("--output", required=True, help="最终输出JSONL路径")
     args = parser.parse_args()
@@ -180,7 +206,7 @@ def main():
                     "answer": "",
                     "gt": {},
                     "judge": False,
-                    "level": "unknown",
+                    "diff": "unknown",
                 }
                 fout.write(json.dumps(default_data, ensure_ascii=False) + "\n")
             except Exception as e:
@@ -193,7 +219,7 @@ def main():
                     "answer": "",
                     "gt": {},
                     "judge": False,
-                    "level": "unknown",
+                    "diff": "unknown",
                 }
                 fout.write(json.dumps(default_data, ensure_ascii=False) + "\n")
 
@@ -208,5 +234,5 @@ def main():
     log_message(f"输出路径：{args.output}")
 
 if __name__ == "__main__":
-    # 需安装依赖：pip install pillow tqdm
+    # 需安装依赖：pip install pillow tqdm math-verify
     main()
