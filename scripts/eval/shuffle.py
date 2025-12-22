@@ -73,10 +73,10 @@ def main():
     # 配置命令行参数（无required约束）
     parser = argparse.ArgumentParser(description="打乱JSONL文件的行顺序（整体读取）")
     parser.add_argument("--input", 
-                        default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4/output/all_test_answer_level.jsonl",
+                        default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4_instruct/output/A500_v4_instruct_level.jsonl",
                         help="输入JSONL文件路径（默认指定自定义路径）")
     parser.add_argument("--output", 
-                        default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4/output/all_test_answer_level_shuffled.jsonl",
+                        default="/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4_instruct/output/A500_v4_instruct_level_shuffled.jsonl",
                         help="输出打乱后的JSONL文件路径（默认指定自定义路径）")
     parser.add_argument("--seed", 
                         type=int, 

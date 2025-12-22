@@ -1,8 +1,8 @@
 import json
 
 # 输入和输出路径
-input_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4/output/all_test_answer_level_shuffled.jsonl"
-output_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4/output/all_test_answer_level_shuffled_judged.jsonl"
+input_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4_instruct/output/A500_v4_instruct_level_shuffled.jsonl"
+output_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/A500_v4_instruct/output/A500_v4_instruct_level_shuffled_judged.jsonl"
 
 # 读取并筛选数据
 filtered = []

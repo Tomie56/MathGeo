@@ -7,6 +7,8 @@ python ./scripts/call_api/get_answer.py <输入jsonl路径> --output <输出json
 2. 增强结果有效性校验（检查LaTeX答案框）
 3. 支持自动清理临时文件（节省存储空间）
 4. 强化gt字段兼容性（呼应format.py的筛选逻辑）
+5. 新增流式响应处理：提取thinking思考过程并独立存储
+6. 修复服务器pending计数负数问题，优化4个IP负载展示
 """
 
 import asyncio
@@ -32,10 +34,9 @@ def log_message(message):
     sys.stdout.flush()
 
 
-
+ips = ['10.119.29.76', '10.119.29.41','10.119.29.46','10.119.29.28']
 
 # 基础配置（可通过命令行参数覆盖部分配置）
-ips = ['10.119.19.84', '10.119.19.97'] # 注意修改
 URLS = [f"http://{ip}:8000" for ip in ips]
 MAX_CONCURRENT_PER_SERVER = 80
 max_retry = 3
@@ -100,8 +101,6 @@ class APIOptimizer:
         """优化提示词：明确几何问题求解要求，关联gt字段信息"""
         prompt = (
             "Solve the following geometric math problem step by step. "
-            "First, analyze the geometric elements and relationships from the image and question. "
-            "Show all formulas, calculations, and logical deductions clearly — do not skip any steps. "
             "At the end of your response, place the final numerical answer inside a LaTeX box using \\boxed{}.\n\n"
             "Make sure that the final answer uses LaTeX-style expressions and is wrapped in \\boxed{}."
         )
@@ -136,19 +135,27 @@ class APIOptimizer:
         return messages
 
     async def call_openai_api_async(self, session, idx, image_paths, item):
-        """优化API调用：增加请求有效性检查，细化错误日志"""
+        """核心修复：1. 流式提取thinking 2. 修复pending计数负数 3. 适配4个IP负载展示"""
         base_url = None
         messages = await self.construct_messages(image_paths, item)
         if not messages:
             log_message(f"样本{idx} | 无法构建有效请求（无图片或参数错误）")
-            return None
+            return None, None  # 返回(thinking, answer)
+
+        # 预初始化所有IP的pending状态（确保4个IP都有初始值，避免展示缺失）
+        for ip in ips:
+            url = f"http://{ip}:8000"
+            if url not in server_status:
+                server_status[url] = {"pending": 0, "response_time": 0.0}
 
         for retry in range(max_retry):
             try:
                 base_url = await self.dynamic_load_balancer()
+                # 仅一次加1操作（核心：保证增减一一对应）
                 server_status[base_url]["pending"] += 1
                 start_time = datetime.now()
 
+                # 核心：开启stream=True流式响应
                 async with session.post(
                     f"{base_url}/v1/chat/completions",
                     headers={"Authorization": "Bearer EMPTY"},
@@ -156,19 +163,51 @@ class APIOptimizer:
                         "model": "Qwen3-VL-235B-A22B-Thinking",
                         "messages": messages,
                         "temperature": 0.3, 
-                        "max_tokens": 32768, 
+                        "max_tokens": 32768,
+                        "stream": True,  # 开启流式响应
                     },
-                    timeout=aiohttp.ClientTimeout(total=2000) 
+                    timeout=aiohttp.ClientTimeout(total=1000)  # 同步超时时间
                 ) as response:
                     rt = (datetime.now() - start_time).total_seconds()
                     server_status[base_url]["response_time"] = 0.9 * server_status[base_url]["response_time"] + 0.1 * rt
 
-                    if response.status == 200:
-                        result = await response.json()
-                        return result['choices'][0]['message']['content']
-                    else:
+                    if response.status != 200:
                         response_text = await response.text()
                         log_message(f"样本{idx} | API异常（重试{retry+1}/{max_retry}）| 状态码：{response.status} | 响应：{response_text[:200]}")
+                        await asyncio.sleep((1 + retry)**2)
+                        continue
+
+                    # 流式提取thinking和answer
+                    reasoning_content = ""  # thinking过程
+                    answer_content = ""     # 最终答案
+                    async for chunk in response.content.iter_any():
+                        if not chunk:
+                            continue
+                        
+                        # 处理流式chunk（兼容data: 开头的SSE格式）
+                        chunk_str = chunk.decode('utf-8').strip()
+                        for line in chunk_str.split('\n'):
+                            if line.startswith('data: '):
+                                line = line[6:]
+                                if line == '[DONE]':
+                                    continue
+                                try:
+                                    chunk_data = json.loads(line)
+                                    if not chunk_data.get('choices'):
+                                        continue
+                                    
+                                    delta = chunk_data['choices'][0]['delta']
+                                    # 提取思考过程（reasoning_content）
+                                    if 'reasoning_content' in delta and delta['reasoning_content']:
+                                        reasoning_content += delta['reasoning_content']
+                                    # 提取最终答案（content）
+                                    if 'content' in delta and delta['content']:
+                                        answer_content += delta['content']
+                                except json.JSONDecodeError:
+                                    continue
+
+                    # 返回提取的thinking和answer
+                    return reasoning_content, answer_content
 
             except (aiohttp.ClientConnectorError, aiohttp.ServerTimeoutError, asyncio.TimeoutError) as e:
                 log_message(f"样本{idx} | 网络异常（重试{retry+1}/{max_retry}）| 类型：{type(e).__name__} | 错误：{str(e)}")
@@ -178,11 +217,18 @@ class APIOptimizer:
                 log_message(f"样本{idx} | 响应格式错误（重试{retry+1}/{max_retry}）| 缺失字段：{str(e)}")
             except Exception as e:
                 log_message(f"样本{idx} | 未处理异常（重试{retry+1}/{max_retry}）| 类型：{type(e).__name__} | 错误：{str(e)}")
+            
+            # ========== 修复点2：finally块统一处理减1 + 负数兜底 ==========
             finally:
                 if base_url:
                     server_status[base_url]["pending"] -= 1
-                await asyncio.sleep((1 + retry)**2)  # 调整重试间隔（更合理的退避策略）
-        return None
+                    # 兜底：强制保证pending非负，彻底解决负数问题
+                    if server_status[base_url]["pending"] < 0:
+                        server_status[base_url]["pending"] = 0
+                await asyncio.sleep((1 + retry)**2)  # 调整重试间隔
+
+        # 所有重试失败
+        return None, None
 
     def is_answer_valid(self, answer):
         """新增答案有效性校验：检查是否包含LaTeX框"""
@@ -191,7 +237,7 @@ class APIOptimizer:
         return '\\boxed{' in answer
 
     async def worker(self, session, pbar, tmp_dir):
-        """优化工作线程：增加答案有效性校验，细化状态统计"""
+        """优化工作线程：保存thinking和answer，保留答案有效性校验"""
         while True:
             task_retrieved = False
             try:
@@ -200,11 +246,17 @@ class APIOptimizer:
                 output_json = os.path.join(tmp_dir, f"{idx}.json")
                 start_time = datetime.now()
 
-                # 跳过已存在且有效结果的文件
+                # 跳过已存在且有效结果的文件（兼容新的api_generated标记）
                 if os.path.exists(output_json):
                     try:
                         async with aiofiles.open(output_json, 'r') as f:
                             existing_data = json.loads(await f.read())
+                            # 兼容新旧逻辑：既有api_generated标记，也检查有效答案数
+                            if existing_data.get("api_generated", False) is True:
+                                self.total_processed += 1
+                                pbar.update(1)
+                                self.request_queue.task_done()
+                                continue
                             valid_answers = [ans for ans in existing_data.get("generated_answer", []) if self.is_answer_valid(ans)]
                             if len(valid_answers) >= self.req_per_question:
                                 self.total_processed += 1
@@ -218,50 +270,73 @@ class APIOptimizer:
                 image_paths = item['image'] if isinstance(item['image'], list) else [item['image']]
                 image_paths = [os.path.abspath(path) for path in image_paths]  # 转为绝对路径，避免错误
 
-                # API调用生成答案（筛选有效结果）
-                results = []
+                # API调用生成答案+thinking（筛选有效结果）
+                results_thinking = []
+                results_answer = []
                 retry_history = []
                 for attempt in range(self.req_per_question + max_retry):
-                    result = await self.call_openai_api_async(session, idx, image_paths, item)
-                    if result:
-                        if self.is_answer_valid(result):
-                            results.append(result)
+                    thinking, answer = await self.call_openai_api_async(session, idx, image_paths, item)
+                    if thinking is not None or answer is not None:
+                        # 仅保留有效答案
+                        if self.is_answer_valid(answer):
+                            results_thinking.append(thinking)
+                            results_answer.append(answer)
                             retry_history.append(f"第{attempt+1}次：成功（有效）")
-                            if len(results) >= self.req_per_question:
+                            if len(results_answer) >= self.req_per_question:
                                 break
                         else:
                             retry_history.append(f"第{attempt+1}次：成功, 无效，无boxed")
                     else:
                         retry_history.append(f"第{attempt+1}次：失败")
 
+                # 构建输出数据：整合原有字段+新增thinking
+                output_item = item.copy()
+                output_item["generated_answer"] = results_answer[:self.req_per_question]
+                output_item["generated_thinking"] = results_thinking[:self.req_per_question]  # 存储对应thinking
+                output_item["answer_validity"] = [self.is_answer_valid(ans) for ans in results_answer[:self.req_per_question]]
+                output_item["api_generated"] = len(results_answer) >= self.req_per_question  # 标记是否生成成功
+
+                # 兼容conversations字段（若存在）
+                if "conversations" in output_item and len(results_answer) > 0:
+                    gpt_conv = next((c for c in output_item["conversations"] if c["from"] == "gpt"), None)
+                    if gpt_conv:
+                        gpt_conv["value"] = results_answer[0]
+                        gpt_conv["thinking"] = results_thinking[0]  # 在gpt对话中添加thinking
+                    else:
+                        output_item["conversations"].append({
+                            "from": "gpt",
+                            "value": results_answer[0],
+                            "thinking": results_thinking[0]
+                        })
+
                 # 写入中间文件（原子操作）
                 tmp_path = f"{output_json}.tmp"
                 async with aiofiles.open(tmp_path, 'w', encoding='utf-8') as f:
-                    item['generated_answer'] = results[:self.req_per_question]
-                    item['answer_validity'] = [self.is_answer_valid(ans) for ans in results[:self.req_per_question]]  # 新增有效性标记
-                    await f.write(json.dumps(item, ensure_ascii=False, indent=2))
+                    await f.write(json.dumps(output_item, ensure_ascii=False, indent=2))
                 os.replace(tmp_path, output_json)
 
                 # 统计状态
                 elapsed = (datetime.now() - start_time).total_seconds()
-                if len(results) >= self.req_per_question:
+                if len(results_answer) >= self.req_per_question:
                     status = "成功"
                     self.success_count += 1
-                elif len(results) > 0:
+                elif len(results_answer) > 0:
                     status = "部分成功"
                 else:
                     status = "失败"
                     self.failure_count += 1
 
                 self.total_processed += 1
-                log_message(f"样本{idx} | 状态：{status} | 耗时：{elapsed:.2f}s | 重试记录：{' '.join(retry_history)} | 有效结果：{len(results)}/{self.req_per_question}")
+                log_message(f"样本{idx} | 状态：{status} | 耗时：{elapsed:.2f}s | 重试记录：{' '.join(retry_history)} | 有效结果：{len(results_answer)}/{self.req_per_question}")
+                if len(results_thinking) > 0:
+                    log_message(f"样本{idx} | 首个Thinking长度：{len(results_thinking[0])} | 首个答案长度：{len(results_answer[0])}")
 
-                # 更新进度条
+                # 更新进度条（适配4个IP负载展示）
                 pbar.set_postfix({
                     '成功': self.success_count,
                     '失败': self.failure_count,
                     '速度': f"{self.total_processed/(datetime.now()-self.start_time).total_seconds():.2f}条/s",
-                    '负载': '/'.join(f'{s["pending"]}' for s in server_status.values()),
+                    '负载': '/'.join(f'{server_status[url]["pending"]}' for url in URLS),  # 按IP顺序展示负载
                     '累计处理': self.total_processed
                 })
                 pbar.update(1)
@@ -370,7 +445,7 @@ class APIOptimizer:
 
 async def main_async():
     # 解析命令行参数（新增--start-line参数）
-    parser = argparse.ArgumentParser(description="调用API生成数学问题答案（增强版）")
+    parser = argparse.ArgumentParser(description="调用API生成数学问题答案（增强版）- 支持流式Thinking提取")
     parser.add_argument("input_path", help="输入JSONL路径（get_question.py输出）")
     parser.add_argument("--output", required=True, help="输出JSONL路径")
     parser.add_argument("--req-per-question", type=int, default=1, help="每个问题生成的答案数量（默认1）")
