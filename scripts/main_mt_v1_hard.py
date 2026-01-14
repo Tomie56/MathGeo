@@ -207,7 +207,7 @@ class MathGeoPipeline:
 
     def run_builder(self) -> None:
         """步骤2：读取基础图形JSONL，生成增强图形（多线程+单次20秒超时）"""
-        self.base_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n1000_easy/json/base/base_20260114_132537_588.jsonl"
+        # self.base_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n1000_easy/json/base/base_20260113_085709_594.jsonl"
         if not self.base_jsonl_path or not os.path.exists(self.base_jsonl_path):
             raise RuntimeError("未找到基础图形JSONL文件，无法执行增强步骤")
         
@@ -347,7 +347,7 @@ class MathGeoPipeline:
         annotator_config = self.config.get('annotator', {})
         output_root = self.config['global']['output_root']
         shader_enabled = shader_config.get('enabled', False)
-        self.config['drawer']['jsonl_path'] = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n1000_easy/json/enhanced/enhanced_20260114_140227_857.jsonl"
+        self.config['drawer']['jsonl_path'] = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n1000_easy/json/enhanced/enhanced_20260113_092754_233.jsonl"
 
         json_output_dir = os.path.join(output_root, 'json/shaded')
         self.shaded_jsonl_path = os.path.join(
@@ -514,12 +514,12 @@ class MathGeoPipeline:
     def run(self) -> None:
         """执行全流程"""
         try:
-            # self.run_template()      # 生成基础图形（多线程+超时）
-            # self.run_builder()       # 增强图形（多线程+超时）
+            self.run_template()      # 生成基础图形（多线程+超时）
+            self.run_builder()       # 增强图形（多线程+超时）
             # self.run_drawer()        # 绘制原始图像
-            self.run_shader()        # 区域阴影与标注
-            self.run_gt()            # 计算参数
-            self.run_qa()            # 生成问答
+            # self.run_shader()        # 区域阴影与标注
+            # self.run_gt()            # 计算参数
+            # self.run_qa()            # 生成问答
             logger.info("=== 全流程执行完成 ===")
         except Exception as e:
             logger.error(f"流程执行失败: {str(e)}", exc_info=True)
@@ -533,7 +533,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         type=str,
-        default="./scripts/config_easy.json",
+        default="./scripts/config_hard.json",
         help="总配置文件路径"
     )
     args = parser.parse_args()

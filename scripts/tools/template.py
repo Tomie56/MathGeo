@@ -3068,8 +3068,9 @@ class TemplateGenerator:
         new_center_id = self._add_point(new_cx, new_cy, is_center=True)
         
         # 8. 计算旋转角度（与原边平行）
-        edge_angle = simplify(sp.atan2(edge_dy, edge_dx)) if edge_len != 0 else 0
-        rotation = simplify(edge_angle + pi / new_n)
+        # edge_angle = simplify(sp.atan2(edge_dy, edge_dx)) if edge_len != 0 else 0
+        # rotation = simplify(edge_angle + pi / new_n)
+        rotation = simplify(sp.atan2(p1y - new_cy, p1x - new_cx))
         
         # 9. 生成新正多边形
         entity_id = self._get_unique_entity_id(f"side_polygon_n{new_n}_{direction}_{selected_edge_id}")

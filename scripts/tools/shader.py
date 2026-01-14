@@ -239,6 +239,7 @@ class GeometryAnnotator:
 
         config = {
             "enabled": cfg.get("enabled", True),
+            "center_point": cfg.get("center_point", True),
             "point": {**default["point"],** cfg.get("point", {})},
             "line": {**default["line"],** cfg.get("line", {})},
             "perpendicular": {**default["perpendicular"],** cfg.get("perpendicular", {})}
@@ -454,8 +455,11 @@ class GeometryAnnotator:
         font_thickness = text_cfg["thickness"]
 
         for point in points:
-            if self.center_point_enabled == False and point.get("is_center", False) and point.get("is_circle_center", False) == False:
-                continue
+            if self.center_point_enabled == False:
+                if point.get("is_center", False):
+                    if not point.get("is_circle_center", False):
+                        if point["id"].startswith("O"):
+                            continue          
             try:
                 pid = point["id"]
                 x = self._parse_math_expr(point["x"]["expr"])
@@ -807,6 +811,8 @@ class EnhancedDrawer:
         shadow_type = np.random.choice(self.config["shader"]["shadow_types"])
         shader = SHADERS[shadow_type]
         shader_params = self._get_shader_params(shadow_type)
+        
+        shadow_descriptions_text = []
 
         for region in selected_regions:
             # 从区域掩码中提取原始轮廓
@@ -952,8 +958,12 @@ class EnhancedDrawer:
         intensity = np.random.uniform(*self.config["shader"]["intensity_range"])
 
         # 辅助函数：生成随机颜色 (BGR格式)
+        # --- [修改点] ---
+        # 原来是 randint(0, 256)，现在改为 randint(0, 180)
+        # 限制最大值为 180，确保生成的颜色较深，避免与白色背景混淆
         def get_random_color():
-            return np.random.randint(0, 256, 3).tolist()
+            return np.random.randint(0, 180, 3).tolist()
+        # ----------------
 
         if shadow_type == "hatch":
             # 间距增加随机微扰 (±20%)
@@ -977,14 +987,14 @@ class EnhancedDrawer:
             }
 
         elif shadow_type == "solid":
-            # 完全随机颜色
+            # 完全随机颜色 (使用修改后的深色生成逻辑)
             return {
                 "color": get_random_color(), 
                 "intensity": intensity
             }
 
         elif shadow_type == "gradient":
-            # 随机起始色、结束色、渐变角度
+            # 随机起始色、结束色、渐变角度 (使用修改后的深色生成逻辑)
             return {
                 "start_color": get_random_color(),
                 "end_color": get_random_color(),

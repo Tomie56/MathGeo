@@ -174,53 +174,101 @@ class RandomGeometryBuilder:
                      point_type: Optional[str] = None,
                      related_vertex: Optional[str] = None,
                      related_edge: Optional[str] = None,
-                     level: int = 1) -> str:  # 新增level参数
+                     level: int = 1) -> str:
         
         if len(self.points) >= self.max_points:
             raise OverflowError(f"点数量超过上限({self.max_points})，放弃本轮生成")
         
+        # 预处理坐标表达式
         x_simplified = x_expr
         y_simplified = y_expr
         x_str = self._serialize_expr(x_simplified)
         y_str = self._serialize_expr(y_simplified)
         
-        for p in self.points:
+        # --- 查重逻辑 ---
+        for i, p in enumerate(self.points):
             existing_x = self._parse_expr(p["x"]["expr"])
             existing_y = self._parse_expr(p["y"]["expr"])
             
+            # 判断坐标是否重合
             x_equal = sp.simplify(existing_x - x_simplified) == 0
             y_equal = sp.simplify(existing_y - y_simplified) == 0
             
             if x_equal and y_equal:
-                if point_type and "type" not in p:
-                    p["type"] = point_type
-                if related_vertex and "related_vertex" not in p:
-                    p["related_vertex"] = related_vertex
-                if related_edge and "related_edge" not in p:
-                    p["related_edge"] = related_edge
-                # 重合点取最高level
-                if p["level"] >= level:
-                    p["level"] = level
-                return p["id"]
+                # 命中重合点！
+                old_id = p["id"]
+                
+                # 判定是否需要“替换”：
+                # 如果旧点是特殊点 (以O开头代表圆心，或以circle开头代表初始点)
+                # 且 新点是普通点 (prefix通常是P, A, B等，不是O或circle)
+                is_old_special = old_id.startswith("O") or old_id.startswith("circle")
+                is_new_standard = True
+
+                if is_old_special and is_new_standard:
+                    # === 执行替换逻辑 (O1 -> P1) ===
+                    
+                    # 1. 生成新的标准ID (例如 P3)
+                    new_id = self._get_unique_id(prefix)
+                    
+                    # 2. 更新点本身的属性
+                    # ID变了，但保留旧点的部分属性（如是否是圆心），并融合新属性
+                    p["id"] = new_id
+                    p["level"] = min(p["level"], level) # 提升层级
+                    
+                    # 如果旧点是圆心，新点虽然叫P，但要在属性里记下它也是圆心
+                    if p.get("type") == "center" or old_id.startswith("O"):
+                        p["type"] = "center" 
+                    elif point_type:
+                        p["type"] = point_type
+                        
+                    if related_vertex: p["related_vertex"] = related_vertex
+                    if related_edge: p["related_edge"] = related_edge
+                    
+                    # 3. 更新辅助映射 (point_id_map)
+                    if old_id in self.point_id_map:
+                        del self.point_id_map[old_id]
+                    self.point_id_map[new_id] = p
+                    
+                    # 4. 更新缓存 (set)
+                    if old_id in self.all_points_cache:
+                        self.all_points_cache.remove(old_id)
+                        self.all_points_cache.add(new_id)
+                    
+                    # 5. 【关键】更新全局引用 (Lines, Arcs, Entities)
+                    self._update_all_references(old_id, new_id)
+                    
+                    return new_id
+
+                else:
+                    # === 执行普通合并逻辑 (保留旧ID) ===
+                    if p["level"] > level:
+                        p["level"] = level
+                    if point_type and "type" not in p:
+                        p["type"] = point_type
+                    if related_vertex and "related_vertex" not in p:
+                        p["related_vertex"] = related_vertex
+                    if related_edge and "related_edge" not in p:
+                        p["related_edge"] = related_edge
+                    
+                    return old_id
         
+        # --- 无重合，生成全新点 ---
         pid = self._get_unique_id(prefix)
         new_point = {
             "id": pid,
             "x": {"expr": x_str, "latex": sp.latex(x_simplified)},
             "y": {"expr": y_str, "latex": sp.latex(y_simplified)},
-            "level": level  # 存储level
+            "level": level
         }
-        if point_type:
-            new_point["type"] = point_type
-        if related_vertex:
-            new_point["related_vertex"] = related_vertex
-        if related_edge:
-            new_point["related_edge"] = related_edge
+        if point_type: new_point["type"] = point_type
+        if related_vertex: new_point["related_vertex"] = related_vertex
+        if related_edge: new_point["related_edge"] = related_edge
         
         self.points.append(new_point)
         self.point_id_map[pid] = new_point
         self.all_points_cache.add(pid)
         
+        # 更新共线缓存
         px, py = x_simplified, y_simplified
         for line in self.lines:
             s_id, e_id = line["start_point_id"], line["end_point_id"]
@@ -228,12 +276,50 @@ class RandomGeometryBuilder:
             e_x, e_y = self.get_point_coords(e_id)
             if self._point_on_segment(px, py, s_x, s_y, e_x, e_y):
                 self.on_segment_points_cache.add(pid)
-                break
+                # 不break，可能在多条线上
         
+        # 更新实体顶点缓存
         for eid in self.entity_vertices_cache:
             self.entity_vertices_cache[eid].append(pid)
         
         return pid
+
+    def _update_all_references(self, old_id: str, new_id: str):
+        """
+        辅助函数：将所有几何元素中对 old_id 的引用更新为 new_id
+        """
+        # 1. 更新直线
+        for line in self.lines:
+            if line["start_point_id"] == old_id:
+                line["start_point_id"] = new_id
+            if line["end_point_id"] == old_id:
+                line["end_point_id"] = new_id
+        
+        # 2. 更新圆/圆弧
+        for arc in self.arcs:
+            if arc["center_point_id"] == old_id:
+                arc["center_point_id"] = new_id
+            if arc["start_point_id"] == old_id:
+                arc["start_point_id"] = new_id
+            if arc["end_point_id"] == old_id:
+                arc["end_point_id"] = new_id
+
+        # 3. 更新实体 (Entities) 的 vertices 列表
+        for entity in self.entities:
+            if "vertices" in entity:
+                # 替换列表中的ID
+                entity["vertices"] = [new_id if v == old_id else v for v in entity["vertices"]]
+            if "center_id" in entity and entity["center_id"] == old_id:
+                entity["center_id"] = new_id
+        
+        # 4. 更新实体缓存
+        for eid, vertices in self.entity_vertices_cache.items():
+            self.entity_vertices_cache[eid] = [new_id if v == old_id else v for v in vertices]
+            
+        # 5. 更新线段上点缓存 (如果使用了的话)
+        if old_id in self.on_segment_points_cache:
+            self.on_segment_points_cache.remove(old_id)
+            self.on_segment_points_cache.add(new_id)
 
     def add_new_line(self, 
                     start_pid: str, 
@@ -992,9 +1078,6 @@ class RandomGeometryBuilder:
                 # 检查圆弧是否有效
                 if "center_point_id" not in arc or "radius" not in arc:
                     continue
-                
-                # AABB 快速排斥 (可选，针对圆弧实现类似数值逻辑)
-                # ...
 
                 # AABB 重叠，需要进行精确的线-弧相交计算
                 intersections = self._line_arc_intersection(new_line_id, arc_id)
@@ -1075,8 +1158,8 @@ class RandomGeometryBuilder:
         s_val = self._eval_value(s_sym)
         
         # 使用 EPS 放宽边界判断，包含端点
-        t_valid = -self.EPS <= t_val <= 1.0 + self.EPS
-        s_valid = -self.EPS <= s_val <= 1.0 + self.EPS
+        t_valid = self.EPS < t_val < 1.0 - self.EPS
+        s_valid = self.EPS < s_val < 1.0 - self.EPS
         
         if t_valid and s_valid:
             # 5. 计算并化简交点
