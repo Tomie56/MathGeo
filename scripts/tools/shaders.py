@@ -105,7 +105,8 @@ class SolidShader(Shader):
     name = "solid"
 
     def apply(self, img_bgr: np.ndarray, sel_mask: np.ndarray, **params) -> np.ndarray:
-        color = params.get("color", (128, 128, 128))
+        random_color = np.random.randint(0, 256, 3).tolist()
+        color = params.get("color", random_color)
         intensity = params.get("intensity", 0.5)
         out = img_bgr.copy().astype(np.float32)
         mask = (sel_mask > 0).astype(np.float32)[..., None]

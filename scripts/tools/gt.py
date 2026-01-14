@@ -330,8 +330,8 @@ class GeometryCalculator:
                 return None
             
             ordered_point_ids = ordered_loops[0].get('ordered_points', [])
-            if len(ordered_point_ids) < 3:
-                logger.warning(f"环的点数不足（需≥3），当前点数：{len(ordered_point_ids)}")
+            if len(ordered_point_ids) < 2:
+                logger.warning(f"环的点数不足（需≥2），当前点数：{len(ordered_point_ids)}")
                 return None
             
             # 1. 获取环的有序点坐标

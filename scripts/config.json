@@ -1,14 +1,14 @@
 {
     "global": {
-        "output_root": "./results_n500_v4",
+        "output_root": "./results_n50_v5",
         "main_seed": 4513522,
         "thread_num": 64
     },
     "template": {
-        "n": 500,
+        "n": 50,
         "points_limit": 30,
         "lines_limit": 40,
-        "output_dir": "./results_n500_v4/json/base",
+        "output_dir": "./results_n50_v5/json/base",
         "output_filename": "base_templates.jsonl",
         "base": {
             "types": ["polygon", "circle", "special_triangle", "special_rectangle", "parallelogram", "trapezoid"],
@@ -59,8 +59,12 @@
                 "manual_ratios": [ 
                     [1, 2],
                     [1, "sqrt(3)"],
+                    [1, "sqrt(2)"],
+                    ["sqrt(2)", "sqrt(3)"],
                     [1, 3],
-                    [3, 4]
+                    [2, 3],
+                    [3, 4],
+                    [5, 12]
                 ],
                 "random_range": [1, 5], 
                 "rotate": {
@@ -107,39 +111,48 @@
                     {"name": "concentric", "prob": 0.2, "scale_choices": [0.5, 2]},
                     {"name": "translation", "prob": 0.35},
                     {"name": "circum_inscribe", "prob": 0.2, "n_choices": [3, 4, 6]},
-                    {"name": "vertex_on_center", "prob": 0.25, "n_choices": [3, 4, 6], "param_choices" : ["side_length", "radius"]}
+                    {"name": "vertex_on_center", "prob": 0.25, "n_choices": [3, 4, 6], "param_choices" : ["side_length", "radius"]},
+                    {"name": "side_polygon", "prob": 0.2, "n_choices": [3, 4, 6]}
                     ]
                 },
                 "special_triangle": {
                     "supported_rules": [
+                    {"name": "flip", "prob": 0.25},
                     {"name": "circum_inscribe", "prob": 0.3},
-                    {"name": "translation", "prob": 0.35}
+                    {"name": "translation", "prob": 0.35},
+                    {"name": "side_polygon", "prob": 0.2, "n_choices": [3, 4, 6]}
                     ]
                 },
                 "special_rectangle": {
                     "supported_rules": [
+                    {"name": "flip", "prob": 0.25},
                     {"name": "concentric", "prob": 0.2},
                     {"name": "circum_inscribe", "prob": 0.2},
-                    {"name": "translation", "prob": 0.3}
+                    {"name": "translation", "prob": 0.3},
+                    {"name": "side_polygon", "prob": 0.2, "n_choices": [3, 4, 6]}
                     ]
                 },
                 "parallelogram": {
                     "supported_rules": [
+                    {"name": "flip", "prob": 0.25},
                     {"name": "concentric", "prob": 0.25},
-                    {"name": "translation", "prob": 0.4}
+                    {"name": "translation", "prob": 0.4},
+                    {"name": "side_polygon", "prob": 0.2, "n_choices": [3, 4, 6]}
                     ]
                 },
                 "trapezoid": {
                     "supported_rules": [
+                    {"name": "flip", "prob": 0.25},
                     {"name": "concentric", "prob": 0.25},
-                    {"name": "translation", "prob": 0.4}
+                    {"name": "translation", "prob": 0.4},
+                    {"name": "side_polygon", "prob": 0.2, "n_choices": [3, 4, 6]}
                     ]
                 }
             }
         }
     },
     "builder": {
-        "output_dir": "./results_n500_v4/json/enhanced",
+        "output_dir": "./results_n50_v5/json/enhanced",
         "output_filename": "enhanced_geometries.jsonl",
         "num_enhancements": 5,
         "rounds_distribution": {
@@ -181,7 +194,7 @@
         }
     },
     "drawer": {
-        "output_dir": "./results_n500_v4/images/raw",
+        "output_dir": "./results_n50_v5/images/raw",
         "canvas_size": [1600, 1200],
         "margin": 50,
         "line_color": "#000000",
@@ -228,7 +241,8 @@
                 "min_pixel_dist": 1,
                 "scale": 1,
                 "thickness": 2,
-                "font": "cv2.FONT_HERSHEY_SIMPLEX"
+                "font": "cv2.FONT_HERSHEY_SIMPLEX",
+                "font_selection": "random"
             }
         },
         "line": {
@@ -245,7 +259,8 @@
                 "min_pixel_dist": 3, 
                 "scale": 0.5,
                 "thickness": 2,
-                "font": "cv2.FONT_HERSHEY_SIMPLEX"
+                "font": "cv2.FONT_HERSHEY_SIMPLEX",
+                "font_selection": "random"
             }
         },
         "perpendicular": {
@@ -267,6 +282,6 @@
             "shadow_entity_ratio": 0.1
         },
         "num_questions_per_geo": 8,
-        "output_dir": "./results_n500_v4/json/qa"
+        "output_dir": "./results_n50_v5/json/qa"
     }
 }

@@ -1,13 +1,22 @@
 import os
+
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
 import json
 import random
 import logging
 import threading
 import queue
 import time
+import copy
 from datetime import datetime
 from typing import Dict, Any, Optional, List, Tuple
 import cv2
+cv2.setNumThreads(0)
 import sympy as sp
 from sympy import symbols, simplify
 import traceback 
@@ -198,6 +207,7 @@ class MathGeoPipeline:
 
     def run_builder(self) -> None:
         """步骤2：读取基础图形JSONL，生成增强图形（多线程+单次20秒超时）"""
+        self.base_jsonl_path = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n1000_easy/json/base/base_20260113_085709_594.jsonl"
         if not self.base_jsonl_path or not os.path.exists(self.base_jsonl_path):
             raise RuntimeError("未找到基础图形JSONL文件，无法执行增强步骤")
         
@@ -245,6 +255,8 @@ class MathGeoPipeline:
                 try:
                     line_num, line, task_seed = task_queue.get_nowait()
                     logger.info(f"线程[{threading.current_thread().name}] 处理基础图形 #{line_num}")
+                    
+                    partial_results = []
 
                     # 定义单个增强任务
                     def enhance_task():
@@ -258,27 +270,35 @@ class MathGeoPipeline:
                                                                     ['connect_points', 'connect_midpoints', 'draw_perpendicular', 'draw_diameter']),
                             "operation_probs": builder_cfg.get('operation_probs', {}), 
                             "operation_constraints": builder_cfg.get('operation_constraints', {}),
-                            "seed": task_seed
+                            "seed": task_seed,
+                            "_result_collector": partial_results 
                         })
 
                     # 执行任务（带超时）
                     status, result = self._run_task_with_timeout(enhance_task, timeout=self.task_timeout)
+                    
+                    final_results = []
 
                     if status == 'success':
-                        enhancements = result
-                        # 线程安全写入文件和收集结果
+                        final_results = result
+                        logger.info(f"线程[{threading.current_thread().name}] 基础图形 #{line_num} 增强成功（{len(final_results)}个结果）")
+                        success_count += 1
+                    else:
+                        if partial_results:
+                            final_results = partial_results
+                            logger.warning(f"线程[{threading.current_thread().name}] 基础图形 #{line_num} 发生 {status}，但保留 {len(final_results)} 个有效增强结果")
+                        else:
+                            logger.error(f"线程[{threading.current_thread().name}] 基础图形 #{line_num} {status} 且无任何产出，跳过。原因：{str(result)}")
+                        
+                    if final_results:
                         with write_lock:
                             with open(enhanced_jsonl_path, 'a', encoding='utf-8') as enhanced_f:
-                                for enh_json in enhancements:
+                                for enh_json in final_results:
                                     json.dump(enh_json, enhanced_f, ensure_ascii=False)
                                     enhanced_f.write("\n")
                                     self.enhanced_jsons.append(enh_json)
-                        logger.info(f"线程[{threading.current_thread().name}] 基础图形 #{line_num} 增强成功（{len(enhancements)}个结果）")
                         success_count += 1
-                    elif status == 'timeout':
-                        logger.error(f"线程[{threading.current_thread().name}] 基础图形 #{line_num} 增强超时（{self.task_timeout}秒），跳过")
-                    else:
-                        logger.error(f"线程[{threading.current_thread().name}] 基础图形 #{line_num} 增强失败：{str(result)}，跳过")
+
                 except queue.Empty:
                     break
                 except Exception as e:
@@ -325,38 +345,13 @@ class MathGeoPipeline:
         annotator_config = self.config.get('annotator', {})
         output_root = self.config['global']['output_root']
         shader_enabled = shader_config.get('enabled', False)
+        self.config['drawer']['jsonl_path'] = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results_n20_v7/json/enhanced/enhanced_20260112_135944_623.jsonl"
 
         json_output_dir = os.path.join(output_root, 'json/shaded')
         self.shaded_jsonl_path = os.path.join(
             json_output_dir, 
             f'shaded_{self._get_timestamp()}.jsonl'
         )
-
-        # self.config['drawer']['jsonl_path'] = "/mnt/afs/jingjinhao/project/GeoChain/MathGeo/results/json/enhanced/enhanced_20251102_094839_151.jsonl"
-        # jsonl_path = self.config['drawer']['jsonl_path']  # 获取该路径
-
-        # 读取jsonl文件并解析为self.enhanced_jsons
-        # self.enhanced_jsons = []
-        # if not os.path.exists(jsonl_path):
-        #     logger.error(f"指定的jsonl文件不存在：{jsonl_path}")
-        #     raise FileNotFoundError(f"增强图形jsonl文件不存在：{jsonl_path}")
-        
-        # try:
-        #     with open(jsonl_path, 'r', encoding='utf-8') as f:
-        #         for line_num, line in enumerate(f, 1):
-        #             line = line.strip()
-        #             if not line:  # 跳过空行
-        #                 continue
-        #             try:
-        #                 # 解析每行的JSON数据并添加到列表
-        #                 geo_data = json.loads(line)
-        #                 self.enhanced_jsons.append(geo_data)
-        #             except json.JSONDecodeError as e:
-        #                 logger.warning(f"跳过无效JSON行（第{line_num}行）：{str(e)}")
-        #     logger.info(f"成功从{jsonl_path}加载{len(self.enhanced_jsons)}条增强图形数据")
-        # except Exception as e:
-        #     logger.error(f"读取jsonl文件失败：{str(e)}")
-        #     raise
 
         tool_config = {
             "global": {"output_root": output_root},
@@ -372,6 +367,15 @@ class MathGeoPipeline:
         enhanced_drawer = EnhancedDrawer(tool_config)
         enhanced_jsonl_path = self.config['drawer'].get('jsonl_path')
         enhanced_drawer.load_enhanced_jsonl(enhanced_jsonl_path)
+        if enhanced_jsonl_path and os.path.exists(enhanced_jsonl_path):
+            # 如果列表为空，才加载，防止重复添加（视你的需求而定）
+            if not self.enhanced_jsons: 
+                logger.info(f"从文件加载增强数据: {enhanced_jsonl_path}")
+                with open(enhanced_jsonl_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line:
+                            self.enhanced_jsons.append(json.loads(line))
         enhanced_drawer.set_enhanced_data(self.enhanced_jsons)
 
         try:
@@ -508,12 +512,12 @@ class MathGeoPipeline:
     def run(self) -> None:
         """执行全流程"""
         try:
-            self.run_template()      # 生成基础图形（多线程+超时）
+            # self.run_template()      # 生成基础图形（多线程+超时）
             self.run_builder()       # 增强图形（多线程+超时）
             # self.run_drawer()        # 绘制原始图像
-            self.run_shader()        # 区域阴影与标注
-            self.run_gt()            # 计算参数
-            self.run_qa()            # 生成问答
+            # self.run_shader()        # 区域阴影与标注
+            # self.run_gt()            # 计算参数
+            # self.run_qa()            # 生成问答
             logger.info("=== 全流程执行完成 ===")
         except Exception as e:
             logger.error(f"流程执行失败: {str(e)}", exc_info=True)
@@ -527,7 +531,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         type=str,
-        default="./scripts/config_test.json",
+        default="./scripts/config_easy.json",
         help="总配置文件路径"
     )
     args = parser.parse_args()

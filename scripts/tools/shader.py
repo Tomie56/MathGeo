@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import math
+import random
 import numpy as np
 import cv2
 from dataclasses import dataclass
@@ -67,9 +68,117 @@ class GeometryAnnotator:
     def __init__(self, annotator_config: Dict):
         self.config = self._validate_annotator_config(annotator_config)
         self.point_id_pattern = re.compile(r'^(?!circle_\d+$).+$')
+        self.center_point_enabled = self.config.get("center_point", True)
 
-        self.point_font = self.config["point"]["text"]["font"]
-        self.line_font = self.config["line"]["text"]["font"]
+        # if(self.config["line"]["text"]["font_selection"] = "random")
+        #     self.point_font =
+        #     self.line_font =
+        # else:
+        #     self.point_font = self.config["point"]["text"]["font"]
+        #     self.line_font = self.config["line"]["text"]["font"]
+        
+        self._random_select_font()
+
+    def _random_select_font(self):
+        """
+        随机选择字体（适配配置中font为"cv2.FONT_XXX"字符串格式）
+        特性：
+        1. 线标注候选列表默认包含所有OpenCV内置字体
+        2. 自动检查字体有效性，剔除无效字体
+        3. 兼容random/fixed选择模式
+        """
+        # ========== 1. 定义完整的OpenCV字体映射（包含所有内置字体） ==========
+        OPENCV_FONT_MAP = {
+            # 完整字体名称（匹配配置中的"cv2.FONT_XXX"格式）
+            "cv2.FONT_HERSHEY_SIMPLEX": cv2.FONT_HERSHEY_SIMPLEX,
+            "cv2.FONT_HERSHEY_PLAIN": cv2.FONT_HERSHEY_PLAIN,
+            "cv2.FONT_HERSHEY_DUPLEX": cv2.FONT_HERSHEY_DUPLEX,
+            "cv2.FONT_HERSHEY_COMPLEX": cv2.FONT_HERSHEY_COMPLEX,
+            "cv2.FONT_HERSHEY_TRIPLEX": cv2.FONT_HERSHEY_TRIPLEX,
+            "cv2.FONT_HERSHEY_COMPLEX_SMALL": cv2.FONT_HERSHEY_COMPLEX_SMALL,
+            "cv2.FONT_HERSHEY_SCRIPT_SIMPLEX": cv2.FONT_HERSHEY_SCRIPT_SIMPLEX,
+            "cv2.FONT_HERSHEY_SCRIPT_COMPLEX": cv2.FONT_HERSHEY_SCRIPT_COMPLEX,
+            "cv2.FONT_ITALIC": cv2.FONT_ITALIC,
+            # 简写形式（兼容配置）
+            "FONT_HERSHEY_SIMPLEX": cv2.FONT_HERSHEY_SIMPLEX,
+            "FONT_HERSHEY_PLAIN": cv2.FONT_HERSHEY_PLAIN,
+            "FONT_HERSHEY_DUPLEX": cv2.FONT_HERSHEY_DUPLEX,
+            "FONT_HERSHEY_COMPLEX": cv2.FONT_HERSHEY_COMPLEX,
+            "FONT_HERSHEY_TRIPLEX": cv2.FONT_HERSHEY_TRIPLEX,
+            "FONT_HERSHEY_COMPLEX_SMALL": cv2.FONT_HERSHEY_COMPLEX_SMALL,
+            "FONT_HERSHEY_SCRIPT_SIMPLEX": cv2.FONT_HERSHEY_SCRIPT_SIMPLEX,
+            "FONT_HERSHEY_SCRIPT_COMPLEX": cv2.FONT_HERSHEY_SCRIPT_COMPLEX,
+            "FONT_ITALIC": cv2.FONT_ITALIC
+        }
+
+        # ========== 2. 通用工具函数 ==========
+        def parse_font(font_str: str) -> int:
+            """解析字体字符串为OpenCV常量（容错处理）"""
+            if not isinstance(font_str, str):
+                return cv2.FONT_HERSHEY_SIMPLEX
+            
+            # 清理字符串（去除引号、空格）
+            clean_str = re.sub(r'["\']|\s', '', font_str.strip())
+            # 查找映射，无匹配则返回默认值
+            return OPENCV_FONT_MAP.get(clean_str, cv2.FONT_HERSHEY_SIMPLEX)
+
+        def validate_font_candidates(candidates: List[str]) -> Set[int]:
+            """验证并过滤字体候选列表，返回有效OpenCV字体常量集合"""
+            valid_fonts = set()
+            for font_str in candidates:
+                font_const = parse_font(font_str)
+                # 确保是有效的OpenCV字体常量（排除默认值误判）
+                if font_const in OPENCV_FONT_MAP.values():
+                    valid_fonts.add(font_const)
+            return valid_fonts
+
+        # ========== 3. 获取所有内置字体常量（作为线标注默认候选） ==========
+        ALL_BUILTIN_FONTS = list(OPENCV_FONT_MAP.values())
+
+        # ========== 4. 处理点标注字体 ==========
+        point_text_cfg = self.config["point"]["text"]
+        # 4.1 获取点的候选列表
+        point_candidates = point_text_cfg.get(
+            "font_candidates",
+            ALL_BUILTIN_FONTS
+        )
+        # 4.2 验证并过滤候选列表
+        valid_point_fonts = validate_font_candidates(point_candidates)
+        # 4.3 兜底：若无有效字体，使用默认候选
+        if not valid_point_fonts:
+            valid_point_fonts = {cv2.FONT_HERSHEY_SIMPLEX}
+        
+        # 4.4 根据选择模式设置字体
+        if point_text_cfg.get("font_selection") == "random":
+            self.point_font = random.choice(list(valid_point_fonts))
+        else:
+            self.point_font = parse_font(point_text_cfg.get("font", "cv2.FONT_HERSHEY_SIMPLEX"))
+
+        # ========== 5. 处理线标注字体 ==========
+        line_text_cfg = self.config["line"]["text"]
+        # 5.1 获取线的候选列表
+        line_candidates = line_text_cfg.get(
+            "font_candidates",
+            ALL_BUILTIN_FONTS
+        )
+        # 兼容配置中直接传常量的情况（转为字符串再验证）
+        if isinstance(line_candidates, list) and len(line_candidates) > 0:
+            if not isinstance(line_candidates[0], str):
+                line_candidates = [str(f) for f in line_candidates]
+        else:
+            line_candidates = [line_text_cfg.get("font", "cv2.FONT_HERSHEY_COMPLEX")]
+        
+        # 5.2 验证并过滤候选列表
+        valid_line_fonts = validate_font_candidates(line_candidates)
+        # 5.3 兜底：若无有效字体，使用所有内置字体
+        if not valid_line_fonts:
+            valid_line_fonts = set(ALL_BUILTIN_FONTS)
+        
+        # 5.4 根据选择模式设置字体
+        if line_text_cfg.get("font_selection") == "random":
+            self.line_font = random.choice(list(valid_line_fonts))
+        else:
+            self.line_font = parse_font(line_text_cfg.get("font", "cv2.FONT_HERSHEY_COMPLEX"))
 
     def _validate_annotator_config(self, cfg: Dict) -> Dict:
         default = {
@@ -300,6 +409,19 @@ class GeometryAnnotator:
         non_text_bboxes = []
         points = data.get("points", [])
         lines = data.get("lines", [])
+        entities = data.get("entities", [])
+        
+        circle_center_ids = set()
+        for entity in entities:
+            if entity.get("type") == "circle":
+                center_id = entity.get("center_id")
+                if center_id:
+                    circle_center_ids.add(center_id)
+        
+        for point in points:
+            if point.get("id") in circle_center_ids:
+                point["is_circle_center"] = True
+        
         
         valid_points = [p for p in points if self.point_id_pattern.match(p["id"])]
         points_dict = {p["id"]: p for p in valid_points}
@@ -332,6 +454,8 @@ class GeometryAnnotator:
         font_thickness = text_cfg["thickness"]
 
         for point in points:
+            if self.center_point_enabled == False and point.get("is_center", False) and point.get("is_circle_center", False) == False:
+                continue
             try:
                 pid = point["id"]
                 x = self._parse_math_expr(point["x"]["expr"])
@@ -706,16 +830,29 @@ class EnhancedDrawer:
                 continue
             else:
                 self.success += 1
+                
+            desc_parts = [f"Region {region['label']} is shaded with {shadow_type} pattern"]
+            if shadow_type == "solid":
+                color = shader_params.get("color", "unknown")
+                desc_parts.append(f"in color {color}")
+            
+            final_desc = " ".join(desc_parts) + "."
+            shadow_descriptions_text.append(final_desc)
 
             # 构建阴影实体信息（与原有格式一致）
             shadow_entity = {
                 "type": "shadow",
                 "region_label": region["label"],
+                "description": final_desc,
                 "points": entity_data["points"],
                 "lines": entity_data["lines"],
                 "arcs": entity_data["arcs"],
                 "ordered_loops": entity_data["ordered_loops"],
-                "validity": entity_data["validity"]
+                "validity": entity_data["validity"],
+                "shader_params": {
+                    "type": shadow_type,
+                    **shader_params
+                }
             }
             shadow_entities.append(shadow_entity)
             shaded_img = shader.apply(shaded_img, region["mask"],** shader_params)
@@ -737,6 +874,11 @@ class EnhancedDrawer:
         # 更新并保存结果数据
         new_data = data.copy()
         new_data["entities"] = new_data.get("entities", []) + shadow_entities
+        
+        original_desc = new_data.get("description", "")
+        if shadow_descriptions_text:
+            new_data["description"] = original_desc + "\n" + "\n".join(shadow_descriptions_text)
+            
         new_data.update({
             "raw_path": raw_save_path,
             "annotated_raw_path": annotated_raw_path,
@@ -805,26 +947,51 @@ class EnhancedDrawer:
         return available_regions_sorted[:select_n]
 
     def _get_shader_params(self, shadow_type: str) -> Dict:
-        """生成阴影参数（随机化强度等）"""
+        """生成阴影参数（高度随机化：强度、颜色、间距、角度）"""
+        # 1. 随机强度 (基于配置范围)
         intensity = np.random.uniform(*self.config["shader"]["intensity_range"])
+
+        # 辅助函数：生成随机颜色 (BGR格式)
+        def get_random_color():
+            return np.random.randint(0, 256, 3).tolist()
+
         if shadow_type == "hatch":
-            return {"spacing": self.config["shader"]["hatch_spacing"], "intensity": intensity}
+            # 间距增加随机微扰 (±20%)
+            base_spacing = self.config["shader"]["hatch_spacing"]
+            random_spacing = int(base_spacing * np.random.uniform(0.8, 1.2))
+            return {
+                "spacing": max(3, random_spacing), # 保证最小间距
+                "intensity": intensity
+            }
+
         elif shadow_type == "crosshatch":
+            # 间距微扰 + 整体角度随机旋转
+            base_spacing = self.config["shader"]["crosshatch_spacing"]
+            random_spacing = int(base_spacing * np.random.uniform(0.8, 1.2))
+            angle_offset = np.random.randint(0, 90) # 随机旋转偏移
             return {
-                "spacing": self.config["shader"]["crosshatch_spacing"],
-                "angle1": 45, 
-                "angle2": 135,
+                "spacing": max(3, random_spacing),
+                "angle1": 45 + angle_offset, 
+                "angle2": 135 + angle_offset,
                 "intensity": intensity
             }
+
         elif shadow_type == "solid":
-            return {"color": (128, 128, 128), "intensity": intensity}
-        elif shadow_type == "gradient":
+            # 完全随机颜色
             return {
-                "start_color": (200, 200, 200),
-                "end_color": (100, 100, 100),
-                "angle_deg": 45,
+                "color": get_random_color(), 
                 "intensity": intensity
             }
+
+        elif shadow_type == "gradient":
+            # 随机起始色、结束色、渐变角度
+            return {
+                "start_color": get_random_color(),
+                "end_color": get_random_color(),
+                "angle_deg": np.random.randint(0, 360),
+                "intensity": intensity
+            }
+
         # 默认参数
         return {"intensity": intensity}
 

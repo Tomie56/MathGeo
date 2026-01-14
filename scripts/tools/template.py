@@ -169,16 +169,18 @@ class TemplateGenerator:
         - 其他：普通点（A,B,C...）+ 后续圆上交点/切点
         核心逻辑：查重，circle_x与普通点重合时用普通点替换并更新关联边
         """
-        x_expr = simplify(x_expr)
-        y_expr = simplify(y_expr)
+        # x_expr = simplify(x_expr)
+        # y_expr = simplify(y_expr)
 
         # 第一步：查重（检查是否与已有点重合）
         for idx, old_point in enumerate(self.data["points"]):
-            old_x = simplify(sp.sympify(old_point["x"]["expr"]))
-            old_y = simplify(sp.sympify(old_point["y"]["expr"]))
+            old_x = sp.simplify(old_point["x"]["expr"])
+            old_y = sp.simplify(old_point["y"]["expr"])
             
-            x_diff = sp.simplify(old_x - x_expr)
-            y_diff = sp.simplify(old_y - y_expr)
+            # x_diff = sp.simplify(old_x - x_expr)
+            # y_diff = sp.simplify(old_y - y_expr)
+            x_diff = old_x - x_expr
+            y_diff = old_y - y_expr
             x_equal = x_diff.is_zero
             y_equal = y_diff.is_zero
             update_tag = old_point.get("is_circle_init") or old_point.get("is_center")
@@ -350,13 +352,257 @@ class TemplateGenerator:
             if line["id"] == line_id:
                 return line["start_point_id"], line["end_point_id"]
         raise ValueError(f"在边列表中未找到ID为 '{line_id}' 的边。")
+    
+    EPS = 1e-10
+
+    def _eval_value(self, expr: sp.Expr) -> float:
+        """
+        辅助函数：将符号表达式转换为高精度浮点数，用于快速逻辑判断。
+        如果表达式无法求值（如含未知符号），返回0以便后续逻辑处理（虽然在此场景下通常不会发生）。
+        """
+        try:
+            # n=20 保证足够的精度以避免边界误判
+            val = expr.evalf(n=20)
+            if val.is_Number:
+                return float(val)
+            return 0.0 
+        except Exception:
+            return 0.0
+
+    def _segment_circle_intersection(self,
+                                     x1: sp.Expr, y1: sp.Expr,
+                                     x2: sp.Expr, y2: sp.Expr,
+                                     cx: sp.Expr, cy: sp.Expr,
+                                     r: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
+        """
+        计算线段与圆的交点
+        优化策略：
+        1. 构建符号表达式但不立即 simplify。
+        2. 使用 evalf() 算出数值进行判别式 D 和参数 t 的快速筛选。
+        3. 筛选通过后，才计算并返回精确的符号坐标。
+        """
+        intersections = []
+        
+        # 构建原始表达式树，不立即化简
+        dx = x2 - x1
+        dy = y2 - y1
+
+        # 1. 计算一元二次方程系数（ax² + bx + c = 0）
+        a = dx**2 + dy**2
+        b = 2 * (dx * (x1 - cx) + dy * (y1 - cy))
+        c = (x1 - cx)**2 + (y1 - cy)**2 - r**2
+
+        # 2. 线段退化处理：数值判断 a 是否接近 0
+        a_val = self._eval_value(a)
+        if abs(a_val) < self.EPS:
+            # 如果线段是一个点，检查这个点是否在圆上
+            c_val = self._eval_value(c)
+            if abs(c_val) < self.EPS:
+                intersections.append((x1, y1))
+            return intersections
+
+        # 3. 判别式分析
+        D = b**2 - 4 * a * c
+        D_val = self._eval_value(D)
+
+        # 3.1 无实数解（数值判断）
+        if D_val < -self.EPS:
+            return intersections
+
+        # 4. 计算 t 的候选值（符号表达式）
+        t_candidates = []
+        if abs(D_val) < self.EPS:  # 切点
+            t = -b / (2 * a)
+            t_candidates.append(t)
+        else:  # 两个解
+            sqrt_D = sp.sqrt(D)
+            t1 = (-b - sqrt_D) / (2 * a)
+            t2 = (-b + sqrt_D) / (2 * a)
+            t_candidates = [t1, t2]
+
+        # 5. 校验 t 值有效性
+        # 策略：先用数值快速判断是否在 [0, 1] 区间，通过后再保留符号解
+        valid_ts = []
+        for t in t_candidates:
+            t_val = self._eval_value(t)
+            # 使用 EPS 处理边界 (0-eps <= t <= 1+eps)
+            if -self.EPS <= t_val <= 1.0 + self.EPS:
+                valid_ts.append(t)
+
+        if not valid_ts:
+            return intersections
+
+        # 6. 计算交点 + 二次校验
+        seen = set()
+        for t in valid_ts:
+            # 计算精确的符号坐标
+            x = x1 + t * dx
+            y = y1 + t * dy
+            
+            # 数值二次校验：确保点确实在圆上 (dist^2 - r^2 ≈ 0)
+            # 这一步是为了防止极少数情况下的判别式误差
+            dist_sq = (x - cx)**2 + (y - cy)**2
+            check_val = self._eval_value(dist_sq - r**2)
+            
+            if abs(check_val) < 1e-5: # 稍微放宽二次校验的容差
+                # 仅在最终输出前进行化简
+                final_x = sp.simplify(x)
+                final_y = sp.simplify(y)
+                
+                key = (str(final_x), str(final_y))
+                if key not in seen:
+                    seen.add(key)
+                    intersections.append((final_x, final_y))
+
+        return intersections
+
+    def _circle_circle_intersection(self,
+                                    cx1: sp.Expr, cy1: sp.Expr, r1: sp.Expr,
+                                    cx2: sp.Expr, cy2: sp.Expr, r2: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
+        """
+        计算两圆的交点
+        优化策略：利用圆心距离的数值进行快速剔除（相离/内含），避免无意义的符号计算。
+        """
+        intersections = []
+
+        # 1. 构建距离表达式
+        dx = cx2 - cx1
+        dy = cy2 - cy1
+        d_sq = dx**2 + dy**2
+        
+        # 计算数值用于判断
+        d_val = sqrt(self._eval_value(d_sq))
+        r1_val = self._eval_value(r1)
+        r2_val = self._eval_value(r2)
+
+        # 2. 快速数值筛选
+        sum_r = r1_val + r2_val
+        diff_r = abs(r1_val - r2_val)
+
+        # 两圆相离 (d > r1+r2) 或 内含 (d < |r1-r2|)
+        if d_val > sum_r + self.EPS or d_val < diff_r - self.EPS:
+            return intersections
+            
+        # 两圆重合
+        if d_val < self.EPS and diff_r < self.EPS:
+            return []
+
+        # 3. 计算解析解的中间变量（符号计算）
+        d = sp.sqrt(d_sq)
+        # a 是平移坐标系下的 x 坐标
+        a = (r1**2 - r2**2 + d_sq) / (2 * d)
+        
+        h_sq = r1**2 - a**2
+        
+        # 数值卫兵检查 h_sq 是否非负
+        h_sq_val = self._eval_value(h_sq)
+        if h_sq_val < -self.EPS:
+            return intersections
+        
+        h = sp.sqrt(h_sq)
+
+        # 平移坐标系下的交点
+        x_prime = a
+        y_prime_1 = h
+        y_prime_2 = -h
+
+        # 4. 旋转还原坐标（符号计算）
+        # 提取公因式优化表达式树结构
+        inv_d = 1/d 
+        dx_d = dx * inv_d
+        dy_d = dy * inv_d
+
+        x1_sol = cx1 + x_prime * dx_d - y_prime_1 * dy_d
+        y1_sol = cy1 + x_prime * dy_d + y_prime_1 * dx_d
+
+        x2_sol = cx1 + x_prime * dx_d - y_prime_2 * dy_d
+        y2_sol = cy1 + x_prime * dy_d + y_prime_2 * dx_d
+
+        # 5. 输出结果
+        # 如果是切点 (h ≈ 0)，只添加一个
+        if abs(h_sq_val) < self.EPS:
+            intersections.append((sp.simplify(x1_sol), sp.simplify(y1_sol)))
+        else:
+            intersections.append((sp.simplify(x1_sol), sp.simplify(y1_sol)))
+            intersections.append((sp.simplify(x2_sol), sp.simplify(y2_sol)))
+
+        return intersections
+
+    def _segment_segment_intersection(
+        self,
+        x1: sp.Expr, y1: sp.Expr,
+        x2: sp.Expr, y2: sp.Expr,
+        x3: sp.Expr, y3: sp.Expr,
+        x4: sp.Expr, y4: sp.Expr
+    ) -> List[Tuple[sp.Expr, sp.Expr]]:
+        """
+        计算两条线段的交点
+        优化策略：
+        1. 移除开头的端点符号检查（O(N^2)且耗时），改用参数 t, s 的数值范围判断。
+        2. 使用数值快速判断平行。
+        """
+        
+        # 构建向量
+        dx1 = x2 - x1
+        dy1 = y2 - y1
+        dx2 = x4 - x3
+        dy2 = y4 - y3
+        
+        # 1. 快速平行判断
+        cross_product = dx1 * dy2 - dx2 * dy1
+        cp_val = self._eval_value(cross_product)
+        
+        if abs(cp_val) < self.EPS:
+            return []
+        
+        # 2. 计算参数 t 和 s 的符号表达式
+        delta_x = x3 - x1
+        delta_y = y3 - y1
+        
+        t_num = delta_x * dy2 - delta_y * dx2
+        s_num = delta_x * dy1 - delta_y * dx1
+        
+        t_sym = t_num / cross_product
+        s_sym = s_num / cross_product
+        
+        # 3. 数值卫兵：检查 t, s 是否在有效区间内
+        # 根据需求：仅保留线段内部交点 (0 < t < 1)
+        # 如果包含端点，请改为 >= -EPS 和 <= 1.0 + EPS
+        t_val = self._eval_value(t_sym)
+        s_val = self._eval_value(s_sym)
+        
+        # 严格内部交点判断，使用 EPS 避免浮点抖动
+        is_t_valid = (t_val >= self.EPS) and (t_val <= 1.0 - self.EPS)
+        is_s_valid = (s_val >= self.EPS) and (s_val <= 1.0 - self.EPS)
+        
+        if not (is_t_valid and is_s_valid):
+            return []
+        
+        # 4. 计算并化简交点
+        # 此时已经确认交点有效，进行昂贵的符号计算和化简
+        x = x1 + t_sym * dx1
+        y = y1 + t_sym * dy1
+        
+        # 简单的去重逻辑（基于字符串），防止微小误差导致的重复
+        unique_intersections = []
+        seen = set()
+        
+        final_x = sp.simplify(x)
+        final_y = sp.simplify(y)
+        
+        key = (str(final_x), str(final_y))
+        if key not in seen:
+            seen.add(key)
+            unique_intersections.append((final_x, final_y))
+        
+        return unique_intersections
 
     # ------------------------------ 几何检查与交点计算 ------------------------------
     def _is_point_on_segment(self, px: sp.Expr, py: sp.Expr, 
                            x1: sp.Expr, y1: sp.Expr, 
                            x2: sp.Expr, y2: sp.Expr) -> bool:
         """判断点是否在线段上"""
-        collinear = sp.simplify((px - x1) * (y2 - y1) - (py - y1) * (x2 - x1)) == 0
+        collinear = sp.expand((px - x1) * (y2 - y1) - (py - y1) * (x2 - x1)) == 0
         if not collinear:
             return False
         x_min = Min(x1, x2)
@@ -365,214 +611,214 @@ class TemplateGenerator:
         y_max = Max(y1, y2)
         in_x_range = sp.And(px >= x_min, px <= x_max)
         in_y_range = sp.And(py >= y_min, py <= y_max)
-        return bool(sp.simplify(in_x_range & in_y_range))
+        return bool(in_x_range & in_y_range)
 
-    def _segment_circle_intersection(self,
-                                        x1: sp.Expr, y1: sp.Expr,
-                                        x2: sp.Expr, y2: sp.Expr,
-                                        cx: sp.Expr, cy: sp.Expr,
-                                        r: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
-        """
-        计算线段与圆的交点（纯解析解，无sp.solve，兼容垂直线段/切点）
-        """
-        intersections = []
-        dx = sp.simplify(x2 - x1)
-        dy = sp.simplify(y2 - y1)
+    # def _segment_circle_intersection(self,
+    #                                     x1: sp.Expr, y1: sp.Expr,
+    #                                     x2: sp.Expr, y2: sp.Expr,
+    #                                     cx: sp.Expr, cy: sp.Expr,
+    #                                     r: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
+    #     """
+    #     计算线段与圆的交点（纯解析解，无sp.solve，兼容垂直线段/切点）
+    #     """
+    #     intersections = []
+    #     dx = sp.simplify(x2 - x1)
+    #     dy = sp.simplify(y2 - y1)
 
-        # 1. 计算一元二次方程系数（ax² + bx + c = 0）
-        a = sp.simplify(dx**2 + dy**2)
-        b = sp.simplify(2 * (dx * (x1 - cx) + dy * (y1 - cy)))
-        c = sp.simplify((x1 - cx)**2 + (y1 - cy)**2 - r**2)
+    #     # 1. 计算一元二次方程系数（ax² + bx + c = 0）
+    #     a = sp.simplify(dx**2 + dy**2)
+    #     b = sp.simplify(2 * (dx * (x1 - cx) + dy * (y1 - cy)))
+    #     c = sp.simplify((x1 - cx)**2 + (y1 - cy)**2 - r**2)
 
-        # 2. 线段退化处理（符号等式判断）
-        if sp.simplify(sp.Eq(a, 0)):
-            if sp.simplify(sp.Eq(c, 0)):
-                intersections.append((x1, y1))
-            return intersections
+    #     # 2. 线段退化处理（符号等式判断）
+    #     if sp.simplify(sp.Eq(a, 0)):
+    #         if sp.simplify(sp.Eq(c, 0)):
+    #             intersections.append((x1, y1))
+    #         return intersections
 
-        # 3. 判别式分析（无solve，纯化简判断）
-        D = sp.simplify(b**2 - 4 * a * c)
-        sqrt_D = sp.sqrt(D)
+    #     # 3. 判别式分析（无solve，纯化简判断）
+    #     D = sp.simplify(b**2 - 4 * a * c)
+    #     sqrt_D = sp.sqrt(D)
 
-        # 3.1 无实数解（D<0，符号化简判断）
-        if sp.simplify(D < 0):
-            return intersections
+    #     # 3.1 无实数解（D<0，符号化简判断）
+    #     if sp.simplify(D < 0):
+    #         return intersections
 
-        # 4. 计算t值解析解（线段参数方程：t∈[0,1]）
-        t_candidates = []
-        if sp.simplify(sp.Eq(D, 0)):  # 切点：唯一解
-            t = sp.simplify(-b / (2 * a))
-            t_candidates.append(t)
-        else:  # 两个解（求根公式直接推导）
-            t1 = sp.simplify((-b - sqrt_D) / (2 * a))
-            t2 = sp.simplify((-b + sqrt_D) / (2 * a))
-            t_candidates = [t1, t2]
+    #     # 4. 计算t值解析解（线段参数方程：t∈[0,1]）
+    #     t_candidates = []
+    #     if sp.simplify(sp.Eq(D, 0)):  # 切点：唯一解
+    #         t = sp.simplify(-b / (2 * a))
+    #         t_candidates.append(t)
+    #     else:  # 两个解（求根公式直接推导）
+    #         t1 = sp.simplify((-b - sqrt_D) / (2 * a))
+    #         t2 = sp.simplify((-b + sqrt_D) / (2 * a))
+    #         t_candidates = [t1, t2]
 
-        # 5. 校验t值有效性（实数+[0,1]区间，无solve）
-        def is_valid_t(t: sp.Expr) -> bool:
-            """校验t是否为实数且在[0,1]区间（纯符号化简判断）"""
-            # 实数判断：虚部为0（符号场景下避免is_real的None返回）
-            is_real = sp.simplify(sp.im(t)) == 0
-            # 区间判断：0≤t≤1（符号不等式化简）
-            in_range = sp.simplify(sp.And(t >= 0, t <= 1))
-            # 合并判断（化简后为True/False或恒成立的符号表达式）
-            return sp.simplify(is_real and in_range)
+    #     # 5. 校验t值有效性（实数+[0,1]区间，无solve）
+    #     def is_valid_t(t: sp.Expr) -> bool:
+    #         """校验t是否为实数且在[0,1]区间（纯符号化简判断）"""
+    #         # 实数判断：虚部为0（符号场景下避免is_real的None返回）
+    #         is_real = sp.simplify(sp.im(t)) == 0
+    #         # 区间判断：0≤t≤1（符号不等式化简）
+    #         in_range = sp.simplify(sp.And(t >= 0, t <= 1))
+    #         # 合并判断（化简后为True/False或恒成立的符号表达式）
+    #         return sp.simplify(is_real and in_range)
 
-        valid_ts = [t for t in t_candidates if is_valid_t(t)]
-        if not valid_ts:
-            return intersections
+    #     valid_ts = [t for t in t_candidates if is_valid_t(t)]
+    #     if not valid_ts:
+    #         return intersections
 
-        # 6. 计算交点+二次校验（确保在圆上）
-        seen = set()
-        for t in valid_ts:
-            x = sp.simplify(x1 + t * dx)
-            y = sp.simplify(y1 + t * dy)
+    #     # 6. 计算交点+二次校验（确保在圆上）
+    #     seen = set()
+    #     for t in valid_ts:
+    #         x = sp.simplify(x1 + t * dx)
+    #         y = sp.simplify(y1 + t * dy)
             
-            # 二次校验：交点到圆心距离=半径（符号等式验证）
-            dist_sq = sp.simplify((x - cx)**2 + (y - cy)**2)
-            r_sq = sp.simplify(r**2)
-            if sp.simplify(sp.Eq(dist_sq, r_sq)):
-                key = (str(x), str(y))
-                if key not in seen:
-                    seen.add(key)
-                    intersections.append((x, y))
+    #         # 二次校验：交点到圆心距离=半径（符号等式验证）
+    #         dist_sq = sp.simplify((x - cx)**2 + (y - cy)**2)
+    #         r_sq = sp.simplify(r**2)
+    #         if sp.simplify(sp.Eq(dist_sq, r_sq)):
+    #             key = (str(x), str(y))
+    #             if key not in seen:
+    #                 seen.add(key)
+    #                 intersections.append((x, y))
 
-        return intersections
+    #     return intersections
 
-    def _circle_circle_intersection(self,
-                                            cx1: sp.Expr, cy1: sp.Expr, r1: sp.Expr,
-                                            cx2: sp.Expr, cy2: sp.Expr, r2: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
-        """
-        计算两圆的交点（纯符号解析解版本）。
-        完全基于公式推导，不调用 sp.solve，确保符号计算的纯粹性。
-        """
-        intersections = []
+    # def _circle_circle_intersection(self,
+    #                                         cx1: sp.Expr, cy1: sp.Expr, r1: sp.Expr,
+    #                                         cx2: sp.Expr, cy2: sp.Expr, r2: sp.Expr) -> List[Tuple[sp.Expr, sp.Expr]]:
+    #     """
+    #     计算两圆的交点（纯符号解析解版本）。
+    #     完全基于公式推导，不调用 sp.solve，确保符号计算的纯粹性。
+    #     """
+    #     intersections = []
 
-        # 1. 计算两圆心之间的距离和方向
-        dx = cx2 - cx1
-        dy = cy2 - cy1
-        d_sq = dx**2 + dy**2
-        d = sp.sqrt(d_sq)
-        d_simplified = sp.simplify(d)
+    #     # 1. 计算两圆心之间的距离和方向
+    #     dx = cx2 - cx1
+    #     dy = cy2 - cy1
+    #     d_sq = dx**2 + dy**2
+    #     d = sp.sqrt(d_sq)
+    #     d_simplified = sp.simplify(d)
 
-        # 2. 快速判断：无交点或有无数交点的情况
-        sum_r = r1 + r2
-        diff_r = sp.Abs(r1 - r2)
+    #     # 2. 快速判断：无交点或有无数交点的情况
+    #     sum_r = r1 + r2
+    #     diff_r = sp.Abs(r1 - r2)
 
-        # 两圆相离或内含
-        if sp.simplify(d_simplified > sum_r) or sp.simplify(d_simplified < diff_r):
-            return intersections
-        # 两圆重合（有无数交点）
-        if sp.simplify(d_simplified == 0) and sp.simplify(r1 == r2):
-            # 这里我们无法返回无穷多个点，通常在这种情况下，我们会根据应用场景处理
-            # 例如，可以返回一个空列表，或者抛出一个特定的异常
-            # logger.warning("两圆完全重合，存在无穷多个交点。")
-            return []
+    #     # 两圆相离或内含
+    #     if sp.simplify(d_simplified > sum_r) or sp.simplify(d_simplified < diff_r):
+    #         return intersections
+    #     # 两圆重合（有无数交点）
+    #     if sp.simplify(d_simplified == 0) and sp.simplify(r1 == r2):
+    #         # 这里我们无法返回无穷多个点，通常在这种情况下，我们会根据应用场景处理
+    #         # 例如，可以返回一个空列表，或者抛出一个特定的异常
+    #         # logger.warning("两圆完全重合，存在无穷多个交点。")
+    #         return []
 
-        # 3. 计算解析解公式中的中间变量
-        # 为了公式简洁，我们将坐标系平移，使 C1 在原点
-        # 计算在平移坐标系下的交点坐标 (x', y')
-        a = (r1**2 - r2**2 + d_sq) / (2 * d)
-        h_sq = r1**2 - a**2
-        h_sq_simplified = sp.simplify(h_sq)
+    #     # 3. 计算解析解公式中的中间变量
+    #     # 为了公式简洁，我们将坐标系平移，使 C1 在原点
+    #     # 计算在平移坐标系下的交点坐标 (x', y')
+    #     a = (r1**2 - r2**2 + d_sq) / (2 * d)
+    #     h_sq = r1**2 - a**2
+    #     h_sq_simplified = sp.simplify(h_sq)
 
-        # 理论上 h_sq 应该非负，这里做一个保险
-        if sp.simplify(h_sq_simplified < 0):
-            return intersections
+    #     # 理论上 h_sq 应该非负，这里做一个保险
+    #     if sp.simplify(h_sq_simplified < 0):
+    #         return intersections
 
-        h = sp.sqrt(h_sq_simplified)
+    #     h = sp.sqrt(h_sq_simplified)
 
-        # 平移坐标系下的交点
-        x_prime = a
-        y_prime_1 = h
-        y_prime_2 = -h
+    #     # 平移坐标系下的交点
+    #     x_prime = a
+    #     y_prime_1 = h
+    #     y_prime_2 = -h
 
-        # 4. 将交点坐标平移回原坐标系，并旋转
-        # 旋转矩阵：[dx/d, -dy/d], [dy/d, dx/d]
-        x1 = cx1 + (x_prime * dx - y_prime_1 * dy) / d
-        y1 = cy1 + (x_prime * dy + y_prime_1 * dx) / d
+    #     # 4. 将交点坐标平移回原坐标系，并旋转
+    #     # 旋转矩阵：[dx/d, -dy/d], [dy/d, dx/d]
+    #     x1 = cx1 + (x_prime * dx - y_prime_1 * dy) / d
+    #     y1 = cy1 + (x_prime * dy + y_prime_1 * dx) / d
 
-        x2 = cx1 + (x_prime * dx - y_prime_2 * dy) / d
-        y2 = cy1 + (x_prime * dy + y_prime_2 * dx) / d
+    #     x2 = cx1 + (x_prime * dx - y_prime_2 * dy) / d
+    #     y2 = cy1 + (x_prime * dy + y_prime_2 * dx) / d
 
-        # 5. 化简并添加到结果列表
-        # 对于两圆相切的情况，两个点是同一个点，我们需要去重
-        if sp.simplify(h_sq_simplified == 0):
-            intersections.append((sp.simplify(x1), sp.simplify(y1)))
-        else:
-            intersections.append((sp.simplify(x1), sp.simplify(y1)))
-            intersections.append((sp.simplify(x2), sp.simplify(y2)))
+    #     # 5. 化简并添加到结果列表
+    #     # 对于两圆相切的情况，两个点是同一个点，我们需要去重
+    #     if sp.simplify(h_sq_simplified == 0):
+    #         intersections.append((sp.simplify(x1), sp.simplify(y1)))
+    #     else:
+    #         intersections.append((sp.simplify(x1), sp.simplify(y1)))
+    #         intersections.append((sp.simplify(x2), sp.simplify(y2)))
 
-        return intersections
+    #     return intersections
         
-    def _segment_segment_intersection(
-        self,
-        x1: sp.Expr, y1: sp.Expr,
-        x2: sp.Expr, y2: sp.Expr,
-        x3: sp.Expr, y3: sp.Expr,
-        x4: sp.Expr, y4: sp.Expr
-    ) -> List[Tuple[sp.Expr, sp.Expr]]:
-        """计算两条线段的交点（仅保留线段内部的交点，纯参数方程解析解，不使用sp.solve）"""
-        def points_equal(p1: Tuple[sp.Expr, sp.Expr], p2: Tuple[sp.Expr, sp.Expr]) -> bool:
-            """判断两个点是否重合（符号等式判断）"""
-            return sp.Eq(p1[0], p2[0]) and sp.Eq(p1[1], p2[1])
+    # def _segment_segment_intersection(
+    #     self,
+    #     x1: sp.Expr, y1: sp.Expr,
+    #     x2: sp.Expr, y2: sp.Expr,
+    #     x3: sp.Expr, y3: sp.Expr,
+    #     x4: sp.Expr, y4: sp.Expr
+    # ) -> List[Tuple[sp.Expr, sp.Expr]]:
+    #     """计算两条线段的交点（仅保留线段内部的交点，纯参数方程解析解，不使用sp.solve）"""
+    #     def points_equal(p1: Tuple[sp.Expr, sp.Expr], p2: Tuple[sp.Expr, sp.Expr]) -> bool:
+    #         """判断两个点是否重合（符号等式判断）"""
+    #         return sp.Eq(p1[0], p2[0]) and sp.Eq(p1[1], p2[1])
         
-        # 1. 排除线段端点重合的情况（不视为内部交点）
-        if (points_equal((x1, y1), (x3, y3)) or points_equal((x1, y1), (x4, y4)) or
-            points_equal((x2, y2), (x3, y3)) or points_equal((x2, y2), (x4, y4))):
-            return []
+    #     # 1. 排除线段端点重合的情况（不视为内部交点）
+    #     if (points_equal((x1, y1), (x3, y3)) or points_equal((x1, y1), (x4, y4)) or
+    #         points_equal((x2, y2), (x3, y3)) or points_equal((x2, y2), (x4, y4))):
+    #         return []
         
-        # 2. 计算线段方向向量与关键交叉积（参数方程核心变量）
-        dx1 = sp.simplify(x2 - x1)
-        dy1 = sp.simplify(y2 - y1)
-        dx2 = sp.simplify(x4 - x3)
-        dy2 = sp.simplify(y4 - y3)
+    #     # 2. 计算线段方向向量与关键交叉积（参数方程核心变量）
+    #     dx1 = sp.simplify(x2 - x1)
+    #     dy1 = sp.simplify(y2 - y1)
+    #     dx2 = sp.simplify(x4 - x3)
+    #     dy2 = sp.simplify(y4 - y3)
         
-        # 交叉积：判断两线段是否平行（cross_product=0则平行，无交点或共线）
-        cross_product = sp.simplify(dx1 * dy2 - dx2 * dy1)
-        if sp.simplify(sp.Eq(cross_product, 0)):
-            return []
+    #     # 交叉积：判断两线段是否平行（cross_product=0则平行，无交点或共线）
+    #     cross_product = sp.simplify(dx1 * dy2 - dx2 * dy1)
+    #     if sp.simplify(sp.Eq(cross_product, 0)):
+    #         return []
         
-        # 3. 解析解计算参数 t 和 s（基于参数方程联立，克莱姆法则推导）
-        # 线段1参数方程：(x1 + t*dx1, y1 + t*dy1)，t∈[0,1]
-        # 线段2参数方程：(x3 + s*dx2, y3 + s*dy2)，s∈[0,1]
-        # 联立方程求解 t 和 s 的解析解
-        delta_x = sp.simplify(x3 - x1)
-        delta_y = sp.simplify(y3 - y1)
+    #     # 3. 解析解计算参数 t 和 s（基于参数方程联立，克莱姆法则推导）
+    #     # 线段1参数方程：(x1 + t*dx1, y1 + t*dy1)，t∈[0,1]
+    #     # 线段2参数方程：(x3 + s*dx2, y3 + s*dy2)，s∈[0,1]
+    #     # 联立方程求解 t 和 s 的解析解
+    #     delta_x = sp.simplify(x3 - x1)
+    #     delta_y = sp.simplify(y3 - y1)
         
-        # t 的分子和分母（分母=cross_product≠0）
-        t_num = sp.simplify(delta_x * dy2 - delta_y * dx2)
-        t_val = sp.simplify(t_num / cross_product)
+    #     # t 的分子和分母（分母=cross_product≠0）
+    #     t_num = sp.simplify(delta_x * dy2 - delta_y * dx2)
+    #     t_val = sp.simplify(t_num / cross_product)
         
-        # s 的分子
-        s_num = sp.simplify(delta_x * dy1 - delta_y * dx1)
-        s_val = sp.simplify(s_num / cross_product)
+    #     # s 的分子
+    #     s_num = sp.simplify(delta_x * dy1 - delta_y * dx1)
+    #     s_val = sp.simplify(s_num / cross_product)
         
-        # 4. 校验 t 和 s 的有效性（实数+在[0,1]区间内）
-        def is_valid_param(param: sp.Expr) -> bool:
-            """校验参数是否为实数且在[0,1]区间"""
-            # 符号场景下确保参数无虚数部分（is_real可能返回None，需化简判断）
-            is_real = sp.simplify(sp.im(param)) == 0  # 虚部为0则为实数
-            # 参数在[0,1]区间（符号等式判断）
-            in_range = sp.simplify(sp.And(sp.Ge(param, 0), sp.Le(param, 1)))
-            return sp.simplify(is_real and in_range)
+    #     # 4. 校验 t 和 s 的有效性（实数+在[0,1]区间内）
+    #     def is_valid_param(param: sp.Expr) -> bool:
+    #         """校验参数是否为实数且在[0,1]区间"""
+    #         # 符号场景下确保参数无虚数部分（is_real可能返回None，需化简判断）
+    #         is_real = sp.simplify(sp.im(param)) == 0  # 虚部为0则为实数
+    #         # 参数在[0,1]区间（符号等式判断）
+    #         in_range = sp.simplify(sp.And(sp.Ge(param, 0), sp.Le(param, 1)))
+    #         return sp.simplify(is_real and in_range)
         
-        if not is_valid_param(t_val) or not is_valid_param(s_val):
-            return []
+    #     if not is_valid_param(t_val) or not is_valid_param(s_val):
+    #         return []
         
-        # 5. 计算交点坐标（代入线段1参数方程，化简结果）
-        x = sp.simplify(x1 + t_val * dx1)
-        y = sp.simplify(y1 + t_val * dy1)
+    #     # 5. 计算交点坐标（代入线段1参数方程，化简结果）
+    #     x = sp.simplify(x1 + t_val * dx1)
+    #     y = sp.simplify(y1 + t_val * dy1)
         
-        # 6. 去重（避免极端场景下的重复交点）
-        unique_intersections = []
-        seen = set()
-        key = (str(x), str(y))
-        if key not in seen:
-            seen.add(key)
-            unique_intersections.append((x, y))
+    #     # 6. 去重（避免极端场景下的重复交点）
+    #     unique_intersections = []
+    #     seen = set()
+    #     key = (str(x), str(y))
+    #     if key not in seen:
+    #         seen.add(key)
+    #         unique_intersections.append((x, y))
         
-        return unique_intersections
+    #     return unique_intersections
 
     def _find_all_intersections(self):
         """查找所有线段与弧、弧与弧的交点"""
@@ -730,7 +976,8 @@ class TemplateGenerator:
                 center_id=temp_origin_id,
                 rotation=rotation,
                 entity_id=entity_id,
-                is_base=True
+                is_base=True,
+                level=1
             )
             self.description_parts.append(
                 f"Base shape is a regular {n}-sided polygon (center {temp_origin_id}) with side length {side_length}"
@@ -748,7 +995,8 @@ class TemplateGenerator:
                 start_angle=start_angle,
                 end_angle=end_angle,
                 entity_id=entity_id,
-                is_base=True
+                is_base=True,
+                level=1
             )
             self.complete_circle_arcs.add(arc_id)
             self.description_parts.append(
@@ -801,7 +1049,8 @@ class TemplateGenerator:
                     },
                     origin_id=temp_origin_id,  # Midpoint of the base
                     entity_id=entity_id,
-                    is_base=True
+                    is_base=True,
+                    level=1
                 )
                 self.description_parts.append(
                     f"Base shape is an isosceles triangle (base midpoint {temp_origin_id}) with top angle {top_angle}°, "
@@ -844,7 +1093,8 @@ class TemplateGenerator:
                     },
                     origin_id=temp_origin_id, 
                     entity_id=entity_id,
-                    is_base=True
+                    is_base=True,
+                    level=1
                 )
                 self.description_parts.append(
                     f"Base shape is a right triangle (hypotenuse midpoint {temp_origin_id}) with legs {leg1}, {leg2}, "
@@ -880,7 +1130,8 @@ class TemplateGenerator:
                 center_id=temp_origin_id,  # Center
                 rotate_mode=rotate_mode,
                 entity_id=entity_id,
-                is_base=True
+                is_base=True,
+                level=1
             )
             self.description_parts.append(
                 f"Base shape is a rectangle (center {temp_origin_id}) with width {width}, length {length}, rotate mode {rotate_mode}"
@@ -910,7 +1161,8 @@ class TemplateGenerator:
                 center_id=temp_origin_id, 
                 rotate_mode=rotate_mode,
                 entity_id=entity_id,
-                is_base=True
+                is_base=True,
+                level=1
             )
             self.description_parts.append(
                 f"Base shape is a parallelogram (center {temp_origin_id}) with base {base}, height {height}, angle {angle_deg}°, "
@@ -943,7 +1195,8 @@ class TemplateGenerator:
                 center_id=temp_origin_id,  # Center
                 rotate_mode=rotate_mode,
                 entity_id=entity_id,
-                is_base=True
+                is_base=True,
+                level=1
             )
             self.description_parts.append(
                 f"Base shape is an isosceles trapezoid (center {temp_origin_id}) with bases {base1}, {base2}, height {height}, "
@@ -962,7 +1215,8 @@ class TemplateGenerator:
         center_id: str,
         rotation: sp.Expr,
         entity_id: Optional[str] = None,
-        is_base: bool = False
+        is_base: bool = False,
+        level: int = 1
     ) -> str:
         cx, cy = self.get_point_coords(center_id)
         r_expr = simplify(side_length / (2 * sin(pi / n)))
@@ -979,7 +1233,7 @@ class TemplateGenerator:
             angle = simplify(rotation + 2 * pi * i / n)
             x = simplify(cx + r_expr * cos(angle))
             y = simplify(cy + r_expr * sin(angle))
-            vertices.append(self._add_point(x, y, is_circle_init=False, level=1 if is_base else 2))
+            vertices.append(self._add_point(x, y, is_circle_init=False, level=level))
 
         lines = []
         for i in range(n):
@@ -1021,18 +1275,19 @@ class TemplateGenerator:
         start_angle: sp.Expr = 0,
         end_angle: sp.Expr = 2*pi,
         entity_id: Optional[str] = None,
-        is_base: bool = False
+        is_base: bool = False,
+        level: int = 1
     ) -> str:
         """生成圆（圆心O系列，完整圆初始点circle_x，弧先查重），补充周长/弧长和面积/扇形面积计算"""
         cx, cy = self.get_point_coords(center_id)
-        r_expr = simplify(radius)
+        r_expr = radius
         if r_expr < 0:
             raise ValueError("半径不能为负")
 
-        is_complete = sp.simplify(end_angle - start_angle) == 2 * pi
+        is_complete = end_angle - start_angle == 2 * pi
         start_x = simplify(cx + r_expr * cos(start_angle))
         start_y = simplify(cy + r_expr * sin(start_angle))
-        start_id = self._add_point(start_x, start_y, is_circle_init=is_complete, level=1 if is_base else 2)
+        start_id = self._add_point(start_x, start_y, is_circle_init=is_complete, level=level)
 
         end_x = simplify(cx + r_expr * cos(end_angle))
         end_y = simplify(cy + r_expr * sin(end_angle))
@@ -1092,10 +1347,11 @@ class TemplateGenerator:
         params: dict,
         origin_id: str, 
         entity_id: Optional[str] = None,
-        is_base: bool = False
+        is_base: bool = False,
+        level: int = 1
     ) -> str:
         """生成特殊三角形（等腰/直角），统一参数格式为expr+latex，兼容符号计算，补充周长和面积计算"""
-        level = 1 if is_base else 2
+        level = level
         entity_id = entity_id or self._get_unique_entity_id(f"special_triangle_{triangle_type}")
         
         # --- 核心修正：获取基准点 origin_id 的世界坐标 ---
@@ -1260,10 +1516,11 @@ class TemplateGenerator:
         center_id: str,
         rotate_mode: str,
         entity_id: Optional[str] = None,
-        is_base: bool = False
+        is_base: bool = False,
+        level: int = 1
     ) -> str:
         """生成特殊矩形，统一参数格式为expr+latex，基于中心对称，补充周长和面积计算"""
-        level = 1 if is_base else 2
+        level = level
         entity_id = entity_id or self._get_unique_entity_id(f"special_rectangle_{width}:{length}")
         
         # --- 核心修正：获取基准点 center_id 的世界坐标 ---
@@ -1342,10 +1599,11 @@ class TemplateGenerator:
         center_id: str,
         rotate_mode: str,
         entity_id: Optional[str] = None,
-        is_base: bool = False
+        is_base: bool = False,
+        level: int = 1
     ) -> str:
         """生成平行四边形，统一参数格式为expr+latex，支持符号计算，补充周长和面积计算"""
-        level = 1 if is_base else 2
+        level = level
         entity_id = entity_id or self._get_unique_entity_id(f"parallelogram_{base}x{height}")
         
         # 符号化简参数
@@ -1453,7 +1711,8 @@ class TemplateGenerator:
         center_id: str,
         rotate_mode: str,
         entity_id: Optional[str] = None,
-        is_base: bool = False
+        is_base: bool = False,
+        level: int = 1
     ) -> str:
         """生成等腰梯形，统一参数格式为expr+latex，校验上下底关系，补充周长和面积计算"""
         base1 = simplify(base1)
@@ -1461,7 +1720,7 @@ class TemplateGenerator:
         if base2 >= base1:
             raise ValueError(f"Upper base (base2={base2}) must be shorter than lower base (base1={base1})")
         
-        level = 1 if is_base else 2
+        level = level
         entity_id = entity_id or self._get_unique_entity_id(f"trapezoid_{base1}:{base2}")
         
         cx, cy = self.get_point_coords(center_id)
@@ -1673,7 +1932,7 @@ class TemplateGenerator:
             if rule["name"] == rule_name:
                 return rule.copy()
         
-    def _rule_concentric(self, base_entity: Dict) -> str:
+    def _rule_concentric(self, base_entity: Dict, level: int) -> str:
         base_type = base_entity["type"]
         center_id = self._get_center_id(base_entity)
         
@@ -1688,7 +1947,7 @@ class TemplateGenerator:
             rotation = simplify(sp.sympify(base_entity["rotation"]["expr"]))
             entity_id = self._get_unique_entity_id(f"concentric_polygon_n{n}")
             new_id = self.generate_regular_polygon(
-                n=n, side_length=new_side, center_id=center_id, rotation=rotation, entity_id=entity_id, is_base=False
+                n=n, side_length=new_side, center_id=center_id, rotation=rotation, entity_id=entity_id, is_base=False, level=level
             )
             self.description_parts.append(
                 f"Concentric derivation: {n}-sided polygon (center {center_id}) scaled by {scale}."
@@ -1712,7 +1971,7 @@ class TemplateGenerator:
 
         return new_id
     
-    def _rule_translation(self, base_entity: Dict) -> str:
+    def _rule_translation(self, base_entity: Dict, level: int) -> str:
         base_type = base_entity["type"]
         base_center_id = self._get_center_id(base_entity)
         base_cx, base_cy = self.get_point_coords(base_center_id)
@@ -1812,7 +2071,7 @@ class TemplateGenerator:
             new_center_id = self._add_point(new_cx, new_cy, is_center=True)
             entity_id = self._get_unique_entity_id(f"translated_polygon_n{n}")
             new_id = self.generate_regular_polygon(
-                n=n, side_length=side_len, center_id=new_center_id, rotation=rotation, entity_id=entity_id, is_base=False
+                n=n, side_length=side_len, center_id=new_center_id, rotation=rotation, entity_id=entity_id, is_base=False, level=level
             )
             self.description_parts.append(
                 f"Translation derivation: {n}-sided polygon (new center {new_center_id}) translated {dir_desc}, {dist_desc}."
@@ -1851,7 +2110,7 @@ class TemplateGenerator:
         
         return new_id
     
-    def _rule_circum_inscribe(self, base_entity: Dict) -> str:
+    def _rule_circum_inscribe(self, base_entity: Dict, level: int) -> str:
         
         # 允许内外接圆和内外接多边形
         # 当n<=6时允许选择内外接多边形；n>6时生成圆（n太大的时候生成的内外接多边形太密集）
@@ -1889,7 +2148,7 @@ class TemplateGenerator:
                 rotation = simplify(sp.sympify(base_entity["rotation"]["expr"]))
                 entity_id = self._get_unique_entity_id(f"{rel_type}polygon_n{new_n}")
                 new_id = self.generate_regular_polygon(
-                    n=new_n, side_length=new_side, center_id=base_center_id, rotation=rotation, entity_id=entity_id, is_base=False
+                    n=new_n, side_length=new_side, center_id=base_center_id, rotation=rotation, entity_id=entity_id, is_base=False, level=level
                 )
                 self.description_parts.append(
                     f"{rel_type.capitalize()} {new_n}-sided polygon (center {base_center_id}) around {n}-sided polygon."
@@ -1922,7 +2181,7 @@ class TemplateGenerator:
 
         return new_id
 
-    def _rule_vertex_on_center(self, base_entity: Dict) -> str:
+    def _rule_vertex_on_center(self, base_entity: Dict, level: int) -> str:
         """顶点在中心衍生"""
         base_center_id = self._get_center_id(base_entity)
         base_cx, base_cy = self.get_point_coords(base_center_id)
@@ -1985,14 +2244,14 @@ class TemplateGenerator:
         # 5. 生成新的正多边形
         entity_id = self._get_unique_entity_id(f"vertex_on_center_polygon_n{new_n}")
         new_id = self.generate_regular_polygon(
-            n=new_n, side_length=new_side, center_id=new_center_id, rotation=rotation, entity_id=entity_id, is_base=False
+            n=new_n, side_length=new_side, center_id=new_center_id, rotation=rotation, entity_id=entity_id, is_base=False, level=level
         )
         
         self.description_parts.append(f"Vertex-on-center derivation: {new_n}-gon (center {new_center_id}) with {param_desc}.")
 
         return new_id
     
-    def _rule_special_triangle_circum_inscribe(self, base_entity: Dict) -> str:
+    def _rule_special_triangle_circum_inscribe(self, base_entity: Dict, level: int) -> str:
         """特殊三角形的内外接圆衍生（等腰/直角三角形专用）- 几何构造法"""
         base_subtype = base_entity["subtype"]
         is_circum = random.choice([True, False])
@@ -2179,7 +2438,7 @@ class TemplateGenerator:
             start_angle=0,
             end_angle=2*sp.pi,
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
         self.complete_circle_arcs.add(arc_id)
         
@@ -2188,7 +2447,7 @@ class TemplateGenerator:
         )
         return entity_id
 
-    def _rule_special_triangle_flip(self, base_entity: Dict) -> str:
+    def _rule_special_triangle_flip(self, base_entity: Dict, level: int) -> str:
         """特殊三角形沿三条边翻转（对称衍生）"""
         base_subtype = base_entity["subtype"]
         origin_id = base_entity["center_id"]  # 底边中点/斜边中点
@@ -2234,7 +2493,7 @@ class TemplateGenerator:
                 },
                 origin_id=new_origin_id,
                 entity_id=entity_id,
-                is_base=False
+                is_base=False, level=level
             )
         else:  # 直角三角形
             entity_id = self._get_unique_entity_id(f"flipped_right_triangle_edge{edge_idx}")
@@ -2248,7 +2507,7 @@ class TemplateGenerator:
                 },
                 origin_id=new_origin_id,
                 entity_id=entity_id,
-                is_base=False
+                is_base=False, level=level
             )
 
         self.description_parts.append(
@@ -2256,7 +2515,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_special_triangle_translation(self, base_entity: Dict) -> str:
+    def _rule_special_triangle_translation(self, base_entity: Dict, level: int) -> str:
         """特殊三角形沿边平移（全边长/半边长）"""
         base_subtype = base_entity["subtype"]
         origin_id = base_entity["center_id"]
@@ -2307,7 +2566,7 @@ class TemplateGenerator:
                 },
                 origin_id=new_origin_id,
                 entity_id=entity_id,
-                is_base=False
+                is_base=False, level=level
             )
         else:
             entity_id = self._get_unique_entity_id(f"translated_right_triangle_edge{edge_idx}")
@@ -2321,7 +2580,7 @@ class TemplateGenerator:
                 },
                 origin_id=new_origin_id,
                 entity_id=entity_id,
-                is_base=False
+                is_base=False, level=level
             )
 
         self.description_parts.append(
@@ -2329,7 +2588,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_special_rectangle_concentric(self, base_entity: Dict) -> str:
+    def _rule_special_rectangle_concentric(self, base_entity: Dict, level: int) -> str:
         """特殊矩形的同心衍生（同中心缩放）"""
         center_id = base_entity["center_id"]
         width = simplify(sp.sympify(base_entity["width"]["expr"]))
@@ -2346,7 +2605,7 @@ class TemplateGenerator:
             center_id=center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2354,7 +2613,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_special_rectangle_circum_inscribe(self, base_entity: Dict) -> str:
+    def _rule_special_rectangle_circum_inscribe(self, base_entity: Dict, level: int) -> str:
         """特殊矩形的内外接圆（内接圆半径=短边/2，外接圆半径=对角线/2）"""
         center_id = base_entity["center_id"]
         width = simplify(sp.sympify(base_entity["width"]["expr"]))
@@ -2378,7 +2637,7 @@ class TemplateGenerator:
             start_angle=0,
             end_angle=2*pi,
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
         self.complete_circle_arcs.add(arc_id)
         self.description_parts.append(
@@ -2386,7 +2645,7 @@ class TemplateGenerator:
         )
         return entity_id
 
-    def _rule_special_rectangle_flip(self, base_entity: Dict) -> str:
+    def _rule_special_rectangle_flip(self, base_entity: Dict, level: int) -> str:
         """特殊矩形沿四条边翻转（对称衍生）"""
         center_id = base_entity["center_id"]
         cx, cy = self.get_point_coords(center_id)
@@ -2421,7 +2680,7 @@ class TemplateGenerator:
             center_id=new_center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2429,7 +2688,7 @@ class TemplateGenerator:
         )
         return new_id
     
-    def _rule_special_rectangle_translation(self, base_entity: Dict) -> str:
+    def _rule_special_rectangle_translation(self, base_entity: Dict, level: int) -> str:
         """特殊矩形沿边平移（全边长/半边长）"""
         center_id = base_entity["center_id"]
         cx, cy = self.get_point_coords(center_id)
@@ -2469,7 +2728,7 @@ class TemplateGenerator:
             center_id=new_center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2477,7 +2736,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_parallelogram_concentric(self, base_entity: Dict) -> str:
+    def _rule_parallelogram_concentric(self, base_entity: Dict, level: int) -> str:
         """平行四边形的同心衍生（同中心缩放）"""
         center_id = base_entity["center_id"]
         base = simplify(sp.sympify(base_entity["base"]["expr"]))
@@ -2496,7 +2755,7 @@ class TemplateGenerator:
             center_id=center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2504,7 +2763,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_parallelogram_flip(self, base_entity: Dict) -> str:
+    def _rule_parallelogram_flip(self, base_entity: Dict, level: int) -> str:
         """平行四边形沿四条边翻转（对称衍生）"""
         center_id = base_entity["center_id"]
         cx, cy = self.get_point_coords(center_id)
@@ -2547,7 +2806,7 @@ class TemplateGenerator:
             center_id=new_center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2555,7 +2814,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_parallelogram_translation(self, base_entity: Dict) -> str:
+    def _rule_parallelogram_translation(self, base_entity: Dict, level: int) -> str:
         """平行四边形沿边平移（全边长/半边长）"""
         center_id = base_entity["center_id"]
         cx, cy = self.get_point_coords(center_id)
@@ -2599,7 +2858,7 @@ class TemplateGenerator:
             center_id=new_center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2607,7 +2866,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_trapezoid_concentric(self, base_entity: Dict) -> str:
+    def _rule_trapezoid_concentric(self, base_entity: Dict, level: int) -> str:
         """等腰梯形的同心衍生（同中心缩放）"""
         center_id = base_entity["center_id"]
         base1 = simplify(sp.sympify(base_entity["base1"]["expr"]))  # 下底
@@ -2632,7 +2891,7 @@ class TemplateGenerator:
             center_id=center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2640,7 +2899,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_trapezoid_flip(self, base_entity: Dict) -> str:
+    def _rule_trapezoid_flip(self, base_entity: Dict, level: int) -> str:
         """等腰梯形沿四条边翻转（对称衍生）"""
         center_id = base_entity["center_id"]
         cx, cy = self.get_point_coords(center_id)
@@ -2679,7 +2938,7 @@ class TemplateGenerator:
             center_id=new_center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2687,7 +2946,7 @@ class TemplateGenerator:
         )
         return new_id
 
-    def _rule_trapezoid_translation(self, base_entity: Dict) -> str:
+    def _rule_trapezoid_translation(self, base_entity: Dict, level: int) -> str:
         """等腰梯形沿边平移（全边长/半边长）"""
         center_id = base_entity["center_id"]
         cx, cy = self.get_point_coords(center_id)
@@ -2733,7 +2992,7 @@ class TemplateGenerator:
             center_id=new_center_id,
             rotate_mode=base_entity["rotate_mode"],
             entity_id=entity_id,
-            is_base=False
+            is_base=False, level=level
         )
 
         self.description_parts.append(
@@ -2741,6 +3000,98 @@ class TemplateGenerator:
         )
         return new_id
 
+    def _rule_side_polygon(self, base_entity: Dict, level: int) -> str:
+        """
+        在非圆形实体的随机边上生成向内/向外的正多边形
+        :param base_entity: 基础几何实体（多边形/三角形/矩形/平行四边形/梯形等，排除圆形）
+        :param level: 衍生层级
+        :return: 新生成多边形的唯一ID
+        """
+        # 1. 校验基础实体类型（排除圆形）
+        base_type = base_entity["type"]
+        if base_type == "circle":
+            raise NotImplementedError("This rule does not support circle entities.")
+        
+        # 2. 仅读取边数配置参数（n_choices）
+        rule_params = self._get_rule_params(base_entity, "side_polygon")
+        n_choices = rule_params.get("n_choices", [3, 4, 5, 6])  # 默认3-6边形
+        
+        # 3. 提取基础实体的边并随机选择一条
+        if "lines" in base_entity and base_entity["lines"]:
+            edges = [c for c in base_entity["lines"] if self._is_line(c)]
+        else:
+            # 从顶点推导边
+            vertices = [c for c in base_entity["vertices"] if self._is_point(c) and not c.startswith('O')]
+            edges = []
+            for i in range(len(vertices)):
+                p1_id = vertices[i]
+                p2_id = vertices[(i + 1) % len(vertices)]
+                edge_id = self._get_line_id_by_vertices(p1_id, p2_id)
+                if edge_id:
+                    edges.append(edge_id)
+        
+        if len(edges) == 0:
+            raise ValueError(f"Base entity {base_entity['id']} has no valid edges to generate polygon.")
+        selected_edge_id = random.choice(edges)
+        
+        # 4. 获取选中边的几何参数
+        p1_id, p2_id = self._get_line_vertices(selected_edge_id)
+        p1x, p1y = self.get_point_coords(p1_id)
+        p2x, p2y = self.get_point_coords(p2_id)
+        
+        # 边的方向/长度/垂直向量计算
+        edge_dx = simplify(p2x - p1x)
+        edge_dy = simplify(p2y - p1y)
+        edge_len = simplify(sqrt(edge_dx**2 + edge_dy**2))
+        unit_edge_dx = simplify(edge_dx / edge_len) if edge_len != 0 else 0
+        unit_edge_dy = simplify(edge_dy / edge_len) if edge_len != 0 else 0
+        perp_dx = simplify(-unit_edge_dy)  # 垂直向外向量
+        perp_dy = simplify(unit_edge_dx)
+        
+        # 5. 随机选择生成方向（向内/向外）
+        direction = random.choice(["in", "out"])
+        if direction == "in":
+            perp_dx = simplify(-perp_dx)
+            perp_dy = simplify(-perp_dy)
+        
+        # 6. 确定新多边形核心参数
+        new_n = random.choice(n_choices)  # 仅从配置读取边数
+        new_side_len = edge_len  # 直接使用选中边的原始长度
+        
+        # 7. 计算新多边形中心坐标
+        mid_x = simplify((p1x + p2x) / 2)
+        mid_y = simplify((p1y + p2y) / 2)
+        # 内接圆半径（保证多边形边与原边贴合）
+        inner_r = simplify((new_side_len / 2) / sp.tan(pi / new_n))
+        new_cx = simplify(mid_x + perp_dx * inner_r)
+        new_cy = simplify(mid_y + perp_dy * inner_r)
+        new_center_id = self._add_point(new_cx, new_cy, is_center=True)
+        
+        # 8. 计算旋转角度（与原边平行）
+        edge_angle = simplify(sp.atan2(edge_dy, edge_dx)) if edge_len != 0 else 0
+        rotation = simplify(edge_angle + pi / new_n)
+        
+        # 9. 生成新正多边形
+        entity_id = self._get_unique_entity_id(f"side_polygon_n{new_n}_{direction}_{selected_edge_id}")
+        new_id = self.generate_regular_polygon(
+            n=new_n,
+            side_length=new_side_len,
+            center_id=new_center_id,
+            rotation=rotation,
+            entity_id=entity_id,
+            is_base=False,
+            level=level
+        )
+        
+        # 10. 记录衍生描述（仅保留核心信息）
+        self.description_parts.append(
+            f"Side polygon derivation: {new_n}-sided polygon (center {new_center_id}) "
+            f"generated {direction}ward on edge {p1_id}{p2_id} "
+            f"of {base_type} {base_entity['id']}, "
+            f"side length equal to edge length, rotation {nsimplify(rotation)}."
+        )
+        
+        return new_id
 
     # ------------------------------ 生成后整理步骤 ------------------------------
     def _finalize_geometry(self):
@@ -2846,7 +3197,6 @@ class TemplateGenerator:
         # =====================================================================
 
         # 4. 处理弧分割（这部分你的逻辑可以保持不变）
-        # ... (此处省略你原有的弧分割代码) ...
         arcs_to_process = self.data["arcs"].copy()
         new_arcs = []
         for arc in arcs_to_process:
@@ -2909,13 +3259,16 @@ class TemplateGenerator:
     def generate_derivations(self) -> None:
         num_rounds = random.randint(*self.config["derivation"]["round_range"])
         derivation_mode = self.config["derivation"]["mode"]
-        
+        level = 1
         for round_idx in range(num_rounds):
             if not self.current_entities:
                 break
             
+            level = level + 1
             if derivation_mode == "sequential":
                 base_entity_id = self.current_entities[-1]
+            elif derivation_mode == "base":
+                base_entity_id = self.current_entities[0]
             else:
                 base_entity_id = random.choice(self.current_entities)
             
@@ -2942,47 +3295,67 @@ class TemplateGenerator:
             # if True:
                 if base_type == "circle" or base_type == "polygon":
                     if selected_rule_name == "concentric":
-                        new_id = self._rule_concentric(base_entity)
+                        new_id = self._rule_concentric(base_entity, level)
                     elif selected_rule_name == "translation":
-                        new_id = self._rule_translation(base_entity)
+                        new_id = self._rule_translation(base_entity, level)
                     elif selected_rule_name == "circum_inscribe":
-                        new_id = self._rule_circum_inscribe(base_entity)
+                        new_id = self._rule_circum_inscribe(base_entity, level)
                     elif selected_rule_name == "vertex_on_center":
-                        new_id = self._rule_vertex_on_center(base_entity)
+                        new_id = self._rule_vertex_on_center(base_entity, level)
+                
+                elif base_type == "polygon":
+                    if selected_rule_name == "concentric":
+                        new_id = self._rule_concentric(base_entity, level)
+                    elif selected_rule_name == "translation":
+                        new_id = self._rule_translation(base_entity, level)
+                    elif selected_rule_name == "circum_inscribe":
+                        new_id = self._rule_circum_inscribe(base_entity, level)
+                    elif selected_rule_name == "vertex_on_center":
+                        new_id = self._rule_vertex_on_center(base_entity, level)
+                    elif selected_rule_name == "side_polygon":
+                        new_id = self._rule_side_polygon(base_entity, level)
                 
                 elif base_type == "special_triangle":
                     if selected_rule_name == "circum_inscribe":
-                        new_id = self._rule_special_triangle_circum_inscribe(base_entity)
+                        new_id = self._rule_special_triangle_circum_inscribe(base_entity, level)
                     elif selected_rule_name == "flip":
-                        new_id = self._rule_special_triangle_flip(base_entity)
+                        new_id = self._rule_special_triangle_flip(base_entity, level)
                     elif selected_rule_name == "translation":
-                        new_id = self._rule_special_triangle_translation(base_entity)
+                        new_id = self._rule_special_triangle_translation(base_entity, level)
+                    elif selected_rule_name == "side_polygon":
+                        new_id = self._rule_side_polygon(base_entity, level)
                     
                 elif base_type == "special_rectangle":
                     if selected_rule_name == "concentric":
-                        new_id = self._rule_special_rectangle_concentric(base_entity)
+                        new_id = self._rule_special_rectangle_concentric(base_entity, level)
                     elif selected_rule_name == "circum_inscribe":
-                        new_id = self._rule_special_rectangle_circum_inscribe(base_entity)
+                        new_id = self._rule_special_rectangle_circum_inscribe(base_entity, level)
                     elif selected_rule_name == "flip":
-                        new_id = self._rule_special_rectangle_flip(base_entity)
+                        new_id = self._rule_special_rectangle_flip(base_entity, level)
                     elif selected_rule_name == "translation":
-                        new_id = self._rule_special_rectangle_translation(base_entity)
+                        new_id = self._rule_special_rectangle_translation(base_entity, level)
+                    elif selected_rule_name == "side_polygon":
+                        new_id = self._rule_side_polygon(base_entity, level)
                     
                 elif base_type == "parallelogram":
                     if selected_rule_name == "concentric":
-                        new_id = self._rule_parallelogram_concentric(base_entity)
+                        new_id = self._rule_parallelogram_concentric(base_entity, level)
                     elif selected_rule_name == "flip":
-                        new_id = self._rule_parallelogram_flip(base_entity)
+                        new_id = self._rule_parallelogram_flip(base_entity, level)
                     elif selected_rule_name == "translation":
-                        new_id = self._rule_parallelogram_translation(base_entity)
+                        new_id = self._rule_parallelogram_translation(base_entity, level)
+                    elif selected_rule_name == "side_polygon":
+                        new_id = self._rule_side_polygon(base_entity, level)
                     
                 elif base_type == "trapezoid":
                     if selected_rule_name == "concentric":
-                        new_id = self._rule_trapezoid_concentric(base_entity)
+                        new_id = self._rule_trapezoid_concentric(base_entity, level)
                     elif selected_rule_name == "flip":
-                        new_id = self._rule_trapezoid_flip(base_entity)
+                        new_id = self._rule_trapezoid_flip(base_entity, level)
                     elif selected_rule_name == "translation":
-                        new_id = self._rule_trapezoid_translation(base_entity)
+                        new_id = self._rule_trapezoid_translation(base_entity, level)
+                    elif selected_rule_name == "side_polygon":
+                        new_id = self._rule_side_polygon(base_entity, level)
                         
             except Exception as e:
                 print(f"Error applying rule '{selected_rule_name}': {e}")

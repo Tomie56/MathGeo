@@ -213,7 +213,7 @@ class QAGenerator:
             edge1_level = kwargs.get('edge1_level', 1)
             edge2_level = kwargs.get('edge2_level', 1)
             avg_level = (point_level + edge1_level + edge2_level) / 3.0
-            return avg_level * 2.0
+            return avg_level * 1.0
             
         elif qt_type == 'entity_area':
             entity_level = kwargs.get('entity_level', 1)
@@ -275,7 +275,7 @@ class QAGenerator:
         valid_entities.sort(key=lambda x: -x['calculated_level'])
         
         # 前30%高level实体中随机选择
-        top_percent = int(len(valid_entities) * 0.3) or 1
+        top_percent = int(len(valid_entities) * 2) or 1
         top_candidates = valid_entities[:top_percent]
         return random.choice(top_candidates)
 
@@ -299,7 +299,7 @@ class QAGenerator:
         valid_shadows.sort(key=lambda x: -x['calculated_level'])
         
         # 前30%高level阴影中随机选择
-        top_percent = int(len(valid_shadows) * 0.3) or 1
+        top_percent = int(len(valid_shadows) * 2) or 1
         top_candidates = valid_shadows[:top_percent]
         return random.choice(top_candidates)
 
@@ -436,7 +436,7 @@ class QAGenerator:
         edges_with_length.sort(key=lambda x: -x['level'])
         
         # 从高level边中随机选择（增加一点随机性）
-        top_percent = int(len(edges_with_length) * 0.3) or 1
+        top_percent = int(len(edges_with_length) * 0.2) or 1
         top_candidates = edges_with_length[:top_percent]
         return random.choice(top_candidates)
 
@@ -521,7 +521,7 @@ class QAGenerator:
         valid_combinations.sort(key=lambda x: -x['combo_level'])
         
         # 从高level组合中随机选择
-        top_percent = int(len(valid_combinations) * 0.3) or 1
+        top_percent = int(len(valid_combinations) * 0.2) or 1
         top_candidates = valid_combinations[:top_percent]
         return random.choice(top_candidates)
 
